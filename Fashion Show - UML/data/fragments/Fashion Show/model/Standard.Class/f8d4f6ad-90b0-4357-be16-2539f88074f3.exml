@@ -1,0 +1,25 @@
+<?xml version="1.0" ?>
+<!--GENERATED FILE, PLEASE DO NOT EDIT!!!--><EXT object="Clothe" version="4">
+  <OBJECT>
+    <ID name="Clothe" mc="Standard.Class" uid="f8d4f6ad-90b0-4357-be16-2539f88074f3"/>
+    <PID name="fashion show" mc="Standard.Package" uid="3b8e0459-8347-42f0-86e2-a7415577a3e0"/>
+    <ATTRIBUTES>
+      <ATT name="IsActive">false</ATT>
+      <ATT name="IsMain">false</ATT>
+      <ATT name="IsElementary">false</ATT>
+      <ATT name="IsAbstract">false</ATT>
+      <ATT name="IsLeaf">false</ATT>
+      <ATT name="IsRoot">false</ATT>
+      <ATT name="Visibility">Public</ATT>
+      <ATT name="Name"><![CDATA[Clothe]]></ATT>
+      <ATT name="status">1970354901745664</ATT>
+    </ATTRIBUTES>
+    <DEPENDENCIES>
+      <COMP relation="OwnedEnd">
+        <REFOBJ>
+          <ID name="UsedIn" mc="Standard.AssociationEnd" uid="d82b8e0a-d451-475e-b0f0-7f3e4dd15ede"/>
+        </REFOBJ>
+      </COMP>
+    </DEPENDENCIES>
+  </OBJECT>
+</EXT>

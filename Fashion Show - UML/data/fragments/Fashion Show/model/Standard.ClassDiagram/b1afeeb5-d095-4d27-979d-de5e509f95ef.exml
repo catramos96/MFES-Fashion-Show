@@ -1,0 +1,31 @@
+<?xml version="1.0" ?>
+<!--GENERATED FILE, PLEASE DO NOT EDIT!!!--><EXT object="fashion show Class diagram" version="4">
+  <OBJECT>
+    <ID name="fashion show Class diagram" mc="Standard.ClassDiagram" uid="b1afeeb5-d095-4d27-979d-de5e509f95ef"/>
+    <PID name="fashion show" mc="Standard.Package" uid="3b8e0459-8347-42f0-86e2-a7415577a3e0"/>
+    <ATTRIBUTES>
+      <ATT name="UiDataVersion">46</ATT>
+      <ATT name="UiData"><![CDATA[eJztU9tO4zAQ/RXL73XLJUKRQhEkqEIEilpYiSc0qaetwbEr26XN36/TpCwtapSV0PKyT77NOXNmfCa6WOeSvKOxQqtzesR6lFz0o2H2ihNHBPdXlLhigedUmxnLNUcpNOMCZgZyhlw4bZh14MQbQ4k5Kmer82QbNMjHm3NSnSnJ4VWbl4+kPdqPHoxeoHEFUZD7XBIKvXQJOPBvv0AusRahllLSbj/qbgFfoGNXSKQ7JRw3lWDLeMsm2iCrsC30xWAnwJFvk12v3QinLbPce4oaSXDtkuzGa9xsy81dhSQnbL1XaLcqqal4gxIccq9lr2935RV5L2/KFoHiYDiLJVhbfwvJjmCKmAUd3guDzik/PuuEZyHvcAww6IXTMPAUja33bO5W6ZVKIUO5p2DsjFAz2p+Cnfu2EjvXK7IRQOomRd1NfGN9WuKNinW+0FY4T3MgSQuqeC4kN1gypMKWXa2Xg4hUqDfbPvxqlhhYeTkpFGh2HXnSOFTbMeIV3jJZMvg52iH8N2P0d6if9Z/gB+yQDFh6+Xw9erm6jG8Ho+HTffI9Dmkxkp//7I97Pnnh9L8XfsQLj8OH7zbBwaff1TmV4Q==]]></ATT>
+      <ATT name="Name"><![CDATA[fashion show Class diagram]]></ATT>
+      <ATT name="status">1970354901745664</ATT>
+    </ATTRIBUTES>
+    <DEPENDENCIES>
+      <COMP relation="Descriptor">
+        <OBJECT>
+          <ID name="" mc="Infrastructure.Note" uid="1b5d95f3-922b-442c-af37-747673db510f"/>
+          <ATTRIBUTES>
+            <ATT name="Content"></ATT>
+            <ATT name="MimeType"><![CDATA[text/plain]]></ATT>
+            <ATT name="Name"></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES>
+            <LINK relation="Model">
+              <FOREIGNID name="description" mc="Infrastructure.NoteType" uid="00000000-0000-3e81-0000-000000000000"/>
+            </LINK>
+          </DEPENDENCIES>
+        </OBJECT>
+      </COMP>
+    </DEPENDENCIES>
+  </OBJECT>
+</EXT>
