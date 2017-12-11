@@ -16,8 +16,11 @@
     </ATTRIBUTES>
     <DEPENDENCIES>
       <COMP relation="OwnedEnd">
-        <OBJECT>
+        <REFOBJ>
           <ID name="Speaker" mc="Standard.AssociationEnd" uid="bafc4143-6e08-4fc2-b68a-978c4b77ada0"/>
+        </REFOBJ>
+        <OBJECT>
+          <ID name="Guest" mc="Standard.AssociationEnd" uid="918109e4-ae81-4b63-a5fe-509e8799744f"/>
           <ATTRIBUTES>
             <ATT name="Aggregation">KindIsAssociation</ATT>
             <ATT name="IsChangeable">true</ATT>
@@ -25,21 +28,21 @@
             <ATT name="IsDerived">false</ATT>
             <ATT name="IsOrdered">false</ATT>
             <ATT name="IsUnique">false</ATT>
-            <ATT name="MultiplicityMin"><![CDATA[1]]></ATT>
+            <ATT name="MultiplicityMin"><![CDATA[0]]></ATT>
             <ATT name="MultiplicityMax"><![CDATA[*]]></ATT>
             <ATT name="Visibility">Public</ATT>
             <ATT name="IsClass">false</ATT>
             <ATT name="IsAbstract">false</ATT>
-            <ATT name="Name"><![CDATA[Speaker]]></ATT>
+            <ATT name="Name"><![CDATA[Guest]]></ATT>
             <ATT name="status">1970354901745664</ATT>
           </ATTRIBUTES>
           <DEPENDENCIES>
             <LINK relation="Target">
-              <ID name="Worker" mc="Standard.Class" uid="38646699-92e9-4330-9fcf-2424a0fb6e5c"/>
+              <ID name="Atendee" mc="Standard.Class" uid="f481f6e7-032d-4860-ab45-3a558e19e456"/>
             </LINK>
             <COMP relation="Opposite">
               <OBJECT>
-                <ID name="Speaker" mc="Standard.AssociationEnd" uid="f740b995-e191-43c6-b1ea-042e548164bc"/>
+                <ID name="" mc="Standard.AssociationEnd" uid="1c4c5c4b-2737-4ae3-b85c-b521deb84adc"/>
                 <ATTRIBUTES>
                   <ATT name="Aggregation">KindIsAssociation</ATT>
                   <ATT name="IsChangeable">true</ATT>
@@ -52,16 +55,16 @@
                   <ATT name="Visibility">Public</ATT>
                   <ATT name="IsClass">false</ATT>
                   <ATT name="IsAbstract">false</ATT>
-                  <ATT name="Name"><![CDATA[Speaker]]></ATT>
+                  <ATT name="Name"></ATT>
                   <ATT name="status">1970354901745664</ATT>
                 </ATTRIBUTES>
                 <DEPENDENCIES>
                   <COMP relation="Opposite">
-                    <COMPID name="Speaker" mc="Standard.AssociationEnd" uid="bafc4143-6e08-4fc2-b68a-978c4b77ada0"/>
+                    <COMPID name="Guest" mc="Standard.AssociationEnd" uid="918109e4-ae81-4b63-a5fe-509e8799744f"/>
                   </COMP>
                   <COMP relation="Association">
                     <OBJECT>
-                      <ID name="" mc="Standard.Association" uid="55648afd-5acd-43fd-8177-96de943fe5fb"/>
+                      <ID name="" mc="Standard.Association" uid="54cbcf87-c913-48d4-8b13-1c3918d12370"/>
                       <ATTRIBUTES>
                         <ATT name="Name"></ATT>
                         <ATT name="status">1970354901745664</ATT>
@@ -73,7 +76,23 @@
               </OBJECT>
             </COMP>
             <COMP relation="Association">
-              <COMPID name="" mc="Standard.Association" uid="55648afd-5acd-43fd-8177-96de943fe5fb"/>
+              <COMPID name="" mc="Standard.Association" uid="54cbcf87-c913-48d4-8b13-1c3918d12370"/>
+            </COMP>
+            <COMP relation="Descriptor">
+              <OBJECT>
+                <ID name="" mc="Infrastructure.Note" uid="adc13761-e379-45a8-a860-a0ac2218dd55"/>
+                <ATTRIBUTES>
+                  <ATT name="Content"><![CDATA[<Enter note text here>]]></ATT>
+                  <ATT name="MimeType"><![CDATA[text/plain]]></ATT>
+                  <ATT name="Name"></ATT>
+                  <ATT name="status">1970354901745664</ATT>
+                </ATTRIBUTES>
+                <DEPENDENCIES>
+                  <LINK relation="Model">
+                    <FOREIGNID name="description" mc="Infrastructure.NoteType" uid="00000000-0000-3e81-0000-000000000000"/>
+                  </LINK>
+                </DEPENDENCIES>
+              </OBJECT>
             </COMP>
           </DEPENDENCIES>
         </OBJECT>

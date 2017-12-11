@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
-<!--GENERATED FILE, PLEASE DO NOT EDIT!!!--><EXT object="Clothe" version="4">
+<!--GENERATED FILE, PLEASE DO NOT EDIT!!!--><EXT object="News" version="4">
   <OBJECT>
-    <ID name="Clothe" mc="Standard.Class" uid="f8d4f6ad-90b0-4357-be16-2539f88074f3"/>
+    <ID name="News" mc="Standard.Class" uid="73c98444-e828-4a47-9498-ca84cb4bc7e5"/>
     <PID name="fashion show" mc="Standard.Package" uid="3b8e0459-8347-42f0-86e2-a7415577a3e0"/>
     <ATTRIBUTES>
       <ATT name="IsActive">false</ATT>
@@ -11,13 +11,39 @@
       <ATT name="IsLeaf">false</ATT>
       <ATT name="IsRoot">false</ATT>
       <ATT name="Visibility">Public</ATT>
-      <ATT name="Name"><![CDATA[Clothe]]></ATT>
+      <ATT name="Name"><![CDATA[News]]></ATT>
       <ATT name="status">1970354901745664</ATT>
     </ATTRIBUTES>
     <DEPENDENCIES>
+      <COMP relation="OwnedAttribute">
+        <OBJECT>
+          <ID name="Description" mc="Standard.Attribute" uid="5c700936-8692-428b-8db3-29546ad35ecb"/>
+          <ATTRIBUTES>
+            <ATT name="TypeConstraint"></ATT>
+            <ATT name="Value"></ATT>
+            <ATT name="TargetIsClass">false</ATT>
+            <ATT name="Changeable">ReadWrite</ATT>
+            <ATT name="IsDerived">false</ATT>
+            <ATT name="IsOrdered">false</ATT>
+            <ATT name="IsUnique">false</ATT>
+            <ATT name="MultiplicityMin"><![CDATA[1]]></ATT>
+            <ATT name="MultiplicityMax"><![CDATA[1]]></ATT>
+            <ATT name="Visibility">Public</ATT>
+            <ATT name="IsClass">false</ATT>
+            <ATT name="IsAbstract">false</ATT>
+            <ATT name="Name"><![CDATA[Description]]></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES>
+            <LINK relation="Type">
+              <FOREIGNID name="string" mc="Standard.DataType" uid="00000004-0000-000d-0000-000000000000"/>
+            </LINK>
+          </DEPENDENCIES>
+        </OBJECT>
+      </COMP>
       <COMP relation="OwnedEnd">
         <OBJECT>
-          <ID name="UsedIn" mc="Standard.AssociationEnd" uid="d82b8e0a-d451-475e-b0f0-7f3e4dd15ede"/>
+          <ID name="event" mc="Standard.AssociationEnd" uid="454f7db0-d5a6-4cfe-86e9-259335357230"/>
           <ATTRIBUTES>
             <ATT name="Aggregation">KindIsAssociation</ATT>
             <ATT name="IsChangeable">true</ATT>
@@ -30,16 +56,16 @@
             <ATT name="Visibility">Public</ATT>
             <ATT name="IsClass">false</ATT>
             <ATT name="IsAbstract">false</ATT>
-            <ATT name="Name"><![CDATA[UsedIn]]></ATT>
+            <ATT name="Name"><![CDATA[event]]></ATT>
             <ATT name="status">1970354901745664</ATT>
           </ATTRIBUTES>
           <DEPENDENCIES>
             <LINK relation="Target">
-              <ID name="Runway" mc="Standard.Class" uid="5c4939a6-b8f9-4311-8f1d-ff36b6fc8cd0"/>
+              <ID name="Event" mc="Standard.Class" uid="57d1d68d-e132-4b44-8156-577cb225c35f"/>
             </LINK>
             <COMP relation="Opposite">
               <OBJECT>
-                <ID name="Uses" mc="Standard.AssociationEnd" uid="a09710b9-7553-4e9b-96be-ff6ee468b7cc"/>
+                <ID name="" mc="Standard.AssociationEnd" uid="d747856c-41b6-4a25-a71a-859109ce1efd"/>
                 <ATTRIBUTES>
                   <ATT name="Aggregation">KindIsAssociation</ATT>
                   <ATT name="IsChangeable">true</ATT>
@@ -52,19 +78,16 @@
                   <ATT name="Visibility">Public</ATT>
                   <ATT name="IsClass">false</ATT>
                   <ATT name="IsAbstract">false</ATT>
-                  <ATT name="Name"><![CDATA[Uses]]></ATT>
+                  <ATT name="Name"></ATT>
                   <ATT name="status">1970354901745664</ATT>
                 </ATTRIBUTES>
                 <DEPENDENCIES>
-                  <LINK relation="Target">
-                    <ID name="Clothe" mc="Standard.Class" uid="f8d4f6ad-90b0-4357-be16-2539f88074f3"/>
-                  </LINK>
                   <COMP relation="Opposite">
-                    <COMPID name="UsedIn" mc="Standard.AssociationEnd" uid="d82b8e0a-d451-475e-b0f0-7f3e4dd15ede"/>
+                    <COMPID name="event" mc="Standard.AssociationEnd" uid="454f7db0-d5a6-4cfe-86e9-259335357230"/>
                   </COMP>
                   <COMP relation="Association">
                     <OBJECT>
-                      <ID name="" mc="Standard.Association" uid="019630e9-3593-4c2c-88b8-4b7ea71cf9e9"/>
+                      <ID name="" mc="Standard.Association" uid="9fc74154-d9c6-42d9-a0a3-cde796b99717"/>
                       <ATTRIBUTES>
                         <ATT name="Name"></ATT>
                         <ATT name="status">1970354901745664</ATT>
@@ -76,12 +99,12 @@
               </OBJECT>
             </COMP>
             <COMP relation="Association">
-              <COMPID name="" mc="Standard.Association" uid="019630e9-3593-4c2c-88b8-4b7ea71cf9e9"/>
+              <COMPID name="" mc="Standard.Association" uid="9fc74154-d9c6-42d9-a0a3-cde796b99717"/>
             </COMP>
           </DEPENDENCIES>
         </OBJECT>
         <OBJECT>
-          <ID name="designed by" mc="Standard.AssociationEnd" uid="8ff40db2-b57f-4ac2-8b66-fd2c95c76e7c"/>
+          <ID name="fashion Show" mc="Standard.AssociationEnd" uid="a4c430fc-8db6-49ef-ab90-a044ef1e7ac5"/>
           <ATTRIBUTES>
             <ATT name="Aggregation">KindIsAssociation</ATT>
             <ATT name="IsChangeable">true</ATT>
@@ -89,21 +112,21 @@
             <ATT name="IsDerived">false</ATT>
             <ATT name="IsOrdered">false</ATT>
             <ATT name="IsUnique">false</ATT>
-            <ATT name="MultiplicityMin"><![CDATA[1]]></ATT>
+            <ATT name="MultiplicityMin"><![CDATA[0]]></ATT>
             <ATT name="MultiplicityMax"><![CDATA[1]]></ATT>
             <ATT name="Visibility">Public</ATT>
             <ATT name="IsClass">false</ATT>
             <ATT name="IsAbstract">false</ATT>
-            <ATT name="Name"><![CDATA[designed by]]></ATT>
+            <ATT name="Name"><![CDATA[fashion Show]]></ATT>
             <ATT name="status">1970354901745664</ATT>
           </ATTRIBUTES>
           <DEPENDENCIES>
             <LINK relation="Target">
-              <ID name="Designer" mc="Standard.Class" uid="8f1ba2aa-7977-4a66-9189-a8c0b8046ae3"/>
+              <ID name="Fashion Show" mc="Standard.Class" uid="5771eab6-8718-40db-baf9-f50dbcdf6b9e"/>
             </LINK>
             <COMP relation="Opposite">
               <OBJECT>
-                <ID name="designes" mc="Standard.AssociationEnd" uid="943339b6-3ccf-4101-bae2-45cde0bc6112"/>
+                <ID name="" mc="Standard.AssociationEnd" uid="96726f2a-3201-4b90-bdd2-9f7f0f520504"/>
                 <ATTRIBUTES>
                   <ATT name="Aggregation">KindIsAssociation</ATT>
                   <ATT name="IsChangeable">true</ATT>
@@ -111,24 +134,21 @@
                   <ATT name="IsDerived">false</ATT>
                   <ATT name="IsOrdered">false</ATT>
                   <ATT name="IsUnique">false</ATT>
-                  <ATT name="MultiplicityMin"><![CDATA[1]]></ATT>
-                  <ATT name="MultiplicityMax"><![CDATA[*]]></ATT>
+                  <ATT name="MultiplicityMin"><![CDATA[0]]></ATT>
+                  <ATT name="MultiplicityMax"><![CDATA[1]]></ATT>
                   <ATT name="Visibility">Public</ATT>
                   <ATT name="IsClass">false</ATT>
                   <ATT name="IsAbstract">false</ATT>
-                  <ATT name="Name"><![CDATA[designes]]></ATT>
+                  <ATT name="Name"></ATT>
                   <ATT name="status">1970354901745664</ATT>
                 </ATTRIBUTES>
                 <DEPENDENCIES>
-                  <LINK relation="Target">
-                    <ID name="Clothe" mc="Standard.Class" uid="f8d4f6ad-90b0-4357-be16-2539f88074f3"/>
-                  </LINK>
                   <COMP relation="Opposite">
-                    <COMPID name="designed by" mc="Standard.AssociationEnd" uid="8ff40db2-b57f-4ac2-8b66-fd2c95c76e7c"/>
+                    <COMPID name="fashion Show" mc="Standard.AssociationEnd" uid="a4c430fc-8db6-49ef-ab90-a044ef1e7ac5"/>
                   </COMP>
                   <COMP relation="Association">
                     <OBJECT>
-                      <ID name="" mc="Standard.Association" uid="03d6ca98-48b5-466e-8cab-97d6100e1c5a"/>
+                      <ID name="" mc="Standard.Association" uid="4078b075-518e-4f64-b857-c62fec36eddf"/>
                       <ATTRIBUTES>
                         <ATT name="Name"></ATT>
                         <ATT name="status">1970354901745664</ATT>
@@ -136,27 +156,11 @@
                       <DEPENDENCIES></DEPENDENCIES>
                     </OBJECT>
                   </COMP>
-                  <COMP relation="Descriptor">
-                    <OBJECT>
-                      <ID name="" mc="Infrastructure.Note" uid="e06ab8d6-877b-4f19-88d3-e05fb779f42f"/>
-                      <ATTRIBUTES>
-                        <ATT name="Content"><![CDATA[<Enter note text here>]]></ATT>
-                        <ATT name="MimeType"><![CDATA[text/plain]]></ATT>
-                        <ATT name="Name"></ATT>
-                        <ATT name="status">1970354901745664</ATT>
-                      </ATTRIBUTES>
-                      <DEPENDENCIES>
-                        <LINK relation="Model">
-                          <FOREIGNID name="description" mc="Infrastructure.NoteType" uid="00000000-0000-3e81-0000-000000000000"/>
-                        </LINK>
-                      </DEPENDENCIES>
-                    </OBJECT>
-                  </COMP>
                 </DEPENDENCIES>
               </OBJECT>
             </COMP>
             <COMP relation="Association">
-              <COMPID name="" mc="Standard.Association" uid="03d6ca98-48b5-466e-8cab-97d6100e1c5a"/>
+              <COMPID name="" mc="Standard.Association" uid="4078b075-518e-4f64-b857-c62fec36eddf"/>
             </COMP>
           </DEPENDENCIES>
         </OBJECT>
