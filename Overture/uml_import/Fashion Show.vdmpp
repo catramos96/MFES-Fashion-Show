@@ -1,0 +1,9 @@
+class FashionShow
+instance variables
+  Events:set of (Event);
+  theme:seq of (char);
+  address:seq of (char);
+  startTime:?;
+  endTime:seq of (char);
+
+end FashionShow

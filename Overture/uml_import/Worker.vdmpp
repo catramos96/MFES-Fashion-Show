@@ -1,0 +1,6 @@
+class Worker is subclass of Person
+instance variables
+  Speak:set of (Presentation);
+  PartOfOrganization:set of (Event);
+
+end Worker

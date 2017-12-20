@@ -1,0 +1,27 @@
+class Resources
+types
+	public static TicketType = <Normal> | <VIP> | <Guest>;
+	public static Date :: year : nat
+												month: nat
+												day : nat
+												hours : nat
+												minutes : nat
+												inv d == d.month <= 12;
+												
+	/*
+	Compare dates
+	- Sobreposição
+	- Se inclui
+	*/ 
+	
+functions
+	
+	private static DaysOfMonth(date: Date) number : nat == 
+	/*
+	*/
+	;
+	public static EventsOverlap(e1:Event, e2:Event) overlap:bool ==
+	;
+	
+
+end Ticket

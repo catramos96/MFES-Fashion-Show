@@ -1,0 +1,5 @@
+class News
+instance variables
+  Description:seq of (char);
+
+end News
