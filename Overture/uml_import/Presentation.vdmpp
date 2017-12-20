@@ -1,5 +1,5 @@
-class Apresentation is subclass of Event
+class Presentation is subclass of Event
 instance variables
-  Speaker:set of (Worker);
+  private Speaker : set of (Worker);
 
-end Apresentation
+end Presentation

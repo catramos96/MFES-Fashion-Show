@@ -1,2 +1,2 @@
-class Designer is subclass of Atendee
+class Designer is subclass of Attendee
 end Designer

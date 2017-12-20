@@ -1,9 +1,7 @@
 class Ticket
-types
-	public ticketType = <Normal> | <VIP> | <Guest>
 instance variables
-  private type:ticketType;
-  private startTime:?;
-  private endTime:?;
+  private type : Resources`TicketType;
+  private startTime : Resources`Date;
+  private endTime : Resources`Date;
 
 end Ticket
