@@ -1,5 +1,0 @@
-class Apresentation is subclass of Event
-instance variables
-  Speaker:set of (Worker);
-
-end Apresentation

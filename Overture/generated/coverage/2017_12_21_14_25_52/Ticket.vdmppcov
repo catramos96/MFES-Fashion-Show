@@ -1,0 +1,9 @@
+class Ticket
+types
+	public ticketType = <Normal> | <VIP> | <Guest>
+instance variables
+  private type:ticketType;
+  private startTime:?;
+  private endTime:?;
+
+end Ticket

@@ -1,0 +1,11 @@
+class Event
+instance variables
+  PartOf:FashionShow;
+  startTime:?;
+  name:seq of (char);
+  endTime:?;
+  numberOfSeats:int;
+  stage:seq of (char);
+  subtheme:seq of (char);
+
+end Event
