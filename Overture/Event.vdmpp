@@ -1,11 +1,14 @@
 class Event
+types
+	String :: seq of (char);
+	
 instance variables
-  PartOf:FashionShow;
-  startTime:?;
-  name:seq of (char);
-  endTime:?;
-  numberOfSeats:int;
-  stage:seq of (char);
-  subtheme:seq of (char);
+  private PartOf : FashionShow;
+  private startTime : Resources`Date;
+  private name : String;
+  private endTime : Resources`Date;
+  private numberOfSeats : nat1;
+  private stage : String;
+  private subtheme : String;
 
 end Event

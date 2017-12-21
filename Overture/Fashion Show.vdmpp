@@ -1,9 +1,9 @@
 class FashionShow
 instance variables
-  Events:set of (Event);
-  theme:seq of (char);
-  address:seq of (char);
-  startTime:?;
-  endTime:seq of (char);
+  private Events : set of (Event);
+  private theme : seq of (char);
+  private address : seq of (char);
+  private startTime : Resources`Date;
+  private endTime : Resources`Date;
 
 end FashionShow
