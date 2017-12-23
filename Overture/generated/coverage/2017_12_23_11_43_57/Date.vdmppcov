@@ -1,0 +1,170 @@
+class Date
+types
+	public static TimeType = <Year> | <Month> | <Day> | <Hour> | <Minutes>;
+	public static DatePosition = <Before> | <Same> | <After>;
+ 
+instance variables
+ private year: nat1;
+ private month: nat1;
+ private day: nat1;
+ private hour: nat;
+ private minutes: nat;
+ 
+ inv month <= 12 and day <= DaysOfMonth(month,year) and hour < 24 and minutes < 60;
+ 
+operations
+	public Date(year_:nat1, month_: nat1, day_: nat1, hour_: nat, minutes_: nat) d:Date ==
+	(year := year_; month := month_; day := day_; hour := hour_; minutes := minutes_; return self);
+	 
+	 public static getDatePosition(d1: Date, d2: Date, maxLevel: TimeType) position: DatePosition ==
+	(
+		dcl t1: nat, t2: nat, next: TimeType;
+		cases maxLevel:
+			<Year> -> atomic(t1 := d1.year; t2 := d2.year; next := <Month>),
+			<Month> -> atomic(t1 := d1.month; t2 := d2.month; next := <Day>),
+			<Day> -> atomic(t1 := d1.day; t2 := d2.day; next := <Hour>),
+			<Hour> -> atomic(t1 := d1.hour; t2 := d2.hour; next := <Minutes>),
+			<Minutes> -> atomic(t1 := d1.minutes; t2 := d2.minutes)
+		end;
+		
+		if(t1 = t2)
+		then (
+			if(maxLevel <> <Minutes>)
+				then return getDatePosition(d1,d2,next)
+			else
+				return <Same>
+		)
+		else if(t1 > t2)
+		then return <After>;
+		
+		return <Before>;
+	);
+	
+	public static datesOverlap(startDate1: Date, endDate1: Date, startDate2: Date, endDate2: Date) overlap:bool ==
+	(
+		dcl o1: DatePosition, o2: DatePosition, o3: DatePosition, o4: DatePosition;
+		
+		o1 := getDatePosition(startDate1,startDate2,<Year>);		--StartDate1 vs StartDate2
+		o2 := getDatePosition(startDate1,endDate2,<Year>);			--StartDate1 vs EndDate2
+		o3 := getDatePosition(endDate1,startDate2,<Year>);			--EndDate1 vs StartDate2
+		o4 := getDatePosition(endDate1,endDate2,<Year>);				--EndDate1 vs EndDate2
+		
+		if(((o1 = <Before> or o1 = <Same>) and (o3 = <Same> or o3 = <Before>)) or
+			((o2 = <Same> or o2 = <After>) and (o4 = <Same> or o4 = <After>)))
+			then return false;
+			
+		return true;
+	);
+	 
+ 	/*public static DatesOverlap(startDate1 : Date, endDate1 : Date, startDate2: Date, endDate2 : Date) overlap:bool ==
+		return DatesOverlapAux(startDate1,endDate1,startDate2,endDate2,<Year>,<None>);
+
+	public static DatesOverlapAux(startDate1 : Date, endDate1 : Date, startDate2: Date, endDate2: Date, analysing: TimeType, overlap: OverlapType) o:bool ==
+		(
+			cases analysing:
+			<Year> ->
+			(
+				let type:OverlapType = OverlapNumbers(startDate1.year, endDate1.year, startDate2.year, endDate2.year) 
+				in (
+							if(type = <None>) then return false
+							else if(type = <Total>) then return true
+							else return DatesOverlapAux(startDate1,endDate1,startDate2,endDate2,<Month>, type)
+						)
+			),
+			<Month> ->
+			(
+				let type:OverlapType = OverlapNumbers(startDate1.month, endDate1.month, startDate2.month, endDate2.month,overlap) 
+					in (
+							if(type = <None>) then return false
+							else if(type = <Total>) then return true
+							else return DatesOverlapAux(startDate1,endDate1,startDate2,endDate2,<Day>, type)
+						)
+			),
+			<Day> ->
+			(
+				let type:OverlapType = OverlapNumbers(startDate1.day, endDate1.day, startDate2.day, endDate2.day,overlap) 
+					in (
+							if(type = <None>) then return false
+							else if(type = <Total>) then return true
+							else return DatesOverlapAux(startDate1,endDate1,startDate2,endDate2,<Hour>, type)
+						)
+			),
+			<Hour> ->
+			(
+				let type:OverlapType = OverlapNumbers(startDate1.hour, endDate1.hour, startDate2.hour, endDate2.hour,overlap) 
+					in (
+							if(type = <None>) then return false
+							else if(type = <Total>) then return true
+							else return DatesOverlapAux(startDate1,endDate1,startDate2,endDate2,<Minutes>, type)
+						)
+			),
+			<Minutes> ->
+			(
+				let type:OverlapType = OverlapNumbers(startDate1.month, endDate1.month, startDate2.month, endDate2.month,overlap) 
+					in (
+							if(type = <None>) then return false
+							else return false
+						)
+			)
+			end;
+			
+			return false
+		);*/
+		
+functions
+	private static DaysOfMonth(m: nat1, y: nat1) number: nat1 == 
+	(cases m:
+			1,3,5,7,8,10,12 -> 31,
+			4,5,9,11 -> 30,
+			2 -> (if((y mod 4) = 0) then 29
+						else 28)
+		end);
+	
+	/*private static OverlapNumbers(min1 : nat, max1 : nat, min2 : nat, max2 : nat) overlap:OverlapType == 
+		if(min1 = max1 and max2 = max1) then <Exact>
+		else if ((min1 < min2 and max1 > max2) or (min1 > min2 and max1 < max2)) then <Total>
+		else if(min1 >= min2 and min1 <= max2)
+			then
+			(
+				if(min1 = min2 or min1 = max2)
+					then <ExactLeft>
+				else
+					<Partial>
+			)
+		else if(max1 >= min2 and max1 <= max2)
+			then
+			(
+				if(max1 = min2 or max1 = max2)
+					then <ExactRight>
+				else
+					<Partial>
+			)
+		else <None>;
+			
+	private static OverlapNumbers(min1 : nat, max1 : nat, min2 : nat, max2 : nat, overlap: OverlapType) overlap:OverlapType ==
+		cases overlap:
+		<Exact> -> OverlapNumbers(min1,max1,min2,max2),
+		<ExactLeft> ->
+			if(min1 >= min2 and min1 <= max2)
+			then
+			(
+				if(min1 = min2 or min1 = max2) then <ExactLeft>
+				else <Partial>
+			)
+			else <None>
+				,
+		<ExactRight> ->
+		(
+			if(max1 >= min2 and max1 <= max2)
+			then
+			(
+				if(max1 = min2 or max1 = max2) then <ExactRight>
+				else <Partial>
+			)
+			else <None>
+		)
+		end;*/
+	
+traces
+-- TODO Define Combinatorial Test Traces here
+end Date

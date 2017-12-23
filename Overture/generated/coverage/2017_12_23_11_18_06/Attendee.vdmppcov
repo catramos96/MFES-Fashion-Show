@@ -1,0 +1,2 @@
+class Attendee is subclass of Person
+end Attendee

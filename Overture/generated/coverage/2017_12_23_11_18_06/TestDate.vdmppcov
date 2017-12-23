@@ -1,0 +1,33 @@
+class TestDate
+
+ operations
+ private assertTrue(cond: bool) == return
+ pre cond;
+ 
+ private expecting(p1: Date`DatePosition, p2: Date`DatePosition) == return
+ pre p1 = p2;
+
+ private testDatePosition() ==
+ (
+ -- d1-d2 include d2-d4 fully
+	 dcl d1: Date := new Date(1997,02,14,20,55);
+ 	 dcl d2: Date := new Date(1997,02,14,21,55);
+ 	 
+ 	 dcl p1: Date`DatePosition, p2: Date`DatePosition, p3: Date`DatePosition;
+ 	 -- Position
+ 	 p1 := Date`getDatePosition(d1,d2,<Year>);
+ 	 p2 := Date`getDatePosition(d2,d1,<Year>);
+ 	 p3 := Date`getDatePosition(d1,d1,<Year>);
+ 	 
+ 	 expecting(p1,<Before>);
+ 	 expecting(p2,<After>);
+ 	 expecting(p3,<Same>);
+ );
+ 
+ public static main() ==
+ (
+ new TestDate().testDatePosition();
+
+ );
+ 
+end TestDate
