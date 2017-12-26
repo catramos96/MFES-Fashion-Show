@@ -1,9 +1,0 @@
-class Ticket
-types
-	public static TicketType = <Normal> | <VIP> | <Guest>;
-instance variables
-  private type : TicketType;
-  private startTime : Date;
-  private endTime : Date;
-
-end Ticket

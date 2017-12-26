@@ -1,7 +1,0 @@
-class Person
-instance variables
-  private ticket : set of (Ticket);
-  private news : set of (News);
-  private name : seq of (char);
-
-end Person

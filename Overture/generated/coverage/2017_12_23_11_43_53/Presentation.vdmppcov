@@ -1,5 +1,0 @@
-class Presentation is subclass of Event
-instance variables
-  private Speaker : set of (Worker);
-
-end Presentation

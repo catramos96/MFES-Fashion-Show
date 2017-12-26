@@ -1,0 +1,31 @@
+class FashionShow
+ types
+ 	public Stage:: seats:nat1
+					name: seq of (char);
+ 
+ 
+ instance variables
+  public events : set of (Event);
+  public theme : Res`String;
+  public address : Res`String;
+  public startTime : Date;
+  public endTime : Date;
+  public stages: set of (Stage);
+  
+  inv forall e in set events & e.stage in set stages;	-- events in stages belonging to the show
+  
+  --inv Date`getDatePosition(startTime,endTime) = <Before>;
+  
+ operations
+ 	--Constructor
+ 	public FashionShow: Res`String * Res`String * Date * Date ==> FashionShow
+  FashionShow(theme_, address_, startTime_, endTime_) ==
+  (theme := theme_; address := address_; startTime := startTime_; endTime := endTime_; return self );
+ -- pre Date`getDatePosition(startTime_,endTime_) = <Before>;
+  
+  public addEvent: Event ==> ()
+  addEvent(e) == (events := events union {e});
+  --pre not exists e1 in set events & Event`eventsOverlap(e1,e) = true
+  --post e in set events;
+
+end FashionShow

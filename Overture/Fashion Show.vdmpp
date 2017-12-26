@@ -1,9 +1,0 @@
-class FashionShow
-instance variables
-  private Events : set of (Event);
-  private theme : seq of (char);
-  private address : seq of (char);
-  private startTime : Date;
-  private endTime : Date;
-
-end FashionShow

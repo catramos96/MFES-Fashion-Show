@@ -15,7 +15,6 @@ class Event
 		Event(name1, theme1, stage1, startD1, endD1) ==
 		(name := name1; subtheme := theme1; stage := stage1; startTime := startD1; endTime := endD1;  return self);
 		
-	
 		public static eventsOverlap: Event * Event ==> bool
 		eventsOverlap(e1,e2) == (
 			if(e1.stage = e2.stage)

@@ -1,0 +1,7 @@
+class ShowManagement
+
+instance variables
+	public shows: set of (FashionShow);
+	
+	--Inv não pode haver shows com o mesmo address para a mesma altura
+end ShowManagement
