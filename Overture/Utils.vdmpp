@@ -1,4 +1,4 @@
-class Res
+class Utils
 types
 	public static TimeType = <Year> | <Month> | <Day> | <Hour> | <Minutes>;
 	public static DatePosition = <Before> | <Same> | <After>;
@@ -71,4 +71,4 @@ functions
 			2 -> (if(y mod 4 = 0 and y mod 100 <> 0 or y mod 400 = 0) then 29	--Leap Year
 						else 28)
 		end);
-end Res
+end Utils

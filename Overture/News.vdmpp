@@ -1,6 +1,14 @@
 class News
 instance variables
-  public description : seq of (char);
+  public description : Utils`String;
   public event : Event;
+  public date : Utils`Date;
+  
+operations
+	--Construuctor
+	public News: Utils`String * Event * Utils`Date==> News
+	News(description_,event_,date_) ==
+	(description := description_; event := event_; date := date_; return self)
+	pre Utils`getDatePosition(date, event.startTime) = <After>;
 
 end News

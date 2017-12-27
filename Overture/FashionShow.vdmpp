@@ -4,20 +4,21 @@ class FashionShow
 					name: seq of (char);
  
  instance variables
-  public events : set of (Event);
-  public theme : Res`String;
-  public address : Res`String;
-  public startTime : Res`Date;
-  public endTime : Res`Date;
+ 	public theme : Utils`String;
+  public address : Utils`String;
+  public startTime : Utils`Date;
+  public endTime : Utils`Date;
   public stages: set of (Stage);
+  public events : set of (Event);
 	public ticketsLeft : map Ticket`TicketType to nat;
+	public workers : set of (Person);
   
   inv forall e in set events & e.stage in set stages;		-- events in stages belonging to the show
-  inv Res`getDatePosition(startTime,endTime) = <Before>;-- start time < end time
+  inv Utils`getDatePosition(startTime,endTime) = <Before>;-- start time < end time
   
  operations
  	--Constructor
- 	public FashionShow: Res`String * Res`String * Res`Date * Res`Date ==> FashionShow
+ 	public FashionShow: Utils`String * Utils`String * Utils`Date * Utils`Date ==> FashionShow
   FashionShow(theme_, address_, startTime_, endTime_) ==
   (theme := theme_; address := address_; startTime := startTime_; endTime := endTime_; return self );
   
@@ -25,8 +26,8 @@ class FashionShow
   public addEvent: Event ==> ()
   addEvent(e) == (events := events union {e})
   pre (not exists e1 in set events & Event`eventsOverlap(e1,e) = true) and		--PRE: Events don't overlap
-  		Res`getDatePosition(e.startTime,startTime) <> <Before> and 							--PRE: New event between show time
-  		Res`getDatePosition(e.endTime,endTime) <> <After>
+  		Utils`getDatePosition(e.startTime,startTime) <> <Before> and 							--PRE: New event between show time
+  		Utils`getDatePosition(e.endTime,endTime) <> <After>
   post e in set events;																												--POS: New event in events
   
   --Add Stage
@@ -47,6 +48,18 @@ class FashionShow
   )
   pre ticketsLeft(type) > 0														--PRE: Has tickets 
   post ticketsLeft(type) + 1 = ticketsLeft~(type);		--POS: Dec ticket
+  
+  --Add Worker
+  public addWorker: Person * Event * Person`TaskType ==> ()
+  addWorker(w,e,t) == (
+  workers := workers union {w};
+  w.addJob(self,e,t);
+  e.addWorker(w)
+  )
+  pre Person`isWorkingFunction(e.startTime,e.endTime,w.jobs) = false and	--PRE: Person has time to work
+  		e in set events																											--PRE: New event belongs to the events of the show
+  post w in set workers and w in set e.workers;														--POS: New worker in the show and event workers
+  
  
 
 end FashionShow

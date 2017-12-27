@@ -1,4 +1,14 @@
 class Cloth
+types
+	public Season = <Winter> | <Fall> | <Summer> | <Spring>;
 instance variables
 	public designer : Person;
+	public name : Utils`String;
+	public season : Season;
+	
+operations
+	--Constructor
+	public Cloth: Person * Utils`String * Season ==> Cloth
+	Cloth(designer_,name_, season_) == 
+	(designer := designer_; name := name_; season := season_; return self);
 end Cloth

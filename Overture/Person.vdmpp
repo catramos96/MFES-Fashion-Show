@@ -2,7 +2,7 @@ class Person
 types
 	public TaskType = <Model> | <Speaker> | <Other>;
 	public Task:: type : TaskType
-								task : Event;
+								event : Event;
 	
 instance variables
 	public tickets : set of (Ticket);
@@ -26,11 +26,36 @@ instance variables
  pre t.owner = self and t not in set tickets							--PRE: Person is owner of ticket
  post (t in set tickets and t.show in set dom attendance);--POS: New Ticket in tickets and show in attendance schedule (per show)
  
+ --Add Job
+ public addJob: FashionShow * Event * TaskType ==> ()
+ addJob(s,e,t) == jobs := jobs ++ {s |-> ({mk_Task(t,e)} union jobs(s))}
+ pre isWorkingFunction(e.startTime,e.endTime,jobs) = false		--PRE: Job does not overlap another
+ post exists task in set jobs(s) & task.event = e;						--POS: New Job was added to jobs
+ 
+ --Is Working
+ public isWorking: Utils`Date * Utils`Date ==> bool
+ isWorking(startD,endD) == (
+ 	return exists set_tasks in set (rng jobs) & 
+ 		(exists t in set set_tasks & 
+ 			Utils`datesOverlap(t.event.startTime,t.event.endTime,startD,endD) = true)
+ 	)
+ pre Utils`getDatePosition(startD,endD) = <Before>;	--PRE: start time < end time
+ 
+ --Is Designer
  	public isDesigner: () ==> bool
- 	isDesigner() == 
+ 	isDesigner() ==  (
  		if(card clothesDesigned = 0) 
  			then return true
  		else
- 			return false;
+ 			return false) 
  			
+ 	functions
+ 	--Is Working (Function)
+ 	public static isWorkingFunction: Utils`Date * Utils`Date * map FashionShow to (set of (Task)) -> bool
+  isWorkingFunction(startD,endD,j) == (
+ 	exists set_tasks in set (rng j) & 
+ 		(exists t in set set_tasks & 
+ 			Utils`datesOverlap(t.event.startTime,t.event.endTime,startD,endD) = true)
+ 	)
+ pre Utils`getDatePosition(startD,endD) = <Before>;	--PRE: start time < end time
 end Person
