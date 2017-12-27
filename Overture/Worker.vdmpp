@@ -1,6 +1,0 @@
-class Worker is subclass of Person
-instance variables
-  public Speak : set of (Presentation);
-  public PartOfOrganization : set of (Event);
-
-end Worker
