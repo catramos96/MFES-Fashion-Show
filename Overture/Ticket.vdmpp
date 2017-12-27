@@ -1,9 +1,11 @@
 class Ticket
 types
-	public static TicketType = <Normal> | <VIP> | <Guest>;
+	public static TicketType = <Normal> | <VIP> | <Guest> | <Worker>;
 instance variables
   public type : TicketType;
   public startTime : Date;
   public endTime : Date;
+  public owner : Person;
+  public show : FashionShow;
 
 end Ticket

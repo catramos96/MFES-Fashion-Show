@@ -11,6 +11,7 @@ class FashionShow
   public startTime : Date;
   public endTime : Date;
   public stages: set of (Stage);
+	public tickets : set of Ticket;
   
   inv forall e in set events & e.stage in set stages;	-- events in stages belonging to the show
   

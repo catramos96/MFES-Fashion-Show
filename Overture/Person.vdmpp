@@ -1,0 +1,7 @@
+class Person
+instance variables
+	public tickets : set of Ticket;
+  public speak : set of (Presentation);
+  public partOfOrganization : set of (Event);
+  public isDesigner : bool;
+end Person
