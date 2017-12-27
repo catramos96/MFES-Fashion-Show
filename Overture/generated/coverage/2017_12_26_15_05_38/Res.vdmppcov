@@ -1,4 +1,0 @@
-class Res
-types
-	public String = seq of (char);
-end Res

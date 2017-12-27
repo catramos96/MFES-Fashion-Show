@@ -1,26 +1,28 @@
 class Event
 
 	instance variables
-	  public startTime : Date;
+	  public startTime : Res`Date;
 	  public name : Res`String;
-	  public endTime : Date;
+	  public endTime : Res`Date;
 	  public stage: FashionShow`Stage;
-	  public subtheme : Res`String;
+	  public workers : set1 of (Person);
 	  
+	  -- o worker também tem que ter este job	  
 		--inv Res`getDatePosition(startTime,endTime) = <Before>;
 	  
 	operations
 	 --Constructor
-	 	public Event: Res`String * Res`String * FashionShow`Stage * Date * Date ==> Event
+	 	public Event: Res`String * Res`String * FashionShow`Stage * Res`Date * Res`Date ==> Event
 		Event(name1, theme1, stage1, startD1, endD1) ==
-		(name := name1; subtheme := theme1; stage := stage1; startTime := startD1; endTime := endD1;  return self);
+		(name := name1; stage := stage1; startTime := startD1; endTime := endD1;  return self);
 		
 	
-		public static eventsOverlap: Event * Event ==> bool
+	functions
+		public static eventsOverlap: Event * Event -> bool
 		eventsOverlap(e1,e2) == (
 			if(e1.stage = e2.stage)
-				then return Date`datesOverlap(e1.startTime,e1.endTime,e2.startTime,e2.endTime);
-			return false;
+				then Res`datesOverlap(e1.startTime,e1.endTime,e2.startTime,e2.endTime)
+			else false
 		);
 
 end Event

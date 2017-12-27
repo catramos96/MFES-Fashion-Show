@@ -1,5 +1,5 @@
 class Presentation is subclass of Event
 instance variables
-  public Speakers : set of (Person);
+  public Speakers : set1 of (Person);
 
 end Presentation

@@ -3,9 +3,11 @@ types
 	public static TicketType = <Normal> | <VIP> | <Guest> | <Worker>;
 instance variables
   public type : TicketType;
-  public startTime : Date;
-  public endTime : Date;
   public owner : Person;
   public show : FashionShow;
 
+operations
+	--Constructor
+	public Ticket: TicketType * Person * FashionShow ==> Ticket
+	Ticket(t,p,f) == (type := t; owner := p; show := f; return self);
 end Ticket

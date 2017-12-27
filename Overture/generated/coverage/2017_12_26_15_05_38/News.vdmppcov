@@ -1,5 +1,0 @@
-class News
-instance variables
-  public description : seq of (char);
-
-end News

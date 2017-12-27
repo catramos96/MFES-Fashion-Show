@@ -3,30 +3,50 @@ class FashionShow
  	public Stage:: seats:nat1
 					name: seq of (char);
  
- 
  instance variables
   public events : set of (Event);
   public theme : Res`String;
   public address : Res`String;
-  public startTime : Date;
-  public endTime : Date;
+  public startTime : Res`Date;
+  public endTime : Res`Date;
   public stages: set of (Stage);
-	public tickets : set of Ticket;
+	public ticketsLeft : map Ticket`TicketType to nat;
   
-  inv forall e in set events & e.stage in set stages;	-- events in stages belonging to the show
-  
-  --inv Date`getDatePosition(startTime,endTime) = <Before>;
+  inv forall e in set events & e.stage in set stages;		-- events in stages belonging to the show
+  inv Res`getDatePosition(startTime,endTime) = <Before>;-- start time < end time
   
  operations
  	--Constructor
- 	public FashionShow: Res`String * Res`String * Date * Date ==> FashionShow
+ 	public FashionShow: Res`String * Res`String * Res`Date * Res`Date ==> FashionShow
   FashionShow(theme_, address_, startTime_, endTime_) ==
   (theme := theme_; address := address_; startTime := startTime_; endTime := endTime_; return self );
- -- pre Date`getDatePosition(startTime_,endTime_) = <Before>;
   
+  --Add Event
   public addEvent: Event ==> ()
-  addEvent(e) == (events := events union {e});
-  --pre not exists e1 in set events & Event`eventsOverlap(e1,e) = true
-  --post e in set events;
+  addEvent(e) == (events := events union {e})
+  pre (not exists e1 in set events & Event`eventsOverlap(e1,e) = true) and		--PRE: Events don't overlap
+  		Res`getDatePosition(e.startTime,startTime) <> <Before> and 							--PRE: New event between show time
+  		Res`getDatePosition(e.endTime,endTime) <> <After>
+  post e in set events;																												--POS: New event in events
+  
+  --Add Stage
+  public addStage: Stage ==> ()
+  addStage(s) == (stages:= stages union {s})
+  post s in set stages;																												--POS: New stage in stages
+  
+  --BuyTicket
+  public buyTicket: Person * Ticket`TicketType ==> Ticket
+  buyTicket(attendee, type) == (
+  	dcl left : nat := ticketsLeft(type) - 1,
+  	t :Ticket := new Ticket(type,attendee, self);
+  	
+  	ticketsLeft := ticketsLeft ++ {type |-> left};
+  	
+  	attendee.addTicket(t);
+  	return t;
+  )
+  pre ticketsLeft(type) > 0														--PRE: Has tickets 
+  post ticketsLeft(type) + 1 = ticketsLeft~(type);		--POS: Dec ticket
+ 
 
 end FashionShow

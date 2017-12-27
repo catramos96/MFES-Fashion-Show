@@ -1,7 +1,36 @@
 class Person
+types
+	public TaskType = <Model> | <Speaker> | <Other>;
+	public Task:: type : TaskType
+								task : Event;
+	
 instance variables
-	public tickets : set of Ticket;
-  public speak : set of (Presentation);
-  public partOfOrganization : set of (Event);
-  public isDesigner : bool;
+	public tickets : set of (Ticket);
+  public speaks : set of (Presentation);
+  public clothesDesigned : set of (Cloth);
+  public jobs: inmap FashionShow to set1 of Task;
+  public attendance : map FashionShow to (set of (Event));
+  
+ operations
+ 
+ --Constructor
+ public Person: () ==> Person
+ Person() == (return self);
+ 
+ --Add Ticket
+ public addTicket: Ticket ==> ()
+ addTicket(t) == (
+ 	tickets := tickets union {t};
+ 	attendance := attendance ++ {t.show |-> {}}
+ 	)
+ pre t.owner = self and t not in set tickets							--PRE: Person is owner of ticket
+ post (t in set tickets and t.show in set dom attendance);--POS: New Ticket in tickets and show in attendance schedule (per show)
+ 
+ 	public isDesigner: () ==> bool
+ 	isDesigner() == 
+ 		if(card clothesDesigned = 0) 
+ 			then return true
+ 		else
+ 			return false;
+ 			
 end Person

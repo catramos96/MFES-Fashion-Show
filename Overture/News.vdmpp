@@ -1,5 +1,6 @@
 class News
 instance variables
   public description : seq of (char);
+  public event : Event;
 
 end News

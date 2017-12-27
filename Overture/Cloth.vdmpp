@@ -1,0 +1,4 @@
+class Cloth
+instance variables
+	public designer : Person;
+end Cloth
