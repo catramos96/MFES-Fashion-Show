@@ -25,7 +25,7 @@ class Event
 		
 		--Add Notification
 		public addNotification: Notification ==> ()
-		addNotification(notification) == (news := news union notification);
+		addNotification(notification) == (news := news union {notification});
 	
 	functions
 		--Overlap

@@ -37,11 +37,11 @@ operations
 		--Remove clothes from models
 		for all p in set tmp2 do
 		(
-			if(cloth in set models(p)) then (models := models \ {model|->cloth})
+			if(cloth = models(p)) then (models := models :-> {cloth})
 		);
 	)
-	pre cloth in set elems clothes
-	post cloth not in set elems clothes and cloth not in set (rng models);
+	pre cloth in set elems clothes																					--PRE: Cloth part of runway
+	post cloth not in set elems clothes and cloth not in set (rng models);	--POS: Cloth not part of the runway and not associated to  the model
 	
 	--Swap Order
 	public swapOrder: nat1 * nat1 ==> ()
