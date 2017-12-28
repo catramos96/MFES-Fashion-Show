@@ -1,14 +1,10 @@
 class Person
-types
-	public TaskType = <Model> | <Speaker> | <Other>;
-	public Task:: type : TaskType
-								event : Event;
 	
 instance variables
 	public tickets : set of (Ticket);
   public speaks : set of (Presentation);
   public clothesDesigned : set of (Cloth);
-  public jobs: inmap FashionShow to set1 of Task;
+  public jobs: inmap FashionShow to (set1 of (Event));
   public attendance : map FashionShow to (set of (Event));
   
  operations
@@ -27,17 +23,17 @@ instance variables
  post (t in set tickets and t.show in set dom attendance);--POS: New Ticket in tickets and show in attendance schedule (per show)
  
  --Add Job
- public addJob: FashionShow * Event * TaskType ==> ()
- addJob(s,e,t) == jobs := jobs ++ {s |-> ({mk_Task(t,e)} union jobs(s))}
+ public addJob: FashionShow * Event ==> ()
+ addJob(s,e) == jobs := jobs ++ {s |-> ({e} union jobs(s))}
  pre isWorkingFunction(e.startTime,e.endTime,jobs) = false		--PRE: Job does not overlap another
- post exists task in set jobs(s) & task.event = e;						--POS: New Job was added to jobs
+ post exists task in set jobs(s) & task = e;									--POS: New Job was added to jobs
  
  --Is Working
  public isWorking: Utils`Date * Utils`Date ==> bool
  isWorking(startD,endD) == (
- 	return exists set_tasks in set (rng jobs) & 
- 		(exists t in set set_tasks & 
- 			Utils`datesOverlap(t.event.startTime,t.event.endTime,startD,endD) = true)
+ 	return exists events in set (rng jobs) & 
+ 		(exists event in set events & 
+ 			Utils`datesOverlap(event.startTime,event.endTime,startD,endD) = true)
  	)
  pre Utils`getDatePosition(startD,endD) = <Before>;	--PRE: start time < end time
  
@@ -51,11 +47,11 @@ instance variables
  			
  	functions
  	--Is Working (Function)
- 	public static isWorkingFunction: Utils`Date * Utils`Date * map FashionShow to (set of (Task)) -> bool
+ 	public static isWorkingFunction: Utils`Date * Utils`Date * map FashionShow to (set1 of (Event)) -> bool
   isWorkingFunction(startD,endD,j) == (
- 	exists set_tasks in set (rng j) & 
- 		(exists t in set set_tasks & 
- 			Utils`datesOverlap(t.event.startTime,t.event.endTime,startD,endD) = true)
+ 	exists events in set (rng j) & 
+ 		(exists event in set events & 
+ 			Utils`datesOverlap(event.startTime,event.endTime,startD,endD) = true)
  	)
  pre Utils`getDatePosition(startD,endD) = <Before>;	--PRE: start time < end time
 end Person

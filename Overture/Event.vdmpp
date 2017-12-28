@@ -2,15 +2,13 @@ class Event
 
 	instance variables
 	  public startTime : Utils`Date;
-	  public name : Utils`String;
 	  public endTime : Utils`Date;
+	  public name : Utils`String;
 	  public stage: FashionShow`Stage;
 	  public workers : set of (Person);
+	  public news: set of (Notification);
 	  
 	  inv Utils`getDatePosition(startTime,endTime) = <Before>;
-	  
-	  -- o worker também tem que ter este job	  
-		--inv Res`getDatePosition(startTime,endTime) = <Before>;
 	  
 	operations
 	 --Constructor
@@ -18,12 +16,16 @@ class Event
 		Event(name1, stage1, startD1, endD1) ==
 		(name := name1; stage := stage1; startTime := startD1; endTime := endD1;  return self);
 		
-		--addWorker
+		--Add Worker
 		public addWorker: Person ==> ()
 		addWorker(w) == (workers:= workers union {w})
 		pre w not in set workers			--PRE: Worker not in workers already
 		post w in set workers;				--POS: New worker was added
+		-- o worker tem que ter este job ###############################################################
 		
+		--Add Notification
+		public addNotification: Notification ==> ()
+		addNotification(notification) == (news := news union notification);
 	
 	functions
 		--Overlap

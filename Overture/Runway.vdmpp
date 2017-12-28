@@ -1,8 +1,60 @@
 class Runway is subclass of Event
 instance variables
-	public clothes : seq1 of (Cloth);			--Sequence of the runway
-	public models : set1 of (map Person to set1 of (Cloth));
+	public clothes : seq of (Cloth);						
+	public models : map Person to Cloth;
 	
-	-- as roupas associadas a cada modelo têm que pertencer a clothes
+operations
+	--Constructor
+	public Runway: Utils`String * FashionShow`Stage * Utils`Date * Utils`Date ==> Runway
+	Runway(name, stage, startTime, endTime) == (
+		Event(name,stage,startTime,endTime);
+		return self
+	);
+	
+	--Add Cloth
+	public addCloth: Cloth * Person ==> ()
+	addCloth(cloth,model) == (
+		clothes := clothes ^ [cloth];
+		models := models ++ {model |-> cloth};
+	)
+	pre model in set workers;			--PRE: model must be a worker at an event
+	
+	--Remove Cloth
+	public removeCloth: Cloth ==> ()
+	removeCloth(cloth) == 
+	(
+		dcl tmp: seq of (Cloth) := clothes,
+				tmp2: set of Person := dom models;
+		clothes := [];
+		
+		--Remove clothes
+		while(len tmp <> 0) do
+		(
+			if(hd tmp <> cloth) then (clothes := clothes ^ [(hd tmp)]);
+			tmp := tl tmp
+		);
+		
+		--Remove clothes from models
+		for all p in set tmp2 do
+		(
+			if(cloth in set models(p)) then (models := models \ {model|->cloth})
+		);
+	)
+	pre cloth in set elems clothes
+	post cloth not in set elems clothes and cloth not in set (rng models);
+	
+	--Swap Order
+	public swapOrder: nat1 * nat1 ==> ()
+	swapOrder(index1,index2) ==
+	(
+		dcl c1 : Cloth,	c2 : Cloth;
+		
+		c1 := clothes(index1);
+		c2 := clothes(index2);
+		
+		clothes := clothes ++ {index1 |-> c2, index2 |-> c1};
+	)
+	pre index1 in set inds clothes and index2 in set inds clothes										--PRE: Both indexs must belong to the valid indexs
+	post clothes(index1) = clothes~(index2) and clothes(index2) = clothes~(index1);	--POS: Cloths were swapped
 	
 end Runway

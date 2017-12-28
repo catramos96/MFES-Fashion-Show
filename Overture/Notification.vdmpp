@@ -1,0 +1,13 @@
+class Notification
+instance variables
+  public description : Utils`String;
+  public date : Utils`Date;
+  
+operations
+	--Construtor
+	public Notification: Utils`String * Utils`Date==> Notification
+	Notification(description_,date_) ==
+	(description := description_; event := event_; date := date_; return self)
+	pre Utils`getDatePosition(date, event.startTime) = <After>;								--PRE: Can only have news after the event started
+
+end Notification

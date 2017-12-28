@@ -8,9 +8,11 @@ class FashionShow
   public address : Utils`String;
   public startTime : Utils`Date;
   public endTime : Utils`Date;
+  
   public stages: set of (Stage);
   public events : set of (Event);
-	public ticketsLeft : map Ticket`TicketType to nat;
+	public nEntries : map Ticket`TicketType to nat; --Max capacity for each ticket type
+	public tickets : set of Ticket;									--Sold
 	public workers : set of (Person);
   
   inv forall e in set events & e.stage in set stages;		-- events in stages belonging to the show
@@ -18,9 +20,11 @@ class FashionShow
   
  operations
  	--Constructor
- 	public FashionShow: Utils`String * Utils`String * Utils`Date * Utils`Date ==> FashionShow
-  FashionShow(theme_, address_, startTime_, endTime_) ==
-  (theme := theme_; address := address_; startTime := startTime_; endTime := endTime_; return self );
+ 	public FashionShow: Utils`String * Utils`String * Utils`Date * Utils`Date * nat * nat * nat ==> FashionShow
+  FashionShow(theme_, address_, startTime_, endTime_, maxVip_, maxNormal_, maxGuest_) == (
+  theme := theme_; address := address_; startTime := startTime_; endTime := endTime_; 
+  nEntries := {<VIP> |-> maxVip_, <Normal> |-> maxNormal_, <Guest> |-> maxGuest_};
+  return self );
   
   --Add Event
   public addEvent: Event ==> ()
@@ -38,22 +42,19 @@ class FashionShow
   --BuyTicket
   public buyTicket: Person * Ticket`TicketType ==> Ticket
   buyTicket(attendee, type) == (
-  	dcl left : nat := ticketsLeft(type) - 1,
-  	t :Ticket := new Ticket(type,attendee, self);
-  	
-  	ticketsLeft := ticketsLeft ++ {type |-> left};
-  	
+  	dcl t :Ticket := new Ticket(type,attendee, self);
+  	tickets := tickets union {t};
   	attendee.addTicket(t);
   	return t;
   )
-  pre ticketsLeft(type) > 0														--PRE: Has tickets 
-  post ticketsLeft(type) + 1 = ticketsLeft~(type);		--POS: Dec ticket
+  pre nEntries(type) > 0													--PRE: Has entries for ticket type
+  post (card tickets~) + 1 = (card tickets); 			--POS: Ticket was sold
   
   --Add Worker
-  public addWorker: Person * Event * Person`TaskType ==> ()
-  addWorker(w,e,t) == (
+  public addWorker: Person * Event ==> ()
+  addWorker(w,e) == (
   workers := workers union {w};
-  w.addJob(self,e,t);
+  w.addJob(self,e);
   e.addWorker(w)
   )
   pre Person`isWorkingFunction(e.startTime,e.endTime,w.jobs) = false and	--PRE: Person has time to work
