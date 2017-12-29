@@ -1,14 +1,6 @@
-class TestDate
-
+class TestDate is subclass of TestClass
  operations
- private expecting: Utils`DatePosition * Utils`DatePosition ==> ()
- expecting(p1, p2) == return
- pre p1 = p2;
  
- private expecting: bool * bool ==> ()
- expecting(b1, b2) == return
- pre b1 = b2;
-
  private testDatePosition: () ==> ()
  testDatePosition() == (
  -- d1-d2 include d2-d4 fully
