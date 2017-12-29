@@ -83,7 +83,7 @@ functions
 		<Before>;	
 
 	--Method that returns the days of the month
-	private static DaysOfMonth: nat1 * nat1 +> nat1
+	public static DaysOfMonth: nat1 * nat1 +> nat1
 	DaysOfMonth(m, y) == 
 	(cases m:
 			1,3,5,7,8,10,12 -> 31,
