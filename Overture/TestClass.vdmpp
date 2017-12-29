@@ -2,7 +2,7 @@ class TestClass
 operations
   protected expecting: ? * ? ==> ()
   expecting(comp1, comp2) == return
- 	post comp1 = comp2;
+ 	pre comp1 = comp2;
 	
 end TestClass
 
