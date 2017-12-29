@@ -1,4 +1,4 @@
-class TestDate
+class TestUtils
 
  operations
 
@@ -47,9 +47,9 @@ class TestDate
  
  public static main: () ==> ()
  main() == (
-  dcl t: TestDate := new TestDate();
+  dcl t: TestUtils := new TestUtils();
   t.testDatePosition();
 	t.testDatesOverlap();
  );
  
-end TestDate
+end TestUtils
