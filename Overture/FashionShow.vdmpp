@@ -4,7 +4,7 @@ class FashionShow
 					name: seq of (char);
  
  instance variables
- 	public theme : Utils`String;
+ 	public theme : Utils`String; --/name
   public address : Utils`String;
   public startTime : Utils`Date;
   public endTime : Utils`Date;
@@ -15,7 +15,7 @@ class FashionShow
 	public tickets : set of Ticket;									--Sold
 	public workers : set of (Person);
   
-  inv forall e in set events & e.stage in set stages;		-- events in stages belonging to the show
+  --inv forall e in set events & e.stage in set stages;		-- events in stages belonging to the show
   inv Utils`getDatePosition(startTime,endTime) = <Before>;-- start time < end time
   
  operations
@@ -61,6 +61,13 @@ class FashionShow
   		e in set events																											--PRE: New event belongs to the events of the show
   post w in set workers and w in set e.workers;														--POS: New worker in the show and event workers
   
+  functions
+  public static showsOverlap: FashionShow * FashionShow -> bool
+  showsOverlap(s1,s2) == (s1.address = s2.address and Utils`datesOverlap(s1.startTime,s1.endTime,s2.startTime,s2.endTime));
+  
+  --Two shows are equal if they have the same theme name
+  public static equals: FashionShow * FashionShow -> bool
+  equals(s1,s2) == s1.theme = s2.theme;
  
 
 end FashionShow

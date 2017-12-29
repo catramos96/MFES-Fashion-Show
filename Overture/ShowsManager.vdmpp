@@ -1,0 +1,34 @@
+class ShowsManager
+
+instance variables
+	public shows: set of (FashionShow) := {};
+	inv disjointShows(shows);
+	
+operations
+	--Constructor
+	public ShowsManager: () ==> ShowsManager
+	ShowsManager() == (return self);
+	
+	--Add Show
+	public addShow: FashionShow ==> ()
+	addShow(fs) == (shows := shows union {fs})
+	pre fs not in set shows
+	post fs in set shows;										--POS: New show successfully added
+	
+	--Remove Show
+	public removeShow: Utils`String ==> ()
+	removeShow(theme) == (shows := shows \ {iota x in set shows & x.theme = theme})
+	pre exists s in set shows & s.theme = theme					--PRE: Show in the seq of shows
+	post not exists	s in set shows & s.theme = theme;		--POS: Show was removed
+	
+	--Reset
+	public reset: () ==> ()
+	reset() == shows := {};
+	
+	functions
+	-- Shows are disjoint if they don't overlap and don't exist duplicated shows (same theme)
+	public disjointShows: set of FashionShow -> bool
+	disjointShows(shows) ==
+	not exists s1,s2 in set shows & s1<>s2 and FashionShow`equals(s1,s2) and FashionShow`showsOverlap(s1,s2);
+	
+end ShowsManager

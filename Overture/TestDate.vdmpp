@@ -1,13 +1,6 @@
 class TestDate
 
  operations
- private expecting: Utils`DatePosition * Utils`DatePosition ==> ()
- expecting(p1, p2) == return
- pre p1 = p2;
- 
- private expecting: bool * bool ==> ()
- expecting(b1, b2) == return
- pre b1 = b2;
 
  private testDatePosition: () ==> ()
  testDatePosition() == (
@@ -21,9 +14,9 @@ class TestDate
  	 p2 := Utils`getDatePosition(d2,d1);
  	 p3 := Utils`getDatePosition(d1,d1);
  	 
- 	 expecting(p1,<Before>);
- 	 expecting(p2,<After>);
- 	 expecting(p3,<Same>);
+ 	 Utils`expecting(p1,<Before>);
+ 	 Utils`expecting(p2,<After>);
+ 	 Utils`expecting(p3,<Same>);
  );
  
  private testDatesOverlap: () ==> ()
@@ -43,13 +36,13 @@ class TestDate
  	b6 := Utils`datesOverlap(d2,d4,d1,d3);		-- Situation:  ---s2---s1---e2---e1   : overlap
  	b7 := Utils`datesOverlap(d1,d2,d1,d2);		-- Situation:  ---s1s2---e1e2					: overlap 	
  	
- 	expecting(b1,true);
- 	expecting(b2,true);
- 	expecting(b3,false);
- 	expecting(b4,false);
- 	expecting(b5,true);
- 	expecting(b6,true);
- 	expecting(b7,true);
+ 	Utils`expecting(b1,true);
+ 	Utils`expecting(b2,true);
+ 	Utils`expecting(b3,false);
+ 	Utils`expecting(b4,false);
+ 	Utils`expecting(b5,true);
+ 	Utils`expecting(b6,true);
+ 	Utils`expecting(b7,true);
  );
  
  public static main: () ==> ()

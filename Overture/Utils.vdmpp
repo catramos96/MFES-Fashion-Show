@@ -9,8 +9,27 @@ types
 								 hours: nat
 								 minutes: nat
 								 inv mk_Date(y,m,d,h,mn) == m <= 12 and d <= DaysOfMonth(m,y) and h < 24 and mn < 60; 
-								 
-functions
+		
+operations
+	/*
+	TESTS
+	*/
+	
+ public static expecting: Utils`DatePosition * Utils`DatePosition ==> ()
+ expecting(p1, p2) == return
+ pre p1 = p2;
+ 
+ public static expecting: bool * bool ==> ()
+ expecting(b1, b2) == return
+ pre b1 = b2;
+ 		 
+functions	
+	/*
+	SEQ
+	*/
+	public static noDuplicatesSeq: seq of ? -> bool
+	noDuplicatesSeq(s) ==
+  not exists i, j in set inds s & i <> j and s(i) = s(j);
 	
 	/*
 	DATE

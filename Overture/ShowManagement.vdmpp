@@ -1,7 +1,0 @@
-class ShowManagement
-
-instance variables
-	public shows: set of (FashionShow);
-	
-	--inv not exists s1, s2 in set shows & s1 <> s2 and s1.
-end ShowManagement

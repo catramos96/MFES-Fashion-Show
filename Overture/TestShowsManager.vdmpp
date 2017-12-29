@@ -1,0 +1,57 @@
+class TestShowsManager
+
+instance variables
+public manager: ShowsManager := new ShowsManager();
+
+operations
+
+ public testAddShows: () ==> ()
+ testAddShows() == (
+ 	dcl s1 : FashionShow, s2 : FashionShow, s3 : FashionShow, s4: FashionShow,
+ 			addr1 : Utils`String := "a1", addr2 : Utils`String := "a2",
+ 			theme : Utils`String := "theme",
+ 			d1: Utils`Date, d2: Utils`Date, d3: Utils`Date, d4: Utils`Date;
+ 	
+ 	d1 := mk_Utils`Date(2017,02,24,10,30);
+ 	d2 := mk_Utils`Date(2017,03,1,18,00);
+ 	d3 := mk_Utils`Date(2017,03,5,18,00);
+ 	d4 := mk_Utils`Date(2017,03,10,20,00);
+ 	 	
+ 	s1 := new FashionShow(theme, addr1, d1, d3, 50, 10, 10);
+ 	s2 := new FashionShow(theme, addr1, d2, d3, 50, 10, 10);		--time/address overlap (with s1) -> BREAK
+ 	s3 := new FashionShow(theme, addr2, d1, d2, 50, 10, 10);		--time overlaps (with s1)
+ 	s4 := new FashionShow(theme, addr1, d3, d4, 50, 10, 10);		--address overlap (with s1)
+ 	
+ 	manager.addShow(s1);
+ 	-- 	manager.addShow(s1); --Duplicated
+  --	manager.addShow(s2);
+ 	manager.addShow(s3);
+ 	manager.addShow(s4); 	
+ 	
+ 	return
+ );
+ 
+ public testRemoveShows: () ==> ()
+ testRemoveShows() == (
+ 	dcl s1: FashionShow := new FashionShow("t1","a1",mk_Utils`Date(2017,02,20,10,00), mk_Utils`Date(2017,02,26,11,00),50,10,10),
+ 			s2: FashionShow := new FashionShow("t2","a2",mk_Utils`Date(2017,02,20,10,00), mk_Utils`Date(2017,02,26,11,00),50,10,10);
+ 			
+	manager.addShow(s1);
+	manager.addShow(s2);
+	manager.removeShow("t1");
+	manager.removeShow("t2");
+	--manager.removeShow("t1");	--Already removed -> Doesn't Exits -> BREAK
+	--manager.removeShow("a");	--Doesn't exist -> BREAK
+ );
+ 
+ public static main: () ==> ()
+ main() == (
+ 	dcl t : TestShowsManager := new TestShowsManager();
+  t.testAddShows();
+  t.manager.reset();
+  
+  t.testRemoveShows();
+  t.manager.reset();
+ );
+ 
+end TestShowsManager
