@@ -4,14 +4,17 @@ instance variables
   
 operations
 	--Constructor
-	public Presentation: Utils`String * Stage * Utils`Date * Utils`Date * Person ==> Presentation
-	Presentation(name1, stage1, startDate1, endDate1, speaker1) == (
-		name := name1;
-		stage := stage1;
-		startTime := startDate1;
-		endTime := endDate1;
-		speakers := {speaker1};
-		addWorker(speaker1);
+	public Presentation: Utils`String * FashionShow`Stage * Utils`Date * Utils`Date * Person ==> Presentation
+	Presentation(name_, stage_, startDate_, endDate_, speaker_) == (
+		atomic(
+		name := name_;
+		stage := stage_;
+		startTime := startDate_;
+		endTime := endDate_;
+		speakers := {speaker_};
+		workers := {speaker_};
+		news := {};
+		);	
 		return self;
 	);
 	

@@ -1,0 +1,16 @@
+class TestClass
+operations
+  protected expecting: ? * ? ==> ()
+  expecting(comp1, comp2) == return
+ 	pre comp1 = comp2;
+ 	
+  protected expectingIn: ? * set of ? ==> ()
+  expectingIn(comp1, comp2) == return
+ 	pre comp1 in set comp2;
+ 	
+  protected expectingNotIn: ? * set of ? ==> ()
+  expectingNotIn(comp1, comp2) == return
+ 	pre comp1 not in set comp2;
+	
+end TestClass
+
