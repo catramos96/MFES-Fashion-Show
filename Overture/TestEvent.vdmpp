@@ -4,7 +4,7 @@ operations
  	testAddWorker() == (
 	 dcl startTime: Utils`Date := mk_Utils`Date(1997,02,14,20,55);
  	 dcl endTime: Utils`Date := mk_Utils`Date(1997,02,14,21,55);
- 	 dcl stage: FashionShow`Stage := mk_FashionShow`Stage(200, "B001",0);
+ 	 dcl stage: Stage := new Stage("B001",200);
  	 dcl event: Event := new Event("Keynote", stage, startTime, endTime);
  	
  	 dcl worker: Person := new Person();

@@ -1,0 +1,30 @@
+class Stage
+instance variables
+	public name : Utils`String;
+	public seats : nat1;
+	public reserved : nat := 0;
+	
+operations
+--Constructor
+public Stage: Utils`String * nat1 ==> Stage
+Stage(name_,seats_) == (name := name_; seats := seats_; return self);
+
+public setName: Utils`String ==> ()
+setName(name_) == (name := name_)
+post name = name_;
+
+public setSeats: nat1 ==> ()
+setSeats(seats_) == (seats := seats_)
+pre seats_ <= reserved
+post seats = seats_;
+
+public incReserved: () ==> ()
+incReserved() == (reserved := reserved + 1)
+pre reserved + 1 <= seats
+post reserved - 1 = reserved~;
+
+public decReserved: () ==> ()
+decReserved() == (reserved := reserved - 1)
+pre reserved > 0
+post reserved + 1 = reserved~;
+end Stage

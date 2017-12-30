@@ -34,6 +34,11 @@ functions
 	/*
 	DATE
 	*/
+	--Method that retuns true if a (start1,end1) date contains (start2,end2) date fully
+	public static datesContainsDates: Date * Date * Date * Date -> bool
+	datesContainsDates(start1,end1,start2,end2) == (
+		getDatePosition(start1,start2) <> <After> and getDatePosition(end1,end2) <> <Before>
+	);
 
 	--Method that returns true if the dates overlap and false otherwise
 	public static datesOverlap: Date * Date * Date * Date -> bool

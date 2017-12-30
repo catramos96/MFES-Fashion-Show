@@ -5,7 +5,7 @@ instance variables
 	
 operations
 	--Constructor
-	public Runway: Utils`String * FashionShow`Stage * Utils`Date * Utils`Date ==> Runway
+	public Runway: Utils`String * Stage * Utils`Date * Utils`Date ==> Runway
 	Runway(name, stage, startTime, endTime) == (
 		Event(name,stage,startTime,endTime);
 		return self

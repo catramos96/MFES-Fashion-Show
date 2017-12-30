@@ -2,25 +2,34 @@ class Person
 	
 instance variables
 	public name : Utils`String;
-	public id : Utils`String;
+	public id : nat1;
 	public tickets : set of (Ticket);
   public speaks : set of (Presentation);
   public designed : set of (Cloth);
-  public workSchedule: inmap FashionShow to (set1 of (Event));
-  public attendance : map FashionShow to (set of (Event));
+  public jobs: set of Event;
+  public attendance : inmap FashionShow to (set of (Event));
   
-  inv len id = 9 and forall n in seq id & is_nat(n);
+  inv len name > 0;
   inv forall t in set tickets & t.owner.id = id;
   --inv forall p in set speaks & p in set rng attendance and exists ticket for that show
   inv forall c in set designed & c.designer.id = id;
   inv forall s in set dom attendance & exists t in set tickets & t.show = s;
-  inv forall j in set dom workSchedule & exists w in set j.workers & w.id = id;
+  --inv forall j in set jobs & exists w in set j.workers & w.id = id;
   
  operations
  
  --Constructor
- public Person: Utils`String * Utils`String ==> Person
- Person(name_,id_) == (name := name_; id := id_; return self);
+ public Person: Utils`String * nat ==> Person
+ Person(name_,id_) == (
+ 	name := name_; 
+ 	id := id_; 
+ 	tickets := {};
+ 	speaks := {};
+ 	designed := {};
+ 	jobs := {};
+ 	attendance := {|->};
+ 	return self)
+ 	pre len name_ > 0;
  
  --Add Ticket
  public addTicket: Ticket ==> ()
@@ -32,19 +41,36 @@ instance variables
  post (t in set tickets and t.show in set dom attendance);--POS: New Ticket in tickets and show in attendance schedule (per show)
   
  --Add Job
- public addJob: FashionShow * Event ==> ()
- addJob(s,e) == workSchedule := workSchedule ++ {s |-> ({e} union workSchedule(s))}
- pre isWorking(e.startTime,e.endTime,workSchedule) = false	--PRE: Job does not overlap another
- post exists task in set workSchedule(s) & task = e;				--POS: New Job was added to workSchedule
+ public addJob: Event ==> ()
+ addJob(e) == (jobs := jobs union {e})
+ pre isWorking(e.startTime,e.endTime,jobs) = false	--PRE: Job does not overlap another
+ post e in set jobs;																--POS: New Job was added to workSchedule
  
+ --RemoveJob
+ public removeJob: Event ==> ()
+ removeJob(j) ==(jobs := jobs \ {j})
+ pre j in set jobs					--PRE: Person has job
+ post j not in set jobs;		--POS: Person dismissed from job
+ 
+ --Attend
+ public attend: Event ==> ()
+ attend(event) == (
+  dcl show : FashionShow := iota x in set dom attendance & event in set x.events;
+ 	attendance := attendance ++ {show |-> (attendance(show) union {event})};
+ 	event.reserveSeat()
+ )
+ pre exists t in set tickets & event in set t.show.events and 	--PRE: Event belongs to a ticket show
+ 	event not in set attendance(t.show)														--PRE: Event is not reserved 
+ post event in set dunion rng attendance;														--POS: Reservation to event with success
+  
  --Cancel Attendment
  public cancelAttendment: Event ==> ()
  cancelAttendment(event) == (
- 	dcl show : FashionShow := iota x in set dom attendance & exists e in set attendance(x) & e = event;
- 	attendance := attendance ++ {show |-> (attendance(show) \ {event})};
- 	event.freeSeat();
+ 	if(event in set dunion rng attendance) then (
+	 	dcl show : FashionShow := iota x in set dom attendance & exists e in set attendance(x) & e = event;
+	 	attendance := attendance ++ {show |-> (attendance(show) \ {event})};
+	 	event.freeSeat());
  )
- pre event in set dunion rng attendance				--Event must be in the attendance
  post event not in set dunion rng attendance;	--Event not in the attendance
  
  --Is Designer
@@ -55,16 +81,10 @@ instance variables
  		else
  			return false);
  			
- 	public updateWorkSchedule: inmap FashionShow to set1 of (Event) ==> ()
- 	updateWorkSchedule(schedule) == (workSchedule := schedule);
- 			
  	functions 	
  	--Is Working (Function)
- 	public static isWorking: Utils`Date * Utils`Date * map FashionShow to (set1 of (Event)) -> bool
-  isWorking(startD,endD,j) == (
- 	exists events in set (rng j) & 
- 		(exists event in set events & 
- 			Utils`datesOverlap(event.startTime,event.endTime,startD,endD) = true)
- 	)
- pre Utils`getDatePosition(startD,endD) = <Before>;	--PRE: start time < end time
+ 	public static isWorking: Utils`Date * Utils`Date * set of (Event) -> bool
+  isWorking(startD,endD,jobs) == (
+ 	exists event in set jobs & Utils`datesOverlap(event.startTime,event.endTime,startD,endD))
+ 	pre Utils`getDatePosition(startD,endD) = <Before>;	--PRE: start time < end time
 end Person

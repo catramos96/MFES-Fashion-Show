@@ -4,23 +4,37 @@ class Event
 	  public startTime : Utils`Date;
 	  public endTime : Utils`Date;
 	  public name : Utils`String;
-	  public stage: FashionShow`Stage;
+	  public stage: Stage;
 	  public workers : set of (Person);
 	  public news: set of (Notification);
 	  
 	  inv Utils`getDatePosition(startTime,endTime) = <Before>;
+	  inv forall w in set workers & exists e in set w.jobs & 
+	  	e.name = name and e.stage = stage and e.startTime = startTime and e.endTime = endTime;
 	  
 	operations
 	 --Constructor
-	 	public Event: Utils`String * FashionShow`Stage * Utils`Date * Utils`Date ==> Event
+	 	public Event: Utils`String * Stage * Utils`Date * Utils`Date ==> Event
 		Event(name1, stage1, startD1, endD1) ==
 		(name := name1; stage := stage1; startTime := startD1; endTime := endD1; workers := {}; news := {}; return self);
 		
 		--Add Worker
 		public addWorker: Person ==> ()
-		addWorker(w) == (workers:= workers union {w})
+		addWorker(w) == (
+		w.addJob(self);
+		workers:= workers union {w}
+		)
 		pre w not in set workers			--PRE: Worker not in workers already
 		post w in set workers;				--POS: New worker was added
+		
+		--Dismiss Worker
+		public dismissWorker: Person ==> ()
+		dismissWorker(worker) == (
+			workers := workers \ {worker};
+			worker.removeJob(self);
+		)
+		pre worker in set workers				--PRE: Has worker
+		post worker not in set workers;	--POS: Worker was dismissed
 		
 		--Add Notification
 		public addNotification: Notification ==> ()
@@ -47,7 +61,7 @@ class Event
 		eventsOverlap(e1,e2) == (
 			if(e1.stage = e2.stage)
 				then Utils`datesOverlap(e1.startTime,e1.endTime,e2.startTime,e2.endTime)
-			else false
+			else e1.name = e2.name
 		);
 
 end Event
