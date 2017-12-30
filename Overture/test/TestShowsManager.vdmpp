@@ -1,4 +1,4 @@
-class TestShowsManager
+class TestShowsManager is subclass of TestClass
 
 instance variables
 public manager: ShowsManager := new ShowsManager();

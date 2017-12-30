@@ -4,10 +4,10 @@ operations
  	testAddWorker() == (
 	 dcl startTime: Utils`Date := mk_Utils`Date(1997,02,14,20,55);
  	 dcl endTime: Utils`Date := mk_Utils`Date(1997,02,14,21,55);
- 	 dcl stage: FashionShow`Stage := mk_FashionShow`Stage(200, "B001", 1);
+ 	 dcl stage: Stage := new Stage("B001", 200);
  	 dcl event: Event := new Event("Keynote", stage, startTime, endTime);
  	
- 	 dcl worker: Person := new Person("Person1", "111111111");
+ 	 dcl worker: Person := new Person("Person1", 111111111);
  	 event.addWorker(worker);
  	 
  	 expecting(event.workers, {worker});
@@ -17,7 +17,7 @@ operations
  	testAddNotification() == (
 	 dcl startTime: Utils`Date := mk_Utils`Date(1997,02,14,20,55);
  	 dcl endTime: Utils`Date := mk_Utils`Date(1997,02,14,21,55);
- 	 dcl stage: FashionShow`Stage := mk_FashionShow`Stage(200, "B001", 1);
+ 	 dcl stage: Stage := new Stage("B001", 200);
  	 dcl event: Event := new Event("Keynote", stage, startTime, endTime);
  	 
  	 dcl notificationTime: Utils`Date := mk_Utils`Date(1997,02,14,21,00);
@@ -34,8 +34,8 @@ operations
  	 dcl endTime1: Utils`Date := mk_Utils`Date(1997,02,14,21,55);
 	 dcl startTime2: Utils`Date := mk_Utils`Date(1997,02,14,21,25);
  	 dcl endTime2: Utils`Date := mk_Utils`Date(1997,02,14,22,25);
- 	 dcl stage1: FashionShow`Stage := mk_FashionShow`Stage(200, "B001", 1);
- 	 dcl stage2: FashionShow`Stage := mk_FashionShow`Stage(200, "B002", 1);
+ 	 dcl stage1: Stage := new Stage("B001", 200);
+ 	 dcl stage2: Stage := new Stage("B002", 200);
  	 dcl event1: Event := new Event("Keynote", stage1, startTime1, endTime1);
  	 dcl event2: Event := new Event("Ending Keynote", stage1, startTime2, endTime2);
  	 dcl event3: Event := new Event("Ending Keynote", stage2, startTime2, endTime2);

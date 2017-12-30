@@ -14,14 +14,15 @@ class Event
 	  
 	operations
 	 --Constructor
-	 	public Event: Utils`String * FashionShow`Stage * Utils`Date * Utils`Date ==> Event
+	 	public Event: Utils`String * Stage * Utils`Date * Utils`Date ==> Event
 		Event(name_, stage_, startDate_, endDate_) == (
+			atomic(
 			name := name_; 
 			stage := stage_; 
 			startTime := startDate_; 
 			endTime := endDate_; 
 			workers := {}; 
-			news := {}; 
+			news := {});
 			return self
 		);
 		

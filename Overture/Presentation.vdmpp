@@ -4,7 +4,7 @@ instance variables
   
 operations
 	--Constructor
-	public Presentation: Utils`String * FashionShow`Stage * Utils`Date * Utils`Date * Person ==> Presentation
+	public Presentation: Utils`String * Stage * Utils`Date * Utils`Date * Person ==> Presentation
 	Presentation(name_, stage_, startDate_, endDate_, speaker_) == (
 		atomic(
 		name := name_;
@@ -15,7 +15,7 @@ operations
 		workers := {speaker_};
 		news := {};
 		);	
-		return self;
+		return self
 	);
 	
 	public addSpeaker: Person ==> ()

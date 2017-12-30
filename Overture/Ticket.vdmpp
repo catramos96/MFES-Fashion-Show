@@ -1,6 +1,6 @@
 class Ticket
 types
-	public static TicketType = <Normal> | <VIP> | <Guest> | <Worker>;
+	public static TicketType = <Normal> | <VIP> | <Guest>;
 instance variables
   public type : TicketType;
   public owner : Person;
@@ -9,5 +9,5 @@ instance variables
 operations
 	--Constructor
 	public Ticket: TicketType * Person * FashionShow ==> Ticket
-	Ticket(t,p,f) == (type := t; owner := p; show := f; return self);
+	Ticket(t,p,f) == (atomic(type := t; owner := p; show := f); return self);
 end Ticket
