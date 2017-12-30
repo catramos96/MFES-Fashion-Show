@@ -1,4 +1,4 @@
-class TestUtils
+class TestUtils is subclass of TestClass
 
  operations
 

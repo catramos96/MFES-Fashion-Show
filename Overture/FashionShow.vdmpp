@@ -1,73 +1,148 @@
 class FashionShow
+ ---------------------------------------------------------------------------
  types
  	public Stage:: seats:nat1
-					name: seq of (char);
- 
+					name: seq of (char)
+					reserved: nat;
+ ---------------------------------------------------------------------------
  instance variables
- 	public theme : Utils`String; --/name
+ 	public theme : Utils`String; 		
   public address : Utils`String;
   public startTime : Utils`Date;
   public endTime : Utils`Date;
   
   public stages: set of (Stage);
   public events : set of (Event);
-	public nEntries : map Ticket`TicketType to nat; --Max capacity for each ticket type
-	public tickets : set of Ticket;									--Sold
+	public nEntries : map Ticket`TicketType to nat1; 								--Max capacity for each ticket type
+	public ticketsSold : map Ticket`TicketType to set of (Ticket);	--Sold
 	public workers : set of (Person);
   
-  --inv forall e in set events & e.stage in set stages;		-- events in stages belonging to the show
-  inv Utils`getDatePosition(startTime,endTime) = <Before>;-- start time < end time
+  inv Utils`getDatePosition(startTime,endTime) = <Before>;											--INV: start time < end time
+  inv len theme > 0 and len address > 0;																				--INV: theme and address must have a name
+  inv forall t in set dunion rng ticketsSold & t.show.theme=theme;							--INV: tickets sold must be regarding the show						
+  inv forall t1,t2 in set dunion rng ticketsSold & t1<>t2 and t1.owner=t2.owner;--INV: tickets can only be sold once to the same person		
+  inv forall w in set workers & 																								--INV: workers must have a schedule regarding the show			
+  			exists job in set dom w.workSchedule & job.theme = theme;									
+  inv not exists s1,s2 in set stages & s1.name = s2.name;												--INV: stages must have different names
+  inv forall e in set events & e.stage in set stages and												--INV: events in stages belonging to the show
+      not exists e1,e2 in set events & 																					--INV: events don't overlap and are between the show dates
+	      e1 <> e2 and Event`eventsOverlap(e1,e2)	
+	  		and Utils`getDatePosition(e1.startTime,startTime) = <Before>
+	  		and Utils`getDatePosition(e.endTime,endTime) = <After>;
   
+ ---------------------------------------------------------------------------
  operations
  	--Constructor
  	public FashionShow: Utils`String * Utils`String * Utils`Date * Utils`Date * nat * nat * nat ==> FashionShow
   FashionShow(theme_, address_, startTime_, endTime_, maxVip_, maxNormal_, maxGuest_) == (
   theme := theme_; address := address_; startTime := startTime_; endTime := endTime_; 
   nEntries := {<VIP> |-> maxVip_, <Normal> |-> maxNormal_, <Guest> |-> maxGuest_};
+  ticketsSold := {<VIP> |-> {}, <Normal> |-> {}, <Guest> |-> {}};
+  stages := {};
+  events := {};
+  workers := {};
   return self );
   
   --Add Event
   public addEvent: Event ==> ()
   addEvent(e) == (events := events union {e})
-  pre (not exists e1 in set events & Event`eventsOverlap(e1,e) = true) and		--PRE: Events don't overlap
-  		Utils`getDatePosition(e.startTime,startTime) <> <Before> and 							--PRE: New event between show time
-  		Utils`getDatePosition(e.endTime,endTime) <> <After>
-  post e in set events;																												--POS: New event in events
+  post e in set events;														--POS: New event in events
+  
+  --CancelEvent
+  public cancelEvent: Utils`String ==> ()
+  cancelEvent(name) == (
+  	dcl event: Event := iota x in set events & x.name = name;
+  	
+  	for all w in set workers do (
+  		dismissWorker(w,event);
+  		w.cancelAttendment(event)
+  	);
+  	events := events \ {event};
+  )
+  pre exists e in set events & e.name = name			--Exist event
+  post not exists e in set events & e.name = name;--Event was removed
   
   --Add Stage
   public addStage: Stage ==> ()
   addStage(s) == (stages:= stages union {s})
-  post s in set stages;																												--POS: New stage in stages
+  post s in set stages;														--POS: New stage in stages
+  
+  --Remove Stage
+  public removeStage: Stage ==> ()
+  removeStage(stage) == (
+  	for all e in set events do (
+  		if(e.stage = stage)
+  			then cancelEvent(e.name);
+  	);
+  	stages := stages \ {stage};
+  )
+  pre stage in set stages
+  post stage not in set stages;
   
   --BuyTicket
   public buyTicket: Person * Ticket`TicketType ==> Ticket
   buyTicket(attendee, type) == (
   	dcl t :Ticket := new Ticket(type,attendee, self);
-  	tickets := tickets union {t};
+  	ticketsSold := ticketsSold ++ {type |-> (ticketsSold(type) union {t})};
   	attendee.addTicket(t);
-  	return t;
+  	return t
   )
-  pre nEntries(type) > 0													--PRE: Has entries for ticket type
-  post (card tickets~) + 1 = (card tickets); 			--POS: Ticket was sold
+  pre nEntries(type) > card ticketsSold(type)										--PRE: Has entries for ticket type
+  post (card ticketsSold~(type) + 1 = card ticketsSold(type)); 	--POS: Ticket was sold
   
   --Add Worker
   public addWorker: Person * Event ==> ()
   addWorker(w,e) == (
-  workers := workers union {w};
-  w.addJob(self,e);
-  e.addWorker(w)
+  	if(w not in set workers)
+	  	then workers := workers union {w};
+	  w.addJob(self,e);
+	  e.addWorker(w)
   )
-  pre Person`isWorkingFunction(e.startTime,e.endTime,w.jobs) = false and	--PRE: Person has time to work
-  		e in set events																											--PRE: New event belongs to the events of the show
-  post w in set workers and w in set e.workers;														--POS: New worker in the show and event workers
+  pre e in set events																	--PRE: New event belongs to the events of the show
+  post w in set workers and w in set e.workers;				--POS: New worker in the show and event workers
   
+  --Dismiss Worker from event
+  public dismissWorker: Person * Event ==> ()
+  dismissWorker(worker,event) == (
+  	dcl show : FashionShow := iota x in set dom worker.workSchedule & event in set worker.workSchedule(x);
+			
+			if(card worker.workSchedule(show) = 1)	--worker only have one task
+		 		then (
+		 			worker.updateWorkSchedule({show} <-: worker.workSchedule);
+		 			workers := workers \ {worker}
+		 			)
+		 	else
+		 		worker.updateWorkSchedule(worker.workSchedule ++ {show|-> (worker.workSchedule(show) \ {event})});
+		 		
+		 	event.updateWorkers(event.workers \ {worker});
+  )
+  pre worker in set workers and event in set events
+  post worker not in set workers;
+  
+  /*
+  SETS
+  */
+  
+  public setTheme: Utils`String ==> ()
+  setTheme(theme_) == (theme := theme_);
+  
+  public setAddress:Utils`String ==> ()
+  setAddress(address_) == (address := address_);
+  
+  public setTime: Utils`Date * Utils`Date ==> ()
+  setTime(start_,end_) == (startTime := start_; endTime := end_);
+  
+  ---------------------------------------------------------------------------
   functions
+  
   public static showsOverlap: FashionShow * FashionShow -> bool
-  showsOverlap(s1,s2) == (s1.address = s2.address and Utils`datesOverlap(s1.startTime,s1.endTime,s2.startTime,s2.endTime));
+  showsOverlap(s1,s2) == (
+  s1.address = s2.address and 
+  Utils`datesOverlap(s1.startTime,s1.endTime,s2.startTime,s2.endTime)
+  );
   
   --Two shows are equal if they have the same theme name
   public static equals: FashionShow * FashionShow -> bool
   equals(s1,s2) == s1.theme = s2.theme;
  
-
 end FashionShow

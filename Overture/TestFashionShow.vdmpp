@@ -1,0 +1,18 @@
+class TestFashionShow
+
+instance variables
+	public show : FashionShow;
+	
+operations
+
+/*public testShowCreation:() ==> ()
+testShowCreation() == (
+	show := new FashionShow(theme_, address_, startTime_, endTime_, maxVip_, maxNormal_, maxGuest_);
+
+);*/
+
+/*public main:() ==> ()
+main() == (
+dcl t : TestFashionShow := new TestFashionShow();
+);*/
+end TestFashionShow
