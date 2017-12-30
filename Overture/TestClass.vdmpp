@@ -1,8 +1,0 @@
-class TestClass
-operations
-  protected expecting: ? * ? ==> ()
-  expecting(comp1, comp2) == return
- 	pre comp1 = comp2;
-	
-end TestClass
-

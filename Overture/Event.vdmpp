@@ -13,8 +13,15 @@ class Event
 	operations
 	 --Constructor
 	 	public Event: Utils`String * FashionShow`Stage * Utils`Date * Utils`Date ==> Event
-		Event(name1, stage1, startD1, endD1) ==
-		(name := name1; stage := stage1; startTime := startD1; endTime := endD1; workers := {}; news := {}; return self);
+		Event(name_, stage_, startDate_, endDate_) == (
+			name := name_; 
+			stage := stage_; 
+			startTime := startDate_; 
+			endTime := endDate_; 
+			workers := {}; 
+			news := {}; 
+			return self
+		);
 		
 		--Add Worker
 		public addWorker: Person ==> ()

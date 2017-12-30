@@ -9,7 +9,7 @@ instance variables
   public workSchedule: inmap FashionShow to (set1 of (Event));
   public attendance : map FashionShow to (set of (Event));
   
-  inv len id = 9 and forall n in seq id & is_nat(n);
+  inv len id = 9;
   inv forall t in set tickets & t.owner.id = id;
   --inv forall p in set speaks & p in set rng attendance and exists ticket for that show
   inv forall c in set designed & c.designer.id = id;
@@ -20,7 +20,18 @@ instance variables
  
  --Constructor
  public Person: Utils`String * Utils`String ==> Person
- Person(name_,id_) == (name := name_; id := id_; return self);
+ Person(name_,id_) == (
+ 	atomic(
+ 		name := name_; 
+	 	id := id_; 
+	 	tickets := {};
+	 	speaks := {};
+	 	designed := {};
+	 	workSchedule := { |-> };
+	 	attendance := { |-> };
+	 );
+ 	 return self;
+ 	);
  
  --Add Ticket
  public addTicket: Ticket ==> ()

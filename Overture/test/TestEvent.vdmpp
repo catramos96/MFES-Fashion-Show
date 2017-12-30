@@ -1,0 +1,57 @@
+class TestEvent is subclass of TestClass
+operations
+	private testAddWorker: () ==> ()
+ 	testAddWorker() == (
+	 dcl startTime: Utils`Date := mk_Utils`Date(1997,02,14,20,55);
+ 	 dcl endTime: Utils`Date := mk_Utils`Date(1997,02,14,21,55);
+ 	 dcl stage: FashionShow`Stage := mk_FashionShow`Stage(200, "B001", 1);
+ 	 dcl event: Event := new Event("Keynote", stage, startTime, endTime);
+ 	
+ 	 dcl worker: Person := new Person("Person1", "111111111");
+ 	 event.addWorker(worker);
+ 	 
+ 	 expecting(event.workers, {worker});
+ 	);
+ 	
+ 	private testAddNotification: () ==> ()
+ 	testAddNotification() == (
+	 dcl startTime: Utils`Date := mk_Utils`Date(1997,02,14,20,55);
+ 	 dcl endTime: Utils`Date := mk_Utils`Date(1997,02,14,21,55);
+ 	 dcl stage: FashionShow`Stage := mk_FashionShow`Stage(200, "B001", 1);
+ 	 dcl event: Event := new Event("Keynote", stage, startTime, endTime);
+ 	 
+ 	 dcl notificationTime: Utils`Date := mk_Utils`Date(1997,02,14,21,00);
+ 	 dcl notification: Notification := new Notification("Keynote started", notificationTime, event);
+ 	 
+ 	 event.addNotification(notification);
+ 	 
+ 	 expecting(event.news, {notification});
+ 	);
+ 	
+ 	private testEventsOverlap: () ==> ()
+ 	testEventsOverlap() == (
+	 dcl startTime1: Utils`Date := mk_Utils`Date(1997,02,14,20,55);
+ 	 dcl endTime1: Utils`Date := mk_Utils`Date(1997,02,14,21,55);
+	 dcl startTime2: Utils`Date := mk_Utils`Date(1997,02,14,21,25);
+ 	 dcl endTime2: Utils`Date := mk_Utils`Date(1997,02,14,22,25);
+ 	 dcl stage1: FashionShow`Stage := mk_FashionShow`Stage(200, "B001", 1);
+ 	 dcl stage2: FashionShow`Stage := mk_FashionShow`Stage(200, "B002", 1);
+ 	 dcl event1: Event := new Event("Keynote", stage1, startTime1, endTime1);
+ 	 dcl event2: Event := new Event("Ending Keynote", stage1, startTime2, endTime2);
+ 	 dcl event3: Event := new Event("Ending Keynote", stage2, startTime2, endTime2);
+ 	 
+ 	 dcl overlap : bool := Event`eventsOverlap(event1, event2);
+ 	 dcl non_overlap : bool := Event`eventsOverlap(event1, event3);
+ 	 
+ 	 expecting(overlap, true); -- same stage
+ 	 expecting(non_overlap, false); -- different stage
+ 	);
+ 	
+ 	public static main: () ==> ()
+	main() == (
+	  dcl t: TestEvent := new TestEvent();
+	  t.testAddWorker();
+	  t.testEventsOverlap();
+ 	);
+ 	
+end TestEvent
