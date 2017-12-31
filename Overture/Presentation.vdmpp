@@ -1,23 +1,26 @@
 class Presentation is subclass of Event
 instance variables
-  public speakers : set1 of (Person);
+  public speakers: set of (Person);
+  public subTheme: Utils`String;
   
 operations
-	--Constructor
-	public Presentation: Utils`String * Stage * Utils`Date * Utils`Date * Person ==> Presentation
-	Presentation(name_, stage_, startDate_, endDate_, speaker_) == (
+	-- Constructor
+	public Presentation: Utils`String * Stage * Utils`Date * Utils`Date * Utils`String ==> Presentation
+	Presentation(name_, stage_, startDate_, endDate_, subTheme_) == (
 		atomic(
-		name := name_;
-		stage := stage_;
-		startTime := startDate_;
-		endTime := endDate_;
-		speakers := {speaker_};
-		workers := {speaker_};
-		news := {};
+			name := name_;
+			stage := stage_;
+			startTime := startDate_;
+			endTime := endDate_;
+			subTheme := subTheme_;
+			speakers := {};
+			workers := {};
+			news := {};
 		);	
-		return self
+		return self;
 	);
 	
+  -- Add speaker
 	public addSpeaker: Person ==> ()
 	addSpeaker(s) == (
 		speakers := speakers union {s};
@@ -25,5 +28,11 @@ operations
 	)
 	pre s not in set speakers
 	post s in set speakers;
+	
+	-- Update Sub Theme
+	public updateSubTheme: Utils`String ==> ()
+	updateSubTheme(newSubTheme) == (
+		subTheme := newSubTheme;
+	);
 
 end Presentation

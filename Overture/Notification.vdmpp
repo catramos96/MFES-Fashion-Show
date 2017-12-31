@@ -7,8 +7,12 @@ instance variables
 operations
 	--Construtor
 	public Notification: Utils`String * Utils`Date * Event==> Notification
-	Notification(description_,date_,event_) ==
-	(description := description_; event := event_; date := date_; return self)
-	pre Utils`getDatePosition(date, event.startTime) = <After>;								--PRE: Can only have news after the event started
+	Notification(description_,date_,event_) == (
+		description := description_; 
+		event := event_; 
+		date := date_;
+		return self;
+	)
+	pre Utils`getDatePosition(date_, event_.startTime) = <After>;								--PRE: Can only have news after the event started
 
 end Notification

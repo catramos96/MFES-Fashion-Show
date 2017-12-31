@@ -21,9 +21,9 @@ class Event
 			stage := stage_; 
 			startTime := startDate_; 
 			endTime := endDate_; 
-			workers := {}; 
+			workers := {};
 			news := {});
-			return self
+			return self;
 		);
 		
 		--Add Worker
@@ -49,7 +49,10 @@ class Event
 		addNotification(notification) == (news := news union {notification});
 		
 		public updateWorkers: set of Person ==> ()
-		updateWorkers(workers_) == (workers := workers_);
+		updateWorkers(workers_) == (
+			for all w in set workers_ do w.addJob(self);
+			workers := workers_;
+		);
 		
 		--Reserve Seat
 		public reserveSeat: () ==> ()

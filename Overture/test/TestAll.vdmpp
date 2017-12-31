@@ -4,7 +4,7 @@ public main: () ==> ()
 main() == (
  new TestEvent().main();
  new TestFashionShow().main();
- --new TestPresentation().main();
+ new TestPresentation().main();
  new TestShowsManager().main();
  new TestUtils().main();
 );
