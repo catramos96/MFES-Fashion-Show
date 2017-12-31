@@ -6,9 +6,22 @@ instance variables
 	public name : Utils`String;
 	public season : Season;
 	
+	inv len name > 0;
+	
 operations
 	--Constructor
 	public Cloth: Person * Utils`String * Season ==> Cloth
 	Cloth(designer_,name_, season_) == 
 	(designer := designer_; name := name_; season := season_; return self);
+	
+	--Set Season
+	public setSeason: Season ==> ()
+	setSeason(season_) == (season := season_);
+	
+	--Set Name
+	public setName: Utils`String ==> ()
+	setName(name_) == (name := name_)
+	pre len name_ > 0
+	post name = name_;
+	
 end Cloth

@@ -1,5 +1,4 @@
 class Event
-
 	instance variables
 	  public startTime : Utils`Date;
 	  public endTime : Utils`Date;
@@ -11,6 +10,7 @@ class Event
 	  inv Utils`getDatePosition(startTime,endTime) = <Before>;
 	  inv forall w in set workers & exists e in set w.jobs & 
 	  	e.name = name and e.stage = stage and e.startTime = startTime and e.endTime = endTime;
+	  inv not exists n1,n2 in set news & n1<> n2 and Notification`equals(n1,n2);
 	  
 	operations
 	 --Constructor
@@ -25,6 +25,33 @@ class Event
 			news := {});
 			return self;
 		);
+		
+		--Get  Notifications
+		public getNotifications: Notification`Type ==> set of (Notification)
+		getNotifications(type) == (
+			dcl notifications : set of Notification := {};
+			
+			for all n in set news do(
+				if(n.type = type) then notifications := notifications union {n}
+			);
+			
+			return notifications
+		)
+		post forall n in set RESULT & n.type = type;	--POS: Notifications are of a specific type
+		
+		--Add Notification
+		public addNotification: Notification ==> ()
+		addNotification(n) == (
+			news := news union {n};
+		)
+		pre not exists n2 in set news & Notification`equals(n,n2)
+		post n in set news;
+		
+		--Remove Notification
+		public removeNotification: Notification ==> ()
+		removeNotification(n) == (news := news \ {n})
+		pre n in set news
+		post n not in set news; 
 		
 		--Add Worker
 		public addWorker: Person ==> ()
@@ -43,11 +70,8 @@ class Event
 		)
 		pre worker in set workers				--PRE: Has worker
 		post worker not in set workers;	--POS: Worker was dismissed
-		
-		--Add Notification
-		public addNotification: Notification ==> ()
-		addNotification(notification) == (news := news union {notification});
-		
+				
+		--Update Workers
 		public updateWorkers: set of Person ==> ()
 		updateWorkers(workers_) == (
 			for all w in set workers_ do w.addJob(self);

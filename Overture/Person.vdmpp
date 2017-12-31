@@ -30,6 +30,39 @@ instance variables
  	attendance := {|->};
  	return self)
  	pre len name_ > 0;
+ 	
+ --Get Notifications
+ public getJobNotifications: Notification`Type ==> set of Notification
+ getJobNotifications(type) == (
+ 	dcl notifications : set of Notification := {};
+ 	
+ 	if(type = <Workers>) then (
+	 	for all event in set jobs do(
+	 		notifications := notifications union event.getNotifications(<Workers>)
+	 	);
+ 	)
+ 	else (
+ 		for all event in set dunion rng attendance do (
+ 			notifications := notifications union event.getNotifications(<Attendees>);
+ 		);
+ 	);
+ 	return notifications
+ )
+ post forall n in set RESULT & n.type = type;
+ 
+ --Get Attendance Notifications
+ public getAttendanceNotifications: FashionShow ==> set of Notification
+ getAttendanceNotifications(show) == (
+ 	dcl notifications : set of Notification := {};
+ 	
+ 	for all event in set attendance(show) do (
+ 		notifications := notifications union event.getNotifications(<Attendees>)
+ 	);
+ 	
+ 	return notifications
+ )
+ pre show in set dom attendance
+ post forall n in set RESULT & n.type = <Attendees>;
  
  --Add Ticket
  public addTicket: Ticket ==> ()

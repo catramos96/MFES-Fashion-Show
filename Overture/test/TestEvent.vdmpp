@@ -21,7 +21,7 @@ operations
  	 dcl event: Event := new Event("Keynote", stage, startTime, endTime);
  	 
  	 dcl notificationTime: Utils`Date := mk_Utils`Date(1997,02,14,21,00);
- 	 dcl notification: Notification := new Notification("Keynote started", notificationTime, event);
+ 	 dcl notification: Notification := new Notification("title","Keynote started", notificationTime,<Attendees>);
  	 
  	 event.addNotification(notification);
  	 

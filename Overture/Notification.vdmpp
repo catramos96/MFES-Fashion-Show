@@ -1,18 +1,40 @@
 class Notification
+types
+	public Type = <Workers> | <Attendees>
 instance variables
+	public title : Utils`String;
   public description : Utils`String;
   public date : Utils`Date;
-  public event : Event;
+  public type : Type;
   
 operations
 	--Construtor
-	public Notification: Utils`String * Utils`Date * Event==> Notification
-	Notification(description_,date_,event_) == (
+	public Notification: Utils`String * Utils`String * Utils`Date * Type ==> Notification
+	Notification(title_,description_,date_,type_) == (
+		title := title_;
 		description := description_; 
-		event := event_; 
 		date := date_;
-		return self;
-	)
-	pre Utils`getDatePosition(date_, event_.startTime) = <After>;								--PRE: Can only have news after the event started
-
+		type := type_;
+		return self
+	);
+	
+	--Set Title
+	public setTitle: Utils`String ==> ()
+	setTitle(title_) == (title := title_)
+	post title = title_;									--POS:Title was changed
+	
+	--Set Description
+	public setDescription: Utils`String ==> ()
+	setDescription(description_) == (description := description_)
+	post description = description_;			--POS: Description was changed
+	
+	--Set Date
+	public setDate: Utils`Date ==> ()
+	setDate(date_) == (date := date_)
+	post date = date_;
+	
+functions
+	--Equals
+	public static equals: Notification * Notification -> bool
+	equals(n1,n2) == (n1.title = n2.title and n1.description = n2.description and n1.type = n2.type);
 end Notification

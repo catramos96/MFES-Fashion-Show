@@ -1,13 +1,20 @@
 class Runway is subclass of Event
 instance variables
 	public clothes : seq of (Cloth);						
-	public models : map Person to Cloth;
+	public models : inmap Person to Cloth;
+	
+	inv forall m in set dom models & m in set workers;
+	inv forall c in seq clothes & c in set rng models;
+	inv not exists i1,i2 in set inds clothes & i1<>i2 and clothes(i1) = clothes(i2);
 	
 operations
 	--Constructor
 	public Runway: Utils`String * Stage * Utils`Date * Utils`Date ==> Runway
-	Runway(name, stage, startTime, endTime) == (
-		Event(name,stage,startTime,endTime);
+	Runway(name_, stage_, startTime_, endTime_) == (
+		name := name_;
+		stage := stage_;
+		startTime := startTime_;
+		endTime := endTime_;
 		return self
 	);
 	
@@ -17,7 +24,9 @@ operations
 		clothes := clothes ^ [cloth];
 		models := models ++ {model |-> cloth};
 	)
-	pre model in set workers;			--PRE: model must be a worker at an event
+	pre model in set workers and			--PRE: model must be a worker at an event
+	not exists i in set inds clothes & clothes(i) = cloth
+	and model not in set dom models;
 	
 	--Remove Cloth
 	public removeCloth: Cloth ==> ()
@@ -57,4 +66,25 @@ operations
 	pre index1 in set inds clothes and index2 in set inds clothes										--PRE: Both indexs must belong to the valid indexs
 	post clothes(index1) = clothes~(index2) and clothes(index2) = clothes~(index1);	--POS: Cloths were swapped
 	
+	--Get Designers
+	public getDesigners: () ==> set of Person
+	getDesigners() == (
+		dcl designers : set of Person := {};
+		for all c in set rng models do(
+			if(c.designer not in set designers) then designers := designers union {c.designer}
+		);
+		return designers
+	)
+	post forall d in set RESULT & exists c in seq clothes & c.designer = d;
+	
+	--Has Cloth
+	public hasCloth: Cloth ==> bool
+	hasCloth(cloth) == (
+		dcl i : int := 1;
+		while(i<>(len clothes + 1)) do(
+			if(clothes(i) = cloth) then return true;
+			i := i + 1;
+		);
+		return false
+	);
 end Runway

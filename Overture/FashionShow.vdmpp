@@ -61,8 +61,8 @@ class FashionShow
   	);
   	stages := stages \ {stage};
   )
-  pre stage in set stages
-  post stage not in set stages;
+  pre stage in set stages					--PRE: Stage in stages
+  post stage not in set stages;		--POS: Stage was removed
   
   --BuyTicket
   public buyTicket: Person * Ticket`TicketType ==> ()
@@ -74,25 +74,78 @@ class FashionShow
   pre nEntries(type) > card ticketsSold(type)										--PRE: Has entries for ticket type
   post (card ticketsSold~(type) + 1 = card ticketsSold(type)); 	--POS: Ticket was sold
   
+  --Get Attending Designers
+  public getAttendingDesigners: () ==> set of Person
+  getAttendingDesigners() == (
+  	dcl designers : set of Person := {};
+  	for all t in set dunion rng ticketsSold do(
+  		if(card t.owner.designed > 0) then designers := designers union {t.owner}
+  	);
+  	
+  	return designers;
+  )
+  post forall p in set RESULT & card p.designed > 0 and 	--POS: designers have clothes designed
+  	exists t in set p.tickets & t.show = self;						--POS: are attending this show
+  	
+  --Get Attending Designers to Event
+  public getAttendingDesignersToEvent: Event ==> set of Person
+  getAttendingDesignersToEvent(event) == (
+	  dcl designers : set of Person := {};
+	  	for all t in set dunion rng ticketsSold do(
+	  		if(card t.owner.designed > 0 and event in set t.owner.attendance(self)) 
+	  		then designers := designers union {t.owner}
+	  	);
+  	
+  	return designers;
+  )
+   post forall p in set RESULT & card p.designed > 0 and 	--POS: designers have clothes designed
+  	exists t in set p.tickets & t.show = self and					--POS: have ticket to the show
+  	event in set p.attendance(self);											--POS: attending the event
+  	
+  --Get Participating Designers
+  public getParticipatingDesigners: () ==> set of Person
+  getParticipatingDesigners() == (
+  	dcl designers : set of Person := {};
+  	
+  	for all e in set events do(
+  		if(is_Runway(e)) then designers := designers union e.getDesigners()
+  	);
+  	
+  	return designers
+  )
+  post forall p in set RESULT & card p.designed > 0 and	--POS: designers have clothes designed
+  	exists event in set p.jobs & event in set events and--POS: have a job in an event that is a runway
+  	is_Runway(event);
+
+  
+  --SETS--
+  
+  
+  --Set number of entries
   public setNEntries: Ticket`TicketType * nat ==> ()
   setNEntries(type,n) == (nEntries := nEntries ++ {type|->n})
   pre n >= card ticketsSold(type)																--PRE: Can only set to a number equal or above the number sold
   post nEntries(type) = n;																			--POS: Number of tickets was set
   
+  --Set Theme
   public setTheme: Utils`String ==> ()
   setTheme(theme_) == (theme := theme_)
-  pre len theme_ > 0
-  post theme = theme_;
+  pre len theme_ > 0		--PRE: Theme must be > 0
+  post theme = theme_;	--POS: Theme was changes
   
+  --Set Address
   public setAddress:Utils`String ==> ()
   setAddress(address_) == (address := address_)
-  pre len address_ > 0
-  post address = address_;
+  pre len address_ > 0			--PRE: Address must be > 0
+  post address = address_;	--POS: Address was changes
   
+  --Set Time
   public setTime: Utils`Date * Utils`Date ==> ()
   setTime(start_,end_) == (atomic(startTime := start_; endTime := end_))
-  pre Utils`getDatePosition(start_,end_) = <Before> and 
-  not exists e in set events & Utils`datesContainsDates(start_,end_,e.startTime,e.endTime) = false;
+  pre Utils`getDatePosition(start_,end_) = <Before> and 								--PRE: Start date must be before the end date
+  not exists e in set events & 																					--PRE: All events must be inside the new time limits
+  Utils`datesContainsDates(start_,end_,e.startTime,e.endTime) = false
+  post startTime = start_ and endTime = end_;
   
   ---------------------------------------------------------------------------
   functions
