@@ -4,6 +4,7 @@ class Event
 	  public endTime : Utils`Date;
 	  public name : Utils`String;
 	  public stage: Stage;
+	  public reserved: nat := 0;
 	  public workers : set of (Person);
 	  public news: set of (Notification);
 	  
@@ -80,15 +81,15 @@ class Event
 		
 		--Reserve Seat
 		public reserveSeat: () ==> ()
-		reserveSeat() == (stage.reserved := stage.reserved + 1)
-		pre stage.reserved < stage.seats						--PRE: must have free seats
-		post stage.reserved = stage~.reserved + 1;	--POS: reserved seats was inc
+		reserveSeat() == (reserved := reserved + 1)
+		pre reserved < stage.seats	--PRE: must have free seats
+		post reserved = reserved~ + 1;		--POS: reserved seats was inc
 		
 		--Free Seat
 		public freeSeat: () ==> ()
-		freeSeat() == (stage.reserved := stage.reserved - 1)
-		pre stage.reserved > 0											--PRE: must have reserved seats
-		post stage.reserved + 1 = stage~.reserved;	--POS: reserved seats was dec
+		freeSeat() == (reserved := reserved - 1)
+		pre reserved > 0								--PRE: must have reserved seats
+		post reserved + 1 = reserved~;	--POS: reserved seats was dec
 	
 	functions
 		--Overlap

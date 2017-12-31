@@ -2,38 +2,41 @@ class FashionShow
  ---------------------------------------------------------------------------
  instance variables
  	public theme : Utils`String; 		
-  public address : Utils`String;
   public startTime : Utils`Date;
   public endTime : Utils`Date;
+  public space : Space;
   
-  public stages: set of (Stage);
   public events : set of (Event);
 	public nEntries : map Ticket`TicketType to nat1; 								--Max capacity for each ticket type
 	public ticketsSold : map Ticket`TicketType to set of (Ticket);	--Sold
   
-  inv othersINV(theme,address,startTime,endTime);
+  inv othersINV(theme,startTime,endTime);
  	inv ticketsINV(ticketsSold,nEntries,theme);
-  inv stagesINV(stages);					
-  inv eventsINV(events,stages,startTime,endTime);
+  inv eventsINV(events,space,startTime,endTime);
   
  ---------------------------------------------------------------------------
  operations
  	--Constructor
- 	public FashionShow: Utils`String * Utils`String * Utils`Date * Utils`Date * nat * nat * nat ==> FashionShow
-  FashionShow(theme_, address_, startTime_, endTime_, maxVip_, maxNormal_, maxGuest_) == (
-  theme := theme_; address := address_; startTime := startTime_; endTime := endTime_; 
+ 	public FashionShow: Utils`String * Space * Utils`Date * Utils`Date * nat * nat * nat ==> FashionShow
+  FashionShow(theme_, space_, startTime_, endTime_, maxVip_, maxNormal_, maxGuest_) == (
+  theme := theme_; 
+  space := space_; 
+  startTime := startTime_; 
+  endTime := endTime_; 
   nEntries := {<VIP> |-> maxVip_, <Normal> |-> maxNormal_, <Guest> |-> maxGuest_};
   ticketsSold := {<VIP> |-> {}, <Normal> |-> {}, <Guest> |-> {}};
-  stages := {};
   events := {};
+  space.addReservation(self);
   return self )
-  pre othersINV(theme_,address_,startTime_,endTime_);
+  pre othersINV(theme_,startTime_,endTime_)
+  post self in set space.reservations and theme = theme_
+  and startTime = startTime_ and endTime = endTime_ and space = space_;
   
   --Add Event
   public addEvent: Event ==> ()
   addEvent(e) == (events := events union {e})
   pre Utils`datesContainsDates(startTime,endTime,e.startTime,e.endTime) and
-  		e.stage in set stages and not exists e2 in set events & Event`eventsOverlap(e,e2)
+  		e.stage in set space.stages and not exists e2 in set events & Event`eventsOverlap(e,e2)
   post e in set events;														--POS: New event in events
   
   --CancelEvent
@@ -46,24 +49,7 @@ class FashionShow
   )
   pre exists e in set events & e.name = name					--Exist event
   post (not exists e in set events & e.name = name);	--Event was removed
-  
-  --Add Stage
-  public addStage: Stage ==> ()
-  addStage(s) == (stages:= stages union {s})
-  pre s.reserved = 0 and not exists s1 in set stages & s.name = s1.name
-  post s in set stages;														--POS: New stage in stages
-  
-  --Remove Stage
-  public removeStage: Stage ==> ()
-  removeStage(stage) == (
-  	for all e in set events do (
-  		if(e.stage = stage) then cancelEvent(e.name);
-  	);
-  	stages := stages \ {stage};
-  )
-  pre stage in set stages					--PRE: Stage in stages
-  post stage not in set stages;		--POS: Stage was removed
-  
+    
   --BuyTicket
   public buyTicket: Person * Ticket`TicketType ==> ()
   buyTicket(attendee, type) == (
@@ -133,11 +119,15 @@ class FashionShow
   pre len theme_ > 0		--PRE: Theme must be > 0
   post theme = theme_;	--POS: Theme was changes
   
-  --Set Address
-  public setAddress:Utils`String ==> ()
-  setAddress(address_) == (address := address_)
-  pre len address_ > 0			--PRE: Address must be > 0
-  post address = address_;	--POS: Address was changes
+  --Set Space
+  public setSpace: Space ==> ()
+  setSpace(newSpace) == (
+  	dcl old : Space := space;
+	  newSpace.addReservation(self);
+	  space := newSpace;
+	  old.removeReservation(self)
+  )
+  post space = newSpace;
   
   --Set Time
   public setTime: Utils`Date * Utils`Date ==> ()
@@ -153,10 +143,10 @@ class FashionShow
   --INVARIANTS--
   
   --Others
-  public static othersINV: Utils`String * Utils`String * Utils`Date * Utils`Date -> bool
-  othersINV(theme,address,startTime,endTime) == (
+  public static othersINV: Utils`String * Utils`Date * Utils`Date -> bool
+  othersINV(theme,startTime,endTime) == (
   	 Utils`getDatePosition(startTime,endTime) = <Before> and 	--INV: start time < end time
-  		len theme > 0 and len address > 0												--INV: theme and address must have a name
+  		len theme > 0																						--INV: theme must have a name
   );
   
   --Tickets
@@ -167,15 +157,10 @@ class FashionShow
     (forall type in set dom entries & card tickets(type) <= entries(type))					--INV: nº of tickets sold must be equal or less than the nº entries
   );
   
-  --Stages
-  public static stagesINV: set of Stage -> bool
-  stagesINV(stages) == (
-  not exists s1,s2 in set stages & s1<>s2 and s1.name = s2.name);	--INV: stages must have different names
-  
   --Events
-  public static eventsINV: set of Event * set of Stage * Utils`Date * Utils`Date -> bool
-  eventsINV(events,stages,startTime,endTime) == (
-  	(forall e in set events & e.stage in set stages and 												--INV: events in stages belonging to the show		
+  public static eventsINV: set of Event * Space * Utils`Date * Utils`Date -> bool
+  eventsINV(events,space,startTime,endTime) == (
+  	(forall e in set events & e.stage in set space.stages and 									--INV: events in stages belonging to the show		
   		Utils`datesContainsDates(startTime,endTime,e.startTime,e.endTime)) and		--INV: events between the show dates							
     (not exists e1,e2 in set events & e1 <> e2 and Event`eventsOverlap(e1,e2))	--INV: events don't overlap							
   );
@@ -183,8 +168,7 @@ class FashionShow
   --OTHERS--
   
   public static showsOverlap: FashionShow * FashionShow -> bool
-  showsOverlap(s1,s2) == (
-  s1.address = s2.address and 
+  showsOverlap(s1,s2) == (Space`equal(s1.space,s2.space) and 
   Utils`datesOverlap(s1.startTime,s1.endTime,s2.startTime,s2.endTime)
   );
   

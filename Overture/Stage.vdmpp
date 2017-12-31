@@ -2,8 +2,8 @@ class Stage
  ---------------------------------------------------------------------------
 instance variables
 	public name : Utils`String;
-	public seats : nat1;
-	public reserved : nat := 0;
+	public seats : int;
+	inv seats > 0;
  ---------------------------------------------------------------------------
 operations
 --Constructor
@@ -14,23 +14,11 @@ Stage(name_,seats_) == (name := name_; seats := seats_; return self);
 public setName: Utils`String ==> ()
 setName(name_) == (name := name_)
 post name = name_;													--POS: Name was changed
+ ---------------------------------------------------------------------------
+functions
 
---Set Seats
-public setSeats: nat1 ==> ()
-setSeats(seats_) == (seats := seats_)
-pre seats_ >= reserved											--PRE: New seats must be equal or above the reserved
-post seats = seats_;												--POS: Nº of seats changed
-
---Increment Reserved Seats
-public incReserved: () ==> ()
-incReserved() == (reserved := reserved + 1)
-pre reserved + 1 <= seats										--PRE: Can reserve seats
-post reserved - 1 = reserved~;							--POS: Seats Reserved
-
---Decrement Reserved Sears
-public decReserved: () ==> ()
-decReserved() == (reserved := reserved - 1)
-pre reserved > 0														--PRE: Can free seat
-post reserved + 1 = reserved~;							--POS: Seat was free
+--Equal
+public static equal: Stage * Stage -> bool
+equal(s1,s2) == (s1.name = s2.name);
 
 end Stage

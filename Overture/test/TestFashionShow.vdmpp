@@ -11,60 +11,40 @@ protected assert : bool ==> ()
 
 public testConstructor:() ==> ()
 testConstructor() == (
-	show := new FashionShow("theme","address",mk_Utils`Date(1,1,1,1,1),mk_Utils`Date(1,1,1,1,2),10, 10, 10);
-	assert(show.theme = "theme" and show.address = "address" and show.startTime = mk_Utils`Date(1,1,1,1,1) and
+	dcl space1 : Space := new Space("name1","address1"),
+			space2 : Space := new Space("name2","address2");
+	
+	show := new FashionShow("theme",space1,mk_Utils`Date(1,1,1,1,1),mk_Utils`Date(1,1,1,1,2),10, 10, 10);
+	assert(show.theme = "theme" and show.space = space1 and show.startTime = mk_Utils`Date(1,1,1,1,1) and
 				show.endTime = mk_Utils`Date(1,1,1,1,2) and show.nEntries(<Normal>) = 10 and 
 				show.nEntries(<VIP>) = 10 and show.nEntries(<Guest>) = 10);
 								
-	--show := new FashionShow("","",mk_Utils`Date(1,1,1,1,1),mk_Utils`Date(1,1,1,1,2),10, 10, 10); 							-->BREAKS (address and theme len = 0)												
-	--show := new FashionShow("theme","address",mk_Utils`Date(1,1,1,1,2),mk_Utils`Date(1,1,1,1,1),10, 10, 10);	-->BREAKS (end data before start date)											
-	--show := new FashionShow("theme","address",mk_Utils`Date(1,1,1,1,1),mk_Utils`Date(1,1,1,1,1),10, 10, 10);	-->BREAKS (end data same as start date)	
+	--show := new FashionShow("",space1,mk_Utils`Date(1,1,1,1,1),mk_Utils`Date(1,1,1,1,2),10, 10, 10); 			-->BREAKS (theme len = 0)												
+	--show := new FashionShow("theme",space1,mk_Utils`Date(1,1,1,1,2),mk_Utils`Date(1,1,1,1,1),10, 10, 10);	-->BREAKS (end data before start date)											
+	--show := new FashionShow("theme",space1,mk_Utils`Date(1,1,1,1,1),mk_Utils`Date(1,1,1,1,1),10, 10, 10);	-->BREAKS (end data same as start date)	
 	
 	assert(FashionShow`equals(show,show));
-	assert(FashionShow`equals(show,new FashionShow("theme","ad2",mk_Utils`Date(2,2,2,2,2),mk_Utils`Date(3,3,3,3,3),20, 30, 40)));						--same name
-	assert(FashionShow`equals(show,new FashionShow("theme2","ad2",mk_Utils`Date(2,2,2,2,2),mk_Utils`Date(3,3,3,3,3),20, 30, 40)) = false);	--different name
+	assert(FashionShow`equals(show,new FashionShow("theme",space2,mk_Utils`Date(2,2,2,2,2),mk_Utils`Date(3,3,3,3,3),20, 30, 40)));						--same name
+	assert(FashionShow`equals(show,new FashionShow("theme2",space2,mk_Utils`Date(3,3,3,3,3),mk_Utils`Date(4,4,4,4,4),20, 30, 40)) = false);	--different name
 	
 	assert(FashionShow`showsOverlap(show,show));
-	assert(FashionShow`showsOverlap(show,new FashionShow("theme2","address",mk_Utils`Date(1,1,1,1,1),mk_Utils`Date(5,5,5,5,5),20, 30, 40)));--dates overlap on same address
+	--assert(FashionShow`showsOverlap(show,new FashionShow("theme2",space1,mk_Utils`Date(1,1,1,1,1),mk_Utils`Date(5,5,5,5,5),20, 30, 40)));-->BREAKS dates overlap on same address
 	return
 );
 
 public testEventsManager: () ==> ()
 testEventsManager() == (
 	dcl e1 : Event, e2 : Event, e3 : Event,
-			s1 : Stage, s2 : Stage, s3 : Stage,
+			s1 : Space := new Space("name1","address1"),
+			st1: Stage , st2: Stage, st3 : Stage,
 			p1 : Person, p2 : Person, p3 : Person, p4 : Person;
 
-	show := new FashionShow("theme","address",mk_Utils`Date(2017,01,01,10,00),mk_Utils`Date(2017,02,01,10,00),10, 10, 100);
-	s1 := new Stage("stage1",100);
-	s2 := new Stage("stage2",50);
-	s3 := new Stage("stage3",20);
-	
-	--add Stages
-	
-	show.addStage(s1);
-	show.addStage(s2);
-	show.addStage(s3);
-	--show.addStage(mk_FashionShow`Stage(1000,"stage1",0)); -->BREAKS (stage with duplicated name = s1)
-	--show.addStage(mk_FashionShow`Stage(1000,"stage4",1)); -->BREAKS (stage 1 seat reserved without reservation)
-	
-	e1 := new Event("name1", s1, mk_Utils`Date(2017,01,01,10,00), mk_Utils`Date(2017,01,01,16,00));
-	e2 := new Event("name2", s2, mk_Utils`Date(2017,01,01,16,00), mk_Utils`Date(2017,01,01,20,00));
-	e3 := new Event("name3", s3, mk_Utils`Date(2017,01,02,10,00), mk_Utils`Date(2017,01,02,16,00));
-	
-	--add Events
-	
-	show.addEvent(e1);
-	show.addEvent(e2);
-	show.addEvent(e3);
-	--show.addEvent(new Event("name1", s2, mk_Utils`Date(2017,01,01,10,00), mk_Utils`Date(2017,01,01,16,00))); -->BREAKS (event with same name);
-	--show.addEvent(new Event("name4", s1, mk_Utils`Date(2017,01,01,12,00), mk_Utils`Date(2017,01,01,17,00))); -->BREAKS (event in the same space at the same time);
-	--show.addEvent(new Event("name5", s2, mk_Utils`Date(2016,12,31,23,00), mk_Utils`Date(2017,01,01,16,00))); -->BREAKS (event outside the show date limits);
+	show := new FashionShow("theme",new Space("name2","address"),mk_Utils`Date(2017,01,01,10,00),mk_Utils`Date(2017,02,01,10,00),10, 10, 100);
 	
 	--sets
 	
-	show.setAddress("a");
-	assert(show.address = "a");
+	show.setSpace(s1);
+	assert(show.space = s1);
 	
 	show.setTheme("t");
 	assert(show.theme = "t");
@@ -74,6 +54,31 @@ testEventsManager() == (
 	
 	show.setTime(mk_Utils`Date(2017,01,01,08,00),mk_Utils`Date(2017,02,02,10,00)); -- Expand time limit
 	assert(show.startTime =mk_Utils`Date(2017,01,01,08,00) and show.endTime = mk_Utils`Date(2017,02,02,10,00));
+	
+	--add Stages
+	
+	st1 := new Stage("stage1",100);
+	st2 := new Stage("stage2",50);
+	st3 := new Stage("stage3",20);
+	
+	s1.addStage(st1);
+	s1.addStage(st2);
+	s1.addStage(st3);
+	--s1.addStage(new Stage(1000,"stage1")); -->BREAKS (stage with duplicated name = s1)
+	
+	e1 := new Event("name1", st1, mk_Utils`Date(2017,01,01,10,00), mk_Utils`Date(2017,01,01,16,00));
+	e2 := new Event("name2", st2, mk_Utils`Date(2017,01,01,16,00), mk_Utils`Date(2017,01,01,20,00));
+	e3 := new Event("name3", st3, mk_Utils`Date(2017,01,02,10,00), mk_Utils`Date(2017,01,02,16,00));
+	
+	--add Events
+	
+	show.addEvent(e1);
+	show.addEvent(e2);
+	show.addEvent(e3);
+	--show.addEvent(new Event("name1", st2, mk_Utils`Date(2017,01,01,10,00), mk_Utils`Date(2017,01,01,16,00))); -->BREAKS (event with same name);
+	--show.addEvent(new Event("name4", st1, mk_Utils`Date(2017,01,01,12,00), mk_Utils`Date(2017,01,01,17,00))); -->BREAKS (event in the same space at the same time);
+	--show.addEvent(new Event("name5", st2, mk_Utils`Date(2016,12,31,23,00), mk_Utils`Date(2017,01,01,16,00))); -->BREAKS (event outside the show date limits);
+		
 	
 	--buy tickets
 	p1 := new Person("name1",1);
@@ -93,10 +98,10 @@ testEventsManager() == (
 	assert(e1 not in set p1.attendance(show));
 	assert(e1 not in set p3.jobs);
 	
-	show.removeStage(s2);
+	show.space.removeStage(st2);
 	assert(e2 not in set show.events);
 	assert(e2 not in set p2.attendance(show));
-	assert(s2 not in set show.stages);
+	assert(st2 not in set show.space.stages);
 	assert(e2 not in set p4.jobs);
 	
 	return
