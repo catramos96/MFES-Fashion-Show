@@ -7,7 +7,47 @@ operations
  	
  	private testGetAttendanceNotifications: () ==> ()
  	testGetAttendanceNotifications() == (
- 		return;
+ 		dcl space: Space := new Space("name", "address");
+ 		dcl person: Person := new Person("name", 1);
+ 		dcl startTimeShow1: Utils`Date := mk_Utils`Date(1997,02,13,20,55);
+ 		dcl endTimeShow1: Utils`Date := mk_Utils`Date(1997,02,15,22,00);
+ 		dcl startTime1: Utils`Date := mk_Utils`Date(1997,02,14,21,00);
+ 		dcl endTime1: Utils`Date := mk_Utils`Date(1997,02,14,21,55);
+ 		dcl startTimeShow2: Utils`Date := mk_Utils`Date(1998,02,13,20,55);
+ 		dcl endTimeShow2: Utils`Date := mk_Utils`Date(1998,02,15,22,00);
+ 		dcl startTime2: Utils`Date := mk_Utils`Date(1998,02,14,21,00);
+ 		dcl endTime2: Utils`Date := mk_Utils`Date(1998,02,14,21,55);
+	  dcl stage: Stage := new Stage("B001", 200);
+	  
+	  dcl event1: Event := new Event("Keynote", stage, startTime1, endTime1);
+	  dcl event2: Event := new Event("Keynote", stage, startTime2, endTime2);
+	  dcl show1: FashionShow := new FashionShow("theme", space, startTimeShow1, endTimeShow1, 10, 10, 100);
+	  dcl show2: FashionShow := new FashionShow("theme", space, startTimeShow2, endTimeShow2, 10, 10, 100);
+	  
+ 	 	dcl notificationTime1: Utils`Date := mk_Utils`Date(1997,02,14,21,00);
+ 	 	dcl notification1: Notification := new Notification("title", "Keynote started", notificationTime1, <Attendees>);
+ 	 	dcl notification2: Notification := new Notification("title", "Keynote ended", notificationTime1, <Attendees>);
+ 	 
+ 	  dcl notificationTime2: Utils`Date := mk_Utils`Date(1998,02,14,21,00);
+ 	  dcl notification3: Notification := new Notification("title", "Keynote started", notificationTime2, <Attendees>);
+ 	  dcl notification4: Notification := new Notification("title", "Keynote ended", notificationTime2, <Attendees>);
+ 	 
+		space.addStage(stage);
+		
+		show1.addEvent(event1);
+		show1.buyTicket(person, <Normal>);
+		person.attend(event1);
+ 	  event1.addNotification(notification1);
+ 	  event1.addNotification(notification2);
+ 	  
+		show2.addEvent(event2);
+		show2.buyTicket(person, <Normal>);
+		person.attend(event2);
+ 	  event2.addNotification(notification3);
+ 	  event2.addNotification(notification4);
+		
+		expecting(person.getAttendanceNotifications(show1), {notification1, notification2});
+		expecting(person.getAttendanceNotifications(show2), {notification3, notification4});
  	);
  	
  	private testAddTicket: () ==> ()
