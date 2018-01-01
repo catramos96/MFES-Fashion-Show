@@ -1,0 +1,28 @@
+class TestCloth is subclass of TestClass
+operations
+ 	private testSetSeason: () ==> ()
+ 	testSetSeason() == (
+ 		dcl designer: Person := new Person("Designer", 1);
+ 		dcl cloth: Cloth := new Cloth(designer, "Coat", <Winter>);
+ 		
+ 		cloth.setSeason(<Fall>);
+ 		expecting(cloth.season, <Fall>);
+ 	);
+ 	
+ 	private testSetName: () ==> ()
+ 	testSetName() == (
+ 		dcl designer: Person := new Person("Designer", 1);
+ 		dcl cloth: Cloth := new Cloth(designer, "Coat", <Winter>);
+ 		
+ 		cloth.setName("Fedora");
+ 		expecting(cloth.name, "Fedora");
+ 	);
+ 	
+ 	public static main: () ==> ()
+	main() == (
+	  dcl t: TestCloth := new TestCloth();
+	  t.testSetSeason();
+	  t.testSetName();
+ 	);
+
+end TestCloth

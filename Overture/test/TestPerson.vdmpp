@@ -1,0 +1,139 @@
+class TestPerson is subclass of TestClass
+operations
+ 	private testGetJobNotifications: () ==> ()
+ 	testGetJobNotifications() == (
+ 		return;
+ 	);
+ 	
+ 	private testGetAttendanceNotifications: () ==> ()
+ 	testGetAttendanceNotifications() == (
+ 		return;
+ 	);
+ 	
+ 	private testAddTicket: () ==> ()
+ 	testAddTicket() == (
+ 		dcl space: Space := new Space("name", "address");
+ 		dcl show: FashionShow := new FashionShow("theme", space, mk_Utils`Date(1,1,1,1,1), mk_Utils`Date(1,1,1,1,2), 10, 10, 10);
+ 		dcl person: Person := new Person("name", 1);
+ 		dcl ticket: Ticket := new Ticket(<Normal>, person, show);
+ 		
+ 		person.addTicket(ticket);
+ 		expectingIn(ticket, person.tickets); 		
+ 	);
+ 	
+ 	private testAddJob: () ==> ()
+ 	testAddJob() == (
+ 		dcl space: Space := new Space("name", "address");
+ 		dcl show: FashionShow := new FashionShow("theme", space, mk_Utils`Date(1,1,1,1,1), mk_Utils`Date(1,1,1,1,2), 10, 10, 10);
+ 		dcl person: Person := new Person("name", 1);
+ 		dcl startTime: Utils`Date := mk_Utils`Date(1997,02,14,20,55);
+ 		dcl endTime: Utils`Date := mk_Utils`Date(1997,02,14,21,55);
+	  dcl stage: Stage := new Stage("B001", 200);
+	  dcl event: Event := new Event("Keynote", stage, startTime, endTime);
+	  
+ 		person.addJob(event);
+ 		expectingIn(event, person.jobs); 		
+ 	);
+ 	
+ 	private testRemoveJob: () ==> ()
+ 	testRemoveJob() == (
+ 		dcl space: Space := new Space("name", "address");
+ 		dcl show: FashionShow := new FashionShow("theme", space, mk_Utils`Date(1,1,1,1,1), mk_Utils`Date(1,1,1,1,2), 10, 10, 10);
+ 		dcl person: Person := new Person("name", 1);
+ 		dcl startTime: Utils`Date := mk_Utils`Date(1997,02,14,20,55);
+ 		dcl endTime: Utils`Date := mk_Utils`Date(1997,02,14,21,55);
+	  dcl stage: Stage := new Stage("B001", 200);
+	  dcl event: Event := new Event("Keynote", stage, startTime, endTime);
+	  
+ 		person.addJob(event);
+ 		person.removeJob(event);
+ 		expectingNotIn(event, person.jobs);
+ 	);
+ 	
+ 	
+ 	private testAttend: () ==> ()
+ 	testAttend() == (
+ 		dcl space: Space := new Space("name", "address");
+ 		dcl person: Person := new Person("name", 1);
+ 		dcl startTimeShow: Utils`Date := mk_Utils`Date(1997,02,13,20,55);
+ 		dcl startTime: Utils`Date := mk_Utils`Date(1997,02,14,21,00);
+ 		dcl endTime: Utils`Date := mk_Utils`Date(1997,02,14,21,55);
+ 		dcl endTimeShow: Utils`Date := mk_Utils`Date(1997,02,15,22,00);
+	  dcl stage: Stage := new Stage("B001", 200);
+	  dcl event: Event := new Event("Keynote", stage, startTime, endTime);
+	  dcl show: FashionShow := new FashionShow("theme", space, startTimeShow, endTimeShow, 10, 10, 100);
+		
+		space.addStage(stage);
+		show.addEvent(event);
+		show.buyTicket(person, <Normal>);
+		person.attend(event);
+		
+		expectingIn(event, person.attendance(show));
+ 	);
+ 	
+ 	
+ 	private testCancelAttendment: () ==> ()
+ 	testCancelAttendment() == (
+ 		dcl space: Space := new Space("name", "address");
+ 		dcl person: Person := new Person("name", 1);
+ 		dcl startTimeShow: Utils`Date := mk_Utils`Date(1997,02,13,20,55);
+ 		dcl startTime: Utils`Date := mk_Utils`Date(1997,02,14,21,00);
+ 		dcl endTime: Utils`Date := mk_Utils`Date(1997,02,14,21,55);
+ 		dcl endTimeShow: Utils`Date := mk_Utils`Date(1997,02,15,22,00);
+	  dcl stage: Stage := new Stage("B001", 200);
+	  dcl event: Event := new Event("Keynote", stage, startTime, endTime);
+	  dcl show: FashionShow := new FashionShow("theme", space, startTimeShow, endTimeShow, 10, 10, 100);
+		
+		space.addStage(stage);
+		show.addEvent(event);
+		show.buyTicket(person, <Normal>);
+		person.attend(event);
+		person.cancelAttendment(event);
+		
+		expectingNotIn(event, person.attendance(show));
+ 	);
+ 	
+ 	
+ 	private testIsDesigner: () ==> ()
+ 	testIsDesigner() == (
+ 		dcl person: Person := new Person("Designer", 1);
+ 		dcl cloth: Cloth := new Cloth(person, "Coat", <Winter>);
+ 		
+ 		expecting(person.isDesigner(), false);
+ 		person.designed := {cloth};
+ 		expecting(person.isDesigner(), true);
+ 	);
+ 	
+ 	
+ 	private testIsWorking: () ==> ()
+ 	testIsWorking() == (
+ 		dcl startTime1: Utils`Date := mk_Utils`Date(1997,02,14,21,00);
+ 		dcl endTime1: Utils`Date := mk_Utils`Date(1997,02,14,21,55);
+ 		dcl startTime2: Utils`Date := mk_Utils`Date(1997,02,13,20,55);
+ 		dcl endTime2: Utils`Date := mk_Utils`Date(1997,02,15,22,00);
+ 		dcl startTime3: Utils`Date := mk_Utils`Date(2009,02,13,20,55);
+ 		dcl endTime3: Utils`Date := mk_Utils`Date(2009,02,15,22,00);
+	  dcl stage: Stage := new Stage("B001", 200);
+	  dcl event: Event := new Event("Keynote", stage, startTime1, endTime1);
+ 		dcl person: Person := new Person("name", 1);
+ 		
+	  expecting(person.isWorking(startTime2, endTime2, {event}), true);
+	  expecting(person.isWorking(startTime3, endTime3, {event}), false);
+ 	);
+ 	
+ 	
+ 	public static main: () ==> ()
+	main() == (
+	  dcl t: TestPerson := new TestPerson();
+	  t.testGetJobNotifications();
+	  t.testGetAttendanceNotifications();
+	  t.testAddTicket();
+	  t.testAddJob();
+	  t.testRemoveJob();
+	  t.testAttend();
+	  t.testCancelAttendment();
+	  t.testIsDesigner();
+	  t.testIsWorking();
+ 	);
+
+end TestPerson

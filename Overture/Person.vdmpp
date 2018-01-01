@@ -105,18 +105,18 @@ instance variables
 	 	event.freeSeat());
  )
  post event not in set dunion rng attendance;	--Event not in the attendance
- 
+ 	
  --Is Designer
  	public isDesigner: () ==> bool
  	isDesigner() ==  (
  		if(card designed = 0) 
- 			then return true
+ 			then return false
  		else
- 			return false);
+ 			return true);
  			
  	functions 	
  	--Is Working (Function)
- 	public static isWorking: Utils`Date * Utils`Date * set of (Event) -> bool
+ 	public static isWorking: Utils`Date * Utils`Date * set of Event -> bool
   isWorking(startD,endD,jobs) == (
  	exists event in set jobs & Utils`datesOverlap(event.startTime,event.endTime,startD,endD))
  	pre Utils`getDatePosition(startD,endD) = <Before>;	--PRE: start time < end time

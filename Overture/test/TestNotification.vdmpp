@@ -1,0 +1,55 @@
+class TestNotification is subclass of TestClass
+operations
+ 	private testEquals: () ==> ()
+ 	testEquals() == (
+		dcl date: Utils`Date := mk_Utils`Date(1997,02,14,20,55);
+ 		dcl n1: Notification := new Notification("title1", "description1", date, <Workers>);
+	 	dcl n2: Notification := new Notification("title1", "description1", date, <Workers>);
+	 	dcl n3: Notification := new Notification("title2", "description1", date, <Workers>);
+	 	dcl n4: Notification := new Notification("title1", "description2", date, <Workers>);
+	 	dcl n5: Notification := new Notification("title1", "description1", date, <Attendees>);
+ 		
+ 		expecting(Notification`equals(n1, n2), true);
+ 		expecting(Notification`equals(n1, n3), false);
+ 		expecting(Notification`equals(n1, n4), false);
+ 		expecting(Notification`equals(n1, n5), false);
+ 	);
+ 	
+ 	private testSetTitle: () ==> ()
+ 	testSetTitle() == (
+		dcl date: Utils`Date := mk_Utils`Date(1997,02,14,20,55);
+ 		dcl n: Notification := new Notification("title", "description", date, <Workers>);
+ 		
+ 		n.setTitle("different title");
+ 		expecting(n.title, "different title");
+ 	);
+ 	
+ 	private testSetDescription: () ==> ()
+ 	testSetDescription() == (
+		dcl date: Utils`Date := mk_Utils`Date(1997,02,14,20,55);
+ 		dcl n: Notification := new Notification("title", "description", date, <Workers>);
+ 		
+ 		n.setDescription("different description");
+ 		expecting(n.description, "different description");
+ 	);
+ 	
+ 	private testSetDate: () ==> ()
+ 	testSetDate() == (
+		dcl date: Utils`Date := mk_Utils`Date(1997,02,14,20,55);
+		dcl newDate: Utils`Date := mk_Utils`Date(1997,02,14,21,55);
+ 		dcl n: Notification := new Notification("title", "description", date, <Workers>);
+ 		
+ 		n.setDate(newDate);
+ 		expecting(n.date, newDate);
+ 	);
+ 	
+ 	public static main: () ==> ()
+	main() == (
+	  dcl t: TestNotification := new TestNotification();
+	  t.testEquals();
+	  t.testSetTitle();
+	  t.testSetDescription();
+	  t.testSetDate();
+ 	);
+
+end TestNotification

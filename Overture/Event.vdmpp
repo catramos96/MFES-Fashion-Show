@@ -5,8 +5,8 @@ class Event
 	  public name : Utils`String;
 	  public stage: Stage;
 	  public reserved: nat := 0;
-	  public workers : set of (Person);
-	  public news: set of (Notification);
+	  public workers : set of Person;
+	  public news: set of Notification;
 	  
 	  inv Utils`getDatePosition(startTime,endTime) = <Before>;
 	  inv forall w in set workers & exists e in set w.jobs & 
@@ -28,12 +28,12 @@ class Event
 		);
 		
 		--Get  Notifications
-		public getNotifications: Notification`Type ==> set of (Notification)
+		public getNotifications: Notification`Type ==> set of Notification
 		getNotifications(type) == (
 			dcl notifications : set of Notification := {};
 			
-			for all n in set news do(
-				if(n.type = type) then notifications := notifications union {n}
+			for all n in set news do (
+				if (n.type = type) then notifications := notifications union {n}
 			);
 			
 			return notifications
