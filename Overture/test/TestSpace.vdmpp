@@ -1,0 +1,26 @@
+class TestSpace is subclass of TestClass
+operations
+ 	private testSetAddress: () ==> ()
+ 	testSetAddress() == (
+ 		dcl space: Space := new Space("name", "address");
+ 		space.setAddress("different address");
+ 		
+ 		expecting(space.address, "different address");
+ 	);
+ 	
+ 	private testSetName: () ==> ()
+ 	testSetName() == (
+ 		dcl space: Space := new Space("name", "address");
+ 		space.setName("different name");
+ 		
+ 		expecting(space.name, "different name");
+ 	);
+ 	
+ 	public static main: () ==> ()
+	main() == (
+	  dcl t: TestSpace := new TestSpace();
+	  t.testSetAddress();
+	  t.testSetName();
+ 	);
+
+end TestSpace
