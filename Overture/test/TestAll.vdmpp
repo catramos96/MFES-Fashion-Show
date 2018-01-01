@@ -2,10 +2,15 @@ class TestAll
 operations
 public main: () ==> ()
 main() == (
+ new TestCloth().main();
  new TestEvent().main();
  new TestFashionShow().main();
+ new TestNotification().main();
+ new TestPerson().main();
  new TestPresentation().main();
  new TestShowsManager().main();
+ new TestSpace().main();
+ new TestStage().main();
  new TestUtils().main();
 );
 end TestAll

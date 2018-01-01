@@ -13,6 +13,28 @@ operations
  	 expecting(event.workers, {worker});
  	);
  	
+ 	private testGetNotifications: () ==> ()
+ 	testGetNotifications() == (
+	 dcl startTime: Utils`Date := mk_Utils`Date(1997,02,14,20,55);
+ 	 dcl endTime: Utils`Date := mk_Utils`Date(1997,02,14,21,55);
+ 	 dcl stage: Stage := new Stage("B001", 200);
+ 	 dcl event: Event := new Event("Keynote", stage, startTime, endTime);
+ 	 
+ 	 dcl notificationTime: Utils`Date := mk_Utils`Date(1997,02,14,21,00);
+ 	 dcl notification1: Notification := new Notification("title", "Keynote to start", notificationTime, <Workers>);
+ 	 dcl notification2: Notification := new Notification("title", "Keynote ended", notificationTime, <Attendees>);
+ 	
+	 dcl workerNotifications: set of Notification;
+	 dcl attendeeNotifications: set of Notification;
+	 
+	 event.news := {notification1, notification2};
+	 workerNotifications := event.getNotifications(<Workers>);
+	 attendeeNotifications := event.getNotifications(<Attendees>);
+	 
+	 expecting(workerNotifications, {notification1});
+	 expecting(attendeeNotifications, {notification2});
+ 	);
+ 	
  	private testAddNotification: () ==> ()
  	testAddNotification() == (
 	 dcl startTime: Utils`Date := mk_Utils`Date(1997,02,14,20,55);
@@ -21,11 +43,29 @@ operations
  	 dcl event: Event := new Event("Keynote", stage, startTime, endTime);
  	 
  	 dcl notificationTime: Utils`Date := mk_Utils`Date(1997,02,14,21,00);
- 	 dcl notification: Notification := new Notification("title","Keynote started", notificationTime,<Attendees>);
+ 	 dcl notification1: Notification := new Notification("title", "Keynote started", notificationTime, <Attendees>);
+ 	 dcl notification2: Notification := new Notification("title", "Keynote ended", notificationTime, <Attendees>);
+ 	 
+ 	 event.addNotification(notification1);
+ 	 expecting(event.news, {notification1});
+ 	 
+ 	 event.addNotification(notification2);
+ 	 expecting(event.news, {notification1, notification2});
+ 	);
+ 	
+ 	private testRemoveNotification: () ==> ()
+ 	testRemoveNotification() == (
+	 dcl startTime: Utils`Date := mk_Utils`Date(1997,02,14,20,55);
+ 	 dcl endTime: Utils`Date := mk_Utils`Date(1997,02,14,21,55);
+ 	 dcl stage: Stage := new Stage("B001", 200);
+ 	 dcl event: Event := new Event("Keynote", stage, startTime, endTime);
+ 	 
+ 	 dcl notificationTime: Utils`Date := mk_Utils`Date(1997,02,14,21,00);
+ 	 dcl notification: Notification := new Notification("title", "Keynote started", notificationTime, <Attendees>);
  	 
  	 event.addNotification(notification);
- 	 
- 	 expecting(event.news, {notification});
+ 	 event.removeNotification(notification);
+ 	 expectingNotIn(notification, event.news);
  	);
  	
  	private testUpdateWorkers: () ==> ()
@@ -67,7 +107,9 @@ operations
 	main() == (
 	  dcl t: TestEvent := new TestEvent();
 	  t.testAddWorker();
+	  t.testGetNotifications();
 	  t.testAddNotification();
+	  t.testRemoveNotification();
 	  t.testUpdateWorkers();
 	  t.testEventsOverlap();
  	);
