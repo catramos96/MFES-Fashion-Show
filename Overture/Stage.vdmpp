@@ -14,6 +14,12 @@ Stage(name_,seats_) == (name := name_; seats := seats_; return self);
 public setName: Utils`String ==> ()
 setName(name_) == (name := name_)
 post name = name_;													--POS: Name was changed
+
+--SetSeats
+public setSeats: nat1 ==> ()
+setSeats(seats_) == (seats := seats_)
+pre seats < seats_
+post seats = seats_;
  ---------------------------------------------------------------------------
 functions
 

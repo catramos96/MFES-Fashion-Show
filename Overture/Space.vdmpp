@@ -6,9 +6,11 @@ instance variables
 	 public stages : set of Stage;
 	 public reservations : set of FashionShow;
 	 
-	 inv len address > 0 and len name > 0 and
-	 not exists s1,s2 in set stages & s1<>s2 and Stage`equal(s1,s2);
-	 inv not exists s1,s2 in set reservations & s1<>s2 and FashionShow`showsOverlap(s1,s2);
+	 inv len address > 0 and len name > 0 and		--INV: address and name > 0
+	 not exists s1,s2 in set stages & 					--INV: different stages
+	 s1<>s2 and Stage`equal(s1,s2);
+	 inv not exists s1,s2 in set reservations & --INV: reservations can't overlap
+	 s1<>s2 and FashionShow`showsOverlap(s1,s2);
  ---------------------------------------------------------------------------
 operations
 --Constructor
@@ -65,6 +67,11 @@ public setAddress: Utils`String ==> ()
 setAddress(address_) == (address := address_)
 pre len address_ > 0			--PRE: address > 0
 post address = address_;	--POS: address changed
+
+--Reset
+public reset: () ==> ()
+reset() == (reservations := {})
+post reservations = {};
  ---------------------------------------------------------------------------
  functions
  

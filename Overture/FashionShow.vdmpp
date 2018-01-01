@@ -102,7 +102,18 @@ class FashionShow
   post forall p in set RESULT & card p.designed > 0 and	--POS: designers have clothes designed
   	exists event in set p.jobs & event in set events and--POS: have a job in an event that is a runway
   	is_Runway(event);
-
+  	
+  public getWorkers: () ==> set of Person
+  getWorkers() == (
+  	dcl workers : set of Person := {};
+  	for all e in set events do (
+  		workers := workers union e.workers;
+  	);
+  	return workers;
+  )
+  post forall w in set RESULT & 						--POST Worker has a job in an event of the show
+  exists e in set events & e in set w.jobs;
+  
   
   --SETS--
   
@@ -167,6 +178,7 @@ class FashionShow
   
   --OTHERS--
   
+  --Two shows are overlaping if the dates overlap in the same space
   public static showsOverlap: FashionShow * FashionShow -> bool
   showsOverlap(s1,s2) == (Space`equal(s1.space,s2.space) and 
   Utils`datesOverlap(s1.startTime,s1.endTime,s2.startTime,s2.endTime)

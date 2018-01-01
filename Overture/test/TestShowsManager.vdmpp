@@ -18,13 +18,13 @@ operations
  	 	
  	s1 := new FashionShow(theme, new Space("name1","addr1"), d1, d3, 50, 10, 10);
  	s2 := new FashionShow(theme, new Space("name1","addr1"), d2, d3, 50, 10, 10);		--time/address overlap (with s1) -> BREAK
- 	s3 := new FashionShow(theme, new Space("name2","addr2"), d1, d2, 50, 10, 10);		--time overlaps (with s1)
+ 	s3 := new FashionShow(theme, new Space("name2","addr2"), d1, d2, 50, 10, 10);		--same show theme with time overlaps (with s1) ->BREAK
  	s4 := new FashionShow(theme, new Space("name1","addr1"), d3, d4, 50, 10, 10);		--address overlap (with s1)
  	
  	manager.addShow(s1);
- 	-- 	manager.addShow(s1); --Duplicated
-  --	manager.addShow(s2);
- 	manager.addShow(s3);
+ 	-- 	manager.addShow(s1); --Duplicated -> BREAKS
+  --	manager.addShow(s2); --Time and address overlap -->BREAK
+ 	--  manager.addShow(s3); --Same Theme with time overlaps -->BREAK
  	manager.addShow(s4); 	
  	
  	return
@@ -49,8 +49,8 @@ operations
   t.testAddShows();
   t.manager.reset();
   
-  t.testRemoveShows();
-  t.manager.reset();
+ t.testRemoveShows();
+ t.manager.reset();
  );
  
 end TestShowsManager

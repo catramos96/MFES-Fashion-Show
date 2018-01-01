@@ -1,11 +1,13 @@
 class Runway is subclass of Event
+types
+	public Model :: worker : Person
+									cloth : Cloth;
 instance variables
-	public clothes : seq of (Cloth);						
-	public models : inmap Person to Cloth;
+	public models : seq of (Model);						
 	
-	inv forall m in set dom models & m in set workers;
-	inv forall c in seq clothes & c in set rng models;
-	inv not exists i1,i2 in set inds clothes & i1<>i2 and clothes(i1) = clothes(i2);
+	inv forall i in set inds models & models(i).worker in set workers;	--INV: Models are workers
+	inv not exists i1,i2 in set inds models & 													--INV: Can't have duplicated models
+	i1<>i2 and equalModels(models(i1),models(i2));
 	
 operations
 	--Constructor
@@ -18,73 +20,77 @@ operations
 		return self
 	);
 	
-	--Add Cloth
-	public addCloth: Cloth * Person ==> ()
-	addCloth(cloth,model) == (
-		clothes := clothes ^ [cloth];
-		models := models ++ {model |-> cloth};
+	--Add Model to sequence
+	public addToSequence: Cloth * Person ==> ()
+	addToSequence(cloth,worker) == (
+		models := models ^ [mk_Model(worker,cloth)]
 	)
-	pre model in set workers and			--PRE: model must be a worker at an event
-	not exists i in set inds clothes & clothes(i) = cloth
-	and model not in set dom models;
+	pre worker in set workers and																				--PRE: model must be a worker at an event
+	not exists i in set inds models & 
+	equalModels(models(i),mk_Model(worker,cloth))											--PRE:Can't have duplicated models
+	post exists i in set inds models & equalModels(models(i),mk_Model(worker,cloth));	--POS: Model was added to the sequence
 	
-	--Remove Cloth
-	public removeCloth: Cloth ==> ()
-	removeCloth(cloth) == 
-	(
-		dcl tmp: seq of (Cloth) := clothes,
-				tmp2: set of Person := dom models;
-		clothes := [];
-		
-		--Remove clothes
-		while(len tmp <> 0) do
-		(
-			if(hd tmp <> cloth) then (clothes := clothes ^ [(hd tmp)]);
-			tmp := tl tmp
+	--Removel From Sequence
+	public removeFromSequence: Model ==> ()
+	removeFromSequence(model) == (
+	dcl models_ : seq of Model := [];
+	
+		for all i in set inds models do(
+			if(equalModels(models(i),model) = false) then models_ := models ^ [models(i)];
 		);
 		
-		--Remove clothes from models
-		for all p in set tmp2 do
-		(
-			if(cloth = models(p)) then (models := models :-> {cloth})
+		models := models_;
+	)
+	post not exists i in set inds models & equalModels(models(i),model);
+	
+	--Remove Worker Model
+	public removeWorkerModel: Person ==> ()
+	removeWorkerModel(worker) == (
+		dcl models_ : seq of Model := [];
+	
+		for all i in set inds models do(
+			if(models(i).worker <> worker) then models_ := models ^ [models(i)];
 		);
-	)
-	pre cloth in set elems clothes																					--PRE: Cloth part of runway
-	post cloth not in set elems clothes and cloth not in set (rng models);	--POS: Cloth not part of the runway and not associated to  the model
-	
-	--Swap Order
-	public swapOrder: nat1 * nat1 ==> ()
-	swapOrder(index1,index2) ==
-	(
-		dcl c1 : Cloth,	c2 : Cloth;
 		
-		c1 := clothes(index1);
-		c2 := clothes(index2);
-		
-		clothes := clothes ++ {index1 |-> c2, index2 |-> c1};
+		models := models_;
 	)
-	pre index1 in set inds clothes and index2 in set inds clothes										--PRE: Both indexs must belong to the valid indexs
-	post clothes(index1) = clothes~(index2) and clothes(index2) = clothes~(index1);	--POS: Cloths were swapped
+	post not exists i in set inds models & models(i).worker = worker;	--POS: Worker is no longer a model
 	
+	--Dismiss Worker (Override)
+		public dismissWorker: Person ==> ()
+		dismissWorker(worker) == (
+			workers := workers \ {worker};
+			worker.removeJob(self);
+			if(exists i in set inds models & models(i).worker = worker)
+			then removeWorkerModel(worker);
+		)
+		pre worker in set workers				--PRE: Has worker
+		post worker not in set workers and not exists i in set inds models & models(i).worker = worker;	--POS: Worker was dismissed
+	
+	--Get Cloths
+	public getClothes: () ==> set of Cloth
+  getClothes() == (
+		dcl clothes : set of Cloth := {};
+		for all i in set inds models do(
+			if(models(i).cloth not in set clothes) then clothes := clothes union {models(i).cloth}
+		);
+		return clothes
+	)
+	post forall i in set inds models & models(i).cloth in set RESULT;
+		
 	--Get Designers
 	public getDesigners: () ==> set of Person
 	getDesigners() == (
 		dcl designers : set of Person := {};
-		for all c in set rng models do(
-			if(c.designer not in set designers) then designers := designers union {c.designer}
+		for all i in set inds models do(
+			if(models(i).cloth.designer not in set designers) then designers := designers union {models(i).cloth.designer}
 		);
 		return designers
 	)
-	post forall d in set RESULT & exists c in seq clothes & c.designer = d;
+	post forall i in set inds models & models(i).worker in set RESULT;
 	
-	--Has Cloth
-	public hasCloth: Cloth ==> bool
-	hasCloth(cloth) == (
-		dcl i : int := 1;
-		while(i<>(len clothes + 1)) do(
-			if(clothes(i) = cloth) then return true;
-			i := i + 1;
-		);
-		return false
-	);
+	
+functions
+public equalModels: Model * Model -> bool
+equalModels(m1,m2) == (m1.cloth = m2.cloth and m1.worker = m2.worker);
 end Runway

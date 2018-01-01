@@ -106,6 +106,12 @@ instance variables
  )
  post event not in set dunion rng attendance;	--Event not in the attendance
  
+ --AddCloth
+ public addCloth: Cloth ==> ()
+ addCloth(cloth) == (designed := designed union {cloth})
+ pre cloth.designer.id = id and cloth not in set designed
+ post cloth in set designed;
+ 
  --Is Designer
  	public isDesigner: () ==> bool
  	isDesigner() ==  (
