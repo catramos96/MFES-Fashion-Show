@@ -32,6 +32,7 @@ instance variables
  	return self)
  	pre len name_ > 0;
  	
+ 	
 	 	--Buy Ticket
 	 public buyTicket: FashionShow * Ticket`TicketType ==> ()
 	 buyTicket(show,type) == (
@@ -50,6 +51,14 @@ instance variables
 	 	)
 	 pre t.owner = self and t not in set tickets							--PRE: Person is owner of ticket
 	 post (t in set tickets and t.show in set dom attendance);--POS: New Ticket in tickets and show in attendance schedule (per show)
+	 
+	 --Remove Ticket
+	 public removeTicket: Ticket ==> ()
+	 removeTicket(t) == (
+	 	tickets := tickets \ {t}
+	 )
+	 pre t in set tickets				--PRE: Has ticket
+	 post t not in set tickets;	--POS: Ticket was removed
  	
  	--------------------
  	----- ATTENDEE -----

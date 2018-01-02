@@ -19,10 +19,19 @@ operations
 	post fs in set shows;										--POS: New show successfully added
 	
 	--Remove Show
-	public removeShow: Utils`String ==> ()
-	removeShow(theme) == (shows := shows \ {iota x in set shows & x.theme = theme})
-	pre exists s in set shows & s.theme = theme					--PRE: Show in the seq of shows
-	post not exists	s in set shows & s.theme = theme;		--POS: Show was removed
+	public removeShow: FashionShow ==> ()
+	removeShow(show) == (
+	dcl space: Space := show.space;
+		for all e in set show.events do(
+			show.cancelEvent(e.name)
+		);
+		for all t in set dunion rng show.ticketsSold do(
+			t.owner.removeTicket(t);
+		);
+		shows := shows \ {show}
+	)
+	pre show in set shows 						--PRE: Show in the seq of shows
+	post show not in set shows;	--POS: Show was removed
 	
 	--Get Spaces
 	public getSpaces: () ==> set of Space
