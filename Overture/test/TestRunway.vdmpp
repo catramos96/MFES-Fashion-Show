@@ -20,8 +20,8 @@ operations
 		
  		person1.addCloth(cloth);
  		
- 		show.buyTicket(person1, <Normal>);
- 		show.buyTicket(person2, <Normal>);
+ 		person1.buyTicket(show, <Normal>);
+ 		person2.buyTicket(show, <Normal>);
  		
  		show.addEvent(runwayEvent);
 		
@@ -58,9 +58,9 @@ operations
  		person1.addCloth(cloth1);
  		person1.addCloth(cloth2);
  		
- 		show.buyTicket(person1, <Normal>);
- 		show.buyTicket(person2, <Normal>);
- 		show.buyTicket(person3, <Normal>);
+ 		person1.buyTicket(show, <Normal>);
+ 		person2.buyTicket(show, <Normal>);
+ 		person3.buyTicket(show, <Normal>);
  		
  		show.addEvent(runwayEvent);
 		
@@ -96,8 +96,8 @@ operations
 		
  		person1.addCloth(cloth);
  		
- 		show.buyTicket(person1, <Normal>);
- 		show.buyTicket(person2, <Normal>);
+ 		person1.buyTicket(show, <Normal>);
+ 		person2.buyTicket(show, <Normal>);
  		
  		show.addEvent(runwayEvent);
 		
@@ -135,10 +135,10 @@ operations
 		
  		person1.addCloth(cloth1);
  		person1.addCloth(cloth2);
- 		
- 		show.buyTicket(person1, <Normal>);
- 		show.buyTicket(person2, <Normal>);
- 		show.buyTicket(person3, <Normal>);
+
+ 		person1.buyTicket(show, <Normal>);
+ 		person2.buyTicket(show, <Normal>);
+ 		person3.buyTicket(show, <Normal>);
  		
  		show.addEvent(runwayEvent);
 		
@@ -179,9 +179,9 @@ operations
  		person1.addCloth(cloth1);
  		person1.addCloth(cloth2);
  		
- 		show.buyTicket(person1, <Normal>);
- 		show.buyTicket(person2, <Normal>);
- 		show.buyTicket(person3, <Normal>);
+ 		person1.buyTicket(show, <Normal>);
+ 		person2.buyTicket(show, <Normal>);
+ 		person3.buyTicket(show, <Normal>);
  		
  		show.addEvent(runwayEvent);
 		
@@ -219,9 +219,9 @@ operations
  		person1.addCloth(cloth1);
  		person1.addCloth(cloth2);
  		
- 		show.buyTicket(person1, <Normal>);
- 		show.buyTicket(person2, <Normal>);
- 		show.buyTicket(person3, <Normal>);
+ 		person1.buyTicket(show, <Normal>);
+ 		person2.buyTicket(show, <Normal>);
+ 		person3.buyTicket(show, <Normal>);
  		
  		show.addEvent(runwayEvent);
 		

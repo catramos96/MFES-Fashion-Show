@@ -37,8 +37,8 @@ operations
  			
 	manager.addShow(s1);
 	manager.addShow(s2);
-	manager.removeShow("t1");
-	manager.removeShow("t2");
+	manager.removeShow(s1);
+	manager.removeShow(s2);
 	--manager.removeShow("t1");	--Already removed -> Doesn't Exits -> BREAK
 	--manager.removeShow("a");	--Doesn't exist -> BREAK
  );

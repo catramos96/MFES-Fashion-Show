@@ -28,7 +28,7 @@ operations
 	--Add Model to sequence
 	public addToSequence: Cloth * Person ==> ()
 	addToSequence(cloth,worker) == (
-		models := models ^ [mk_Model(worker,cloth)]
+		models := models ^ [mk_Model(worker,cloth)];
 	)
 	pre worker in set workers and																				--PRE: model must be a worker at an event
 	not exists i in set inds models & 

@@ -86,8 +86,8 @@ operations
 		p3 := new Person("name3",3);
 		p4 := new Person("name4",4);
 		
-		show.buyTicket(p1,<Normal>);
-		show.buyTicket(p2,<Normal>);
+		p1.buyTicket(show, <Normal>);
+		p2.buyTicket(show, <Normal>);
 		p1.attend(e1);
 		p2.attend(e2);
 		e1.addWorker(p3);
@@ -155,16 +155,16 @@ operations
 	private testBuyTicket: () ==> ()
 	testBuyTicket() == (
  		dcl space: Space := new Space("name", "address");
- 		dcl show: FashionShow := new FashionShow("theme", space, mk_Utils`Date(1,1,1,1,1), mk_Utils`Date(1,1,1,1,2), 10, 10, 1);
+ 		dcl show: FashionShow := new FashionShow("theme", space, mk_Utils`Date(1,1,1,1,1), mk_Utils`Date(1,1,1,1,2), 10, 1, 10);
  		dcl person1: Person := new Person("name1", 1);
  	 	dcl person2: Person := new Person("name2", 2);	
  	 	
- 		show.buyTicket(person1, <Guest>);
- 		-- show.buyTicket(person2, <Guest>); --> BREAKS (fashion show with maximum of 1 guest ticket, and there is no Guest tickets left)
+ 	 	person1.buyTicket(show, <Normal>);
+ 		-- show.buyTicket(person2, <Normal>); --> BREAKS (fashion show with maximum of 1 Normal ticket, and there is no Normal tickets left)
 		
-		expecting(card show.ticketsSold(<Guest>), 1);
+		expecting(card show.ticketsSold(<Normal>), 1);
 		expecting(card person1.tickets, 1);
-		expecting(show.ticketsSold(<Guest>), person1.tickets);
+		expecting(show.ticketsSold(<Normal>), person1.tickets);
 	);
 	
 	private testEquals: () ==> ()
@@ -186,8 +186,8 @@ operations
  	 	dcl person2: Person := new Person("name2", 2);	
  		dcl cloth: Cloth := new Cloth(person1, "Coat", <Winter>);
  	 	
- 		show.buyTicket(person1, <Normal>);
- 		show.buyTicket(person2, <Normal>);
+ 		person1.buyTicket(show, <Normal>);
+ 		person2.buyTicket(show, <Normal>);
  		
  		person1.addCloth(cloth);
  		
@@ -215,9 +215,9 @@ operations
  		person1.addCloth(cloth1);
  		person2.addCloth(cloth2);
  		
- 		show.buyTicket(person1, <Normal>);
- 		show.buyTicket(person2, <Normal>);
- 		show.buyTicket(person3, <Normal>);
+ 		person1.buyTicket(show, <Normal>);
+ 		person2.buyTicket(show, <Normal>);
+ 		person3.buyTicket(show, <Normal>);
  		
 		show.addEvent(event);
 		
@@ -226,7 +226,7 @@ operations
  		
 		expecting(show.getAttendingDesignersToEvent(event), {person1});
 	);
-	
+
 	private testGetParticipatingDesigners: () ==> ()
 	testGetParticipatingDesigners() == (
  		dcl space: Space := new Space("name", "address");
@@ -249,10 +249,10 @@ operations
 		
  		person1.addCloth(cloth1);
  		person2.addCloth(cloth2);
- 		
- 		show.buyTicket(person1, <Normal>);
- 		show.buyTicket(person2, <Normal>);
- 		show.buyTicket(person3, <Normal>);
+
+ 		person1.buyTicket(show, <Normal>);
+ 		person2.buyTicket(show, <Normal>);
+ 		person3.buyTicket(show, <Normal>);
  		
  		show.addEvent(runwayEvent);
 		
