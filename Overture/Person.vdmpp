@@ -10,13 +10,12 @@ instance variables
   public attendance : inmap FashionShow to (set of (Event));
   
   inv len name > 0;
-  inv forall t in set tickets & t.owner.id = id;
-  inv forall s in set speaks & (																		--INV: each presentation (speaks)
-  		exists x in set dom attendance & s in set x.events and 				--INV are being attended
-  		(exists t in set tickets & t.show = x and t.type = <Guest>));	--INV: has ticket of type guest to the show
-  inv forall c in set designed & c.designer.id = id;
-  inv forall s in set dom attendance & exists t in set tickets & t.show = s;
-  --inv forall j in set jobs & exists w in set j.workers & w.id = id;
+  inv forall t in set tickets & t.owner.id = id;	--INV: All tickets addressed to the person
+  inv forall s in set speaks & (																											--INV: each presentation (speaks)
+  		exists x in set dom attendance & s in set x.events and 													--INV are being attended
+  		(exists t in set tickets & t.show = x and t.type = <Guest> or t.type = <VIP>));	--INV: has ticket of type guest to the show
+  inv forall c in set designed & c.designer.id = id;	--INV: All clothes designed are marked as designed by the person
+  inv forall s in set dom attendance & exists t in set tickets & t.show = s;	--INV: Attendances only in events belonging to a show with a ticket
   
  operations
  
@@ -36,9 +35,12 @@ instance variables
 	 	--Buy Ticket
 	 public buyTicket: FashionShow * Ticket`TicketType ==> ()
 	 buyTicket(show,type) == (
-	 	if(show.canSellTicket(type)) 
-	 		then addTicket(show.sellTicket(self,type))
-	 );
+	 	if(show.canSellTicket(type))
+	 		then (
+	 		addTicket(show.sellTicket(self,type))
+	 		)
+	 )
+	 pre not exists t in set tickets & t.show = show;	--PRE: Can only have 1 ticket per show
 	 
 	 --Add Ticket
 	 public addTicket: Ticket ==> ()
@@ -197,7 +199,12 @@ instance variables
  		else
  			return true);
  			
- 	functions 	
+ 	functions 
+ 	
+ 	--Has Ticket to show
+	 public hasTicketToShow : FashionShow * set of Ticket -> bool
+	 hasTicketToShow(show,tickets) == (exists t in set tickets & t.show = show);
+	 	
  	--Is Working (Function)
  	public static isWorking: Utils`Date * Utils`Date * set of Event * set of Presentation-> bool
   isWorking(startD,endD,jobs,speaks) == (

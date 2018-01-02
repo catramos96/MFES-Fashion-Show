@@ -78,6 +78,7 @@ class FashionShow
   	)
   )
   pre Person`isWorking(presentation.startTime,presentation.endTime,guest.jobs,guest.speaks) = false	--PRE: guest has free time
+  and guest.hasTicketToShow(self,guest.tickets)																											--PRE: can't have ticket to show
   post exists t in set ticketsSold(<Guest>) & t.owner = guest;	--POS: guest was added
   
   --Can sell ticket
