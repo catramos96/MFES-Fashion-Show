@@ -29,6 +29,28 @@ operations
 	pre s not in set speakers
 	post s in set speakers;
 	
+	--Remove speaker
+	public removeSpeaker: Person ==> ()
+	removeSpeaker(s) == (
+		speakers := speakers \ {s};
+		if(s not in set workers) then		--If it's a guest
+			s.cancelPresentation(self);
+	)
+	pre self in set s.speaks or s in set workers
+	post s not in set speakers;
+	
+	--Dismiss Worker (Override)
+	public dismissWorker: Person ==> ()
+		dismissWorker(worker) == (
+			workers := workers \ {worker};
+			worker.removeJob(self);
+			if(worker in set speakers) then (
+				removeSpeaker(worker);
+			)
+		)
+		pre worker in set workers				--PRE: Has worker
+		post worker not in set workers;	--POS: Worker was dismissed
+	
 	-- Update Sub Theme
 	public updateSubTheme: Utils`String ==> ()
 	updateSubTheme(newSubTheme) == (

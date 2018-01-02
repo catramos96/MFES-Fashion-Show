@@ -57,8 +57,28 @@ class FashionShow
   	ticketsSold := ticketsSold ++ {type |-> (ticketsSold(type) union {t})};
   	return t
   )
-  pre nEntries(type) > card ticketsSold(type)										--PRE: Has entries for ticket type
+  pre nEntries(type) > card ticketsSold(type) and								--PRE: Has entries for ticket type
+  		type <> <Guest>																						--PRE: Canno't buy guest tickets
   post (card ticketsSold~(type) + 1 = card ticketsSold(type)); 	--POS: Ticket was sold
+  
+  --InviteGuest
+  public inviteGuest: Person * [Presentation] ==> ()
+  inviteGuest(guest,presentation) == (
+  	dcl t : Ticket := new Ticket(<Guest>,guest,self);
+  	ticketsSold := ticketsSold ++ { <Guest> |-> ticketsSold(<Guest>) union {t}};
+  	
+  	if(presentation <> nil) then 
+  		presentation.addSpeaker(guest);
+  		
+  	guest.addTicket(t);								--Is given a ticket
+  	
+  	if(presentation <> nil) then(
+	  	guest.addSpeaking(presentation);	--Is speaking
+	  	guest.attend(presentation);				--Is attending
+  	)
+  )
+  pre Person`isWorking(presentation.startTime,presentation.endTime,guest.jobs,guest.speaks) = false	--PRE: guest has free time
+  post exists t in set ticketsSold(<Guest>) & t.owner = guest;	--POS: guest was added
   
   --Can sell ticket
   public canSellTicket: Ticket`TicketType ==> bool

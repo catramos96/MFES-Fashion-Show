@@ -157,8 +157,8 @@ operations
 	  dcl event: Event := new Event("Keynote", stage, startTime1, endTime1);
  		dcl person: Person := new Person("name", 1);
  		
-	  expecting(person.isWorking(startTime2, endTime2, {event}), true);
-	  expecting(person.isWorking(startTime3, endTime3, {event}), false);
+	  expecting(person.isWorking(startTime2, endTime2, {event},{}), true);
+	  expecting(person.isWorking(startTime3, endTime3, {event},{}), false);
  	);
  	
  	

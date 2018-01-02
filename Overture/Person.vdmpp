@@ -11,7 +11,9 @@ instance variables
   
   inv len name > 0;
   inv forall t in set tickets & t.owner.id = id;
-  --inv forall p in set speaks & p in set rng attendance and exists ticket for that show
+  inv forall s in set speaks & (																		--INV: each presentation (speaks)
+  		exists x in set dom attendance & s in set x.events and 				--INV are being attended
+  		(exists t in set tickets & t.show = x and t.type = <Guest>));	--INV: has ticket of type guest to the show
   inv forall c in set designed & c.designer.id = id;
   inv forall s in set dom attendance & exists t in set tickets & t.show = s;
   --inv forall j in set jobs & exists w in set j.workers & w.id = id;
@@ -51,8 +53,16 @@ instance variables
  	----- ATTENDEE -----
  	--------------------
  	
+ 	--Add guest speaking
+ 	public addSpeaking: Presentation ==> ()
+ 	addSpeaking(presentation) == (
+ 		speaks := speaks union {presentation};
+ 	)
+ 	pre isWorking(presentation.startTime,presentation.endTime,jobs,speaks)
+ 	post presentation in set speaks;
+ 	
  	--Get Next Attendance
- 	public getNextAttendance: Utils`Date ==> Event
+ 	public getNextAttendance: Utils`Date ==> [Event]
  	getNextAttendance(currentDate) == (
  		dcl event : Event;
  		dcl notNull : bool := false;
@@ -114,12 +124,25 @@ instance variables
  --Cancel Attendment
  public cancelAttendment: Event ==> ()
  cancelAttendment(event) == (
- 	if(event in set dunion rng attendance) then (
-	 	dcl show : FashionShow := iota x in set dom attendance & exists e in set attendance(x) & e = event;
-	 	attendance := attendance ++ {show |-> (attendance(show) \ {event})};
-	 	event.freeSeat());
+	 	if(event in set dunion rng attendance) then (
+		 	dcl show : FashionShow := iota x in set dom attendance & exists e in set attendance(x) & e = event;
+		 	attendance := attendance ++ {show |-> (attendance(show) \ {event})};
+		 	event.freeSeat();
+	 );
+	 if(is_Presentation(event)) then
+	 	cancelPresentation(event);
  )
- post event not in set dunion rng attendance;	--Event not in the attendance
+ post event not in set dunion rng attendance;	--POS: Event not in the attendance
+ 
+ --Cancel Presentation
+ public cancelPresentation: Presentation ==> ()
+ cancelPresentation(presentation) == (
+ 	speaks := speaks \ {presentation};
+ 	if(self in set presentation.speakers) then
+ 		presentation.removeSpeaker(self);
+ )
+ pre presentation in set speaks				--PRE: Is Speaker at the presentation
+ post presentation not in set speaks;	--POS: Is no longer the speaker
  
  ------------------
  ----- Worker -----
@@ -147,8 +170,8 @@ instance variables
  --Add Job
  public addJob: Event ==> ()
  addJob(e) == (jobs := jobs union {e})
- pre isWorking(e.startTime,e.endTime,jobs) = false	--PRE: Job does not overlap another
- post e in set jobs;																--POS: New Job was added to workSchedule
+ pre isWorking(e.startTime,e.endTime,jobs,speaks) = false	--PRE: Job does not overlap another
+ post e in set jobs;																			--POS: New Job was added to workSchedule
  
  --RemoveJob
  public removeJob: Event ==> ()
@@ -176,8 +199,10 @@ instance variables
  			
  	functions 	
  	--Is Working (Function)
- 	public static isWorking: Utils`Date * Utils`Date * set of Event -> bool
-  isWorking(startD,endD,jobs) == (
- 	exists event in set jobs & Utils`datesOverlap(event.startTime,event.endTime,startD,endD))
+ 	public static isWorking: Utils`Date * Utils`Date * set of Event * set of Presentation-> bool
+  isWorking(startD,endD,jobs,speaks) == (
+ 	(exists event in set jobs & Utils`datesOverlap(event.startTime,event.endTime,startD,endD)) or			-- Has work ?
+ 	(exists speak in set speaks & Utils`datesOverlap(speak.startTime,speak.endTime,startD,endD))			-- Has presentation ?
+ 	)
  	pre Utils`getDatePosition(startD,endD) = <Before>;	--PRE: start time < end time
 end Person
