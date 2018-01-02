@@ -1,7 +1,7 @@
 class Person
 	
 instance variables
-	public name : Utils`String;
+	public name : seq of char;
 	public id : nat1;
 	public tickets : set of (Ticket);
   public speaks : set of (Presentation);
@@ -20,7 +20,7 @@ instance variables
  operations
  
  --Constructor
- public Person: Utils`String * nat ==> Person
+ public Person: seq of char * nat ==> Person
  Person(name_,id_) == (
  	name := name_; 
  	id := id_; 

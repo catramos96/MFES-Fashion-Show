@@ -3,14 +3,14 @@ types
 	public Season = <Winter> | <Fall> | <Summer> | <Spring>;
 instance variables
 	public designer : Person;
-	public name : Utils`String;
+	public name : seq of char;
 	public season : Season;
 	
 	inv len name > 0;
 	
 operations
 	--Constructor
-	public Cloth: Person * Utils`String * Season ==> Cloth
+	public Cloth: Person * seq of char * Season ==> Cloth
 	Cloth(designer_,name_, season_) == 
 	(designer := designer_; name := name_; season := season_; return self);
 	
@@ -19,7 +19,7 @@ operations
 	setSeason(season_) == (season := season_);
 	
 	--Set Name
-	public setName: Utils`String ==> ()
+	public setName: seq of char ==> ()
 	setName(name_) == (name := name_)
 	pre len name_ > 0
 	post name = name_;

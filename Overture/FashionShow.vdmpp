@@ -1,7 +1,7 @@
 class FashionShow
  ---------------------------------------------------------------------------
  instance variables
- 	public theme : Utils`String; 		
+ 	public theme : seq of char; 		
   public startTime : Utils`Date;
   public endTime : Utils`Date;
   public space : Space;
@@ -17,7 +17,7 @@ class FashionShow
  ---------------------------------------------------------------------------
  operations
  	--Constructor
- 	public FashionShow: Utils`String * Space * Utils`Date * Utils`Date * nat * nat * nat ==> FashionShow
+ 	public FashionShow: seq of char * Space * Utils`Date * Utils`Date * nat * nat * nat ==> FashionShow
   FashionShow(theme_, space_, startTime_, endTime_, maxVip_, maxNormal_, maxGuest_) == (
   theme := theme_; 
   space := space_; 
@@ -40,7 +40,7 @@ class FashionShow
   post e in set events;														--POS: New event in events
   
   --CancelEvent
-  public cancelEvent: Utils`String ==> ()
+  public cancelEvent: seq of char ==> ()
   cancelEvent(name) == (
   	dcl event: Event := iota x in set events & x.name = name;
   	for all w in set event.workers do ( event.dismissWorker(w) );
@@ -153,7 +153,7 @@ class FashionShow
   post nEntries(type) = n;																			--POS: Number of tickets was set
   
   --Set Theme
-  public setTheme: Utils`String ==> ()
+  public setTheme: seq of char ==> ()
   setTheme(theme_) == (theme := theme_)
   pre len theme_ > 0		--PRE: Theme must be > 0
   post theme = theme_;	--POS: Theme was changes
@@ -182,14 +182,14 @@ class FashionShow
   --INVARIANTS--
   
   --Others
-  public static othersINV: Utils`String * Utils`Date * Utils`Date -> bool
+  public static othersINV: seq of char * Utils`Date * Utils`Date -> bool
   othersINV(theme,startTime,endTime) == (
   	 Utils`getDatePosition(startTime,endTime) = <Before> and 	--INV: start time < end time
   		len theme > 0																						--INV: theme must have a name
   );
   
   --Tickets
-  public static ticketsINV: map Ticket`TicketType to (set of (Ticket)) * map Ticket`TicketType to nat1 * Utils`String -> bool
+  public static ticketsINV: map Ticket`TicketType to (set of (Ticket)) * map Ticket`TicketType to nat1 * seq of char -> bool
   ticketsINV(tickets,entries,theme) == (
   	(forall t in set dunion rng tickets & t.show.theme=theme) and										--INV: tickets sold must be regarding the show						
     (not exists t1,t2 in set dunion rng tickets & t1<>t2 and t1.owner=t2.owner)and 	--INV: tickets can only be sold once to the same person

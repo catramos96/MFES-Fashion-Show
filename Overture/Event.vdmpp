@@ -2,7 +2,7 @@ class Event
 	instance variables
 	  public startTime : Utils`Date;
 	  public endTime : Utils`Date;
-	  public name : Utils`String;
+	  public name : seq of char;
 	  public stage: Stage;
 	  public reserved: nat := 0;
 	  public workers : set of Person;
@@ -15,7 +15,7 @@ class Event
 	  
 	operations
 	 --Constructor
-	 	public Event: Utils`String * Stage * Utils`Date * Utils`Date ==> Event
+	 	public Event: seq of char * Stage * Utils`Date * Utils`Date ==> Event
 		Event(name_, stage_, startDate_, endDate_) == (
 			atomic(
 			name := name_; 

@@ -2,14 +2,14 @@ class Notification
 types
 	public Type = <Workers> | <Attendees>
 instance variables
-	public title : Utils`String;
-  public description : Utils`String;
+	public title : seq of char;
+  public description : seq of char;
   public date : Utils`Date;
   public type : Type;
   
 operations
 	--Construtor
-	public Notification: Utils`String * Utils`String * Utils`Date * Type ==> Notification
+	public Notification: seq of char * seq of char * Utils`Date * Type ==> Notification
 	Notification(title_,description_,date_,type_) == (
 		title := title_;
 		description := description_; 
@@ -19,12 +19,12 @@ operations
 	);
 	
 	--Set Title
-	public setTitle: Utils`String ==> ()
+	public setTitle: seq of char ==> ()
 	setTitle(title_) == (title := title_)
 	post title = title_;									--POS:Title was changed
 	
 	--Set Description
-	public setDescription: Utils`String ==> ()
+	public setDescription: seq of char ==> ()
 	setDescription(description_) == (description := description_)
 	post description = description_;			--POS: Description was changed
 	

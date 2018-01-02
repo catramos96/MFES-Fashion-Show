@@ -1,11 +1,11 @@
 class Presentation is subclass of Event
 instance variables
   public speakers: set of (Person);
-  public subTheme: Utils`String;
+  public subTheme: seq of char;
   
 operations
 	-- Constructor
-	public Presentation: Utils`String * Stage * Utils`Date * Utils`Date * Utils`String ==> Presentation
+	public Presentation: seq of char * Stage * Utils`Date * Utils`Date * seq of char ==> Presentation
 	Presentation(name_, stage_, startDate_, endDate_, subTheme_) == (
 		atomic(
 			name := name_;
@@ -52,7 +52,7 @@ operations
 		post worker not in set workers;	--POS: Worker was dismissed
 	
 	-- Update Sub Theme
-	public updateSubTheme: Utils`String ==> ()
+	public updateSubTheme: seq of char ==> ()
 	updateSubTheme(newSubTheme) == (
 		subTheme := newSubTheme;
 	);

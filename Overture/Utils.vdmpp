@@ -2,7 +2,6 @@ class Utils
 types
 	public static TimeType = <Year> | <Month> | <Day> | <Hour> | <Minutes>;
 	public static DatePosition = <Before> | <Same> | <After>;
-	public String = seq of (char);
 	public Date :: year : nat
 								 month: nat1
 								 day: nat1

@@ -1,8 +1,8 @@
 class Space
  ---------------------------------------------------------------------------
 instance variables
-	 public address : Utils`String;
-	 public name : Utils`String;
+	 public address : seq of char;
+	 public name : seq of char;
 	 public stages : set of Stage;
 	 public reservations : set of FashionShow;
 	 
@@ -14,7 +14,7 @@ instance variables
  ---------------------------------------------------------------------------
 operations
 --Constructor
-public Space: Utils`String * Utils`String ==> Space
+public Space: seq of char * seq of char ==> Space
 Space(name_,address_) == (
 	name := name_ ; 
 	address := address_ ; 
@@ -57,13 +57,13 @@ pre stage in set stages					--PRE: Stage in stages
 post stage not in set stages;		--POS: Stage was removed
 
 --Set Name
-public setName: Utils`String ==> ()
+public setName: seq of char ==> ()
 setName(name_) == (name := name_)
 pre len name_ > 0				--PRE: name > 0
 post name = name_;			--POS: name changed
 
 --Set Address
-public setAddress: Utils`String ==> ()
+public setAddress: seq of char ==> ()
 setAddress(address_) == (address := address_)
 pre len address_ > 0			--PRE: address > 0
 post address = address_;	--POS: address changed

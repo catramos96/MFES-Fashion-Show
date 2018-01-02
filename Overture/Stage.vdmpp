@@ -1,17 +1,17 @@
 class Stage
  ---------------------------------------------------------------------------
 instance variables
-	public name : Utils`String;
+	public name : seq of char;
 	public seats : int;
 	inv seats > 0;
  ---------------------------------------------------------------------------
 operations
 --Constructor
-public Stage: Utils`String * nat1 ==> Stage
+public Stage: seq of char * nat1 ==> Stage
 Stage(name_,seats_) == (name := name_; seats := seats_; return self);
 
 --Set Name
-public setName: Utils`String ==> ()
+public setName: seq of char ==> ()
 setName(name_) == (name := name_)
 post name = name_;													--POS: Name was changed
 

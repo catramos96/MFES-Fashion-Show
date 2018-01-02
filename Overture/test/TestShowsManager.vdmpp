@@ -8,7 +8,7 @@ operations
  public testAddShows: () ==> ()
  testAddShows() == (
  	dcl s1 : FashionShow, s2 : FashionShow, s3 : FashionShow, s4: FashionShow,
- 			theme : Utils`String := "theme",
+ 			theme : seq of char := "theme",
  			d1: Utils`Date, d2: Utils`Date, d3: Utils`Date, d4: Utils`Date;
  	
  	d1 := mk_Utils`Date(2017,02,24,10,30);
@@ -46,7 +46,7 @@ operations
  private testGetSpaces: () ==> ()
  testGetSpaces() == (
  	dcl s1 : FashionShow, s2 : FashionShow,
- 			theme : Utils`String := "theme",
+ 			theme : seq of char := "theme",
  			d1: Utils`Date, d2: Utils`Date, d3: Utils`Date,
  			space1: Space, space2: Space;
  	
