@@ -88,9 +88,10 @@ instance variables
  --Attend
  public attend: Event ==> ()
  attend(event) == (
-  dcl show : FashionShow := iota x in set dom attendance & event in set x.events;
+ 	dcl show: FashionShow := iota x in set dom attendance & event in set x.events,
+ 			ticket: Ticket := iota x in set tickets & show = x.show;
  	attendance := attendance ++ {show |-> (attendance(show) union {event})};
- 	event.reserveSeat()
+ 	if(ticket.type = <Normal> or ticket.type = <Guest>) then event.reserveSeat()
  )
  pre exists t in set tickets & event in set t.show.events and 	--PRE: Event belongs to a ticket show
  	event not in set attendance(t.show)														--PRE: Event is not reserved 
