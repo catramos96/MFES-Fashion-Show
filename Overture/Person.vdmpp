@@ -31,6 +31,26 @@ instance variables
  	return self)
  	pre len name_ > 0;
  	
+	 	--Buy Ticket
+	 public buyTicket: FashionShow * Ticket`TicketType ==> ()
+	 buyTicket(show,type) == (
+	 	if(show.canSellTicket(type)) 
+	 		then addTicket(show.sellTicket(self,type))
+	 );
+	 
+	 --Add Ticket
+	 public addTicket: Ticket ==> ()
+	 addTicket(t) == (
+	 	tickets := tickets union {t};
+	 	attendance := attendance ++ {t.show |-> {}}
+	 	)
+	 pre t.owner = self and t not in set tickets							--PRE: Person is owner of ticket
+	 post (t in set tickets and t.show in set dom attendance);--POS: New Ticket in tickets and show in attendance schedule (per show)
+ 	
+ 	--------------------
+ 	----- ATTENDEE -----
+ 	--------------------
+ 	
  	--Get Next Attendance
  	public getNextAttendance: Utils`Date ==> Event
  	getNextAttendance(currentDate) == (
@@ -64,26 +84,7 @@ instance variables
  	pre show in set dom attendance
  	post forall e in set attendance(show) & e in set RESULT;
  	
- --Get Notifications
- public getJobNotifications: Notification`Type ==> set of Notification
- getJobNotifications(type) == (
- 	dcl notifications : set of Notification := {};
- 	
- 	if(type = <Workers>) then (
-	 	for all event in set jobs do(
-	 		notifications := notifications union event.getNotifications(<Workers>)
-	 	);
- 	)
- 	else (
- 		for all event in set dunion rng attendance do (
- 			notifications := notifications union event.getNotifications(<Attendees>);
- 		);
- 	);
- 	return notifications
- )
- post forall n in set RESULT & n.type = type;
- 
- --Get Attendance Notifications
+ 	--Get Attendance Notifications
  public getAttendanceNotifications: FashionShow ==> set of Notification
  getAttendanceNotifications(show) == (
  	dcl notifications : set of Notification := {};
@@ -97,34 +98,7 @@ instance variables
  pre show in set dom attendance
  post forall n in set RESULT & n.type = <Attendees>;
  
- --Buy Ticket
- public buyTicket: FashionShow * Ticket`TicketType ==> ()
- buyTicket(show,type) == (
- 	if(show.canSellTicket(type)) 
- 		then addTicket(show.sellTicket(self,type))
- );
- 
- --Add Ticket
- public addTicket: Ticket ==> ()
- addTicket(t) == (
- 	tickets := tickets union {t};
- 	attendance := attendance ++ {t.show |-> {}}
- 	)
- pre t.owner = self and t not in set tickets							--PRE: Person is owner of ticket
- post (t in set tickets and t.show in set dom attendance);--POS: New Ticket in tickets and show in attendance schedule (per show)
   
- --Add Job
- public addJob: Event ==> ()
- addJob(e) == (jobs := jobs union {e})
- pre isWorking(e.startTime,e.endTime,jobs) = false	--PRE: Job does not overlap another
- post e in set jobs;																--POS: New Job was added to workSchedule
- 
- --RemoveJob
- public removeJob: Event ==> ()
- removeJob(j) ==(jobs := jobs \ {j})
- pre j in set jobs					--PRE: Person has job
- post j not in set jobs;		--POS: Person dismissed from job
- 
  --Attend
  public attend: Event ==> ()
  attend(event) == (
@@ -146,6 +120,45 @@ instance variables
 	 	event.freeSeat());
  )
  post event not in set dunion rng attendance;	--Event not in the attendance
+ 
+ ------------------
+ ----- Worker -----
+ ------------------
+ 
+ --Get Job Notifications
+ public getJobNotifications: Notification`Type ==> set of Notification
+ getJobNotifications(type) == (
+ 	dcl notifications : set of Notification := {};
+ 	
+ 	if(type = <Workers>) then (
+	 	for all event in set jobs do(
+	 		notifications := notifications union event.getNotifications(<Workers>)
+	 	);
+ 	)
+ 	else (
+ 		for all event in set dunion rng attendance do (
+ 			notifications := notifications union event.getNotifications(<Attendees>);
+ 		);
+ 	);
+ 	return notifications
+ )
+ post forall n in set RESULT & n.type = type;
+  
+ --Add Job
+ public addJob: Event ==> ()
+ addJob(e) == (jobs := jobs union {e})
+ pre isWorking(e.startTime,e.endTime,jobs) = false	--PRE: Job does not overlap another
+ post e in set jobs;																--POS: New Job was added to workSchedule
+ 
+ --RemoveJob
+ public removeJob: Event ==> ()
+ removeJob(j) ==(jobs := jobs \ {j})
+ pre j in set jobs					--PRE: Person has job
+ post j not in set jobs;		--POS: Person dismissed from job
+ 
+ --------------------
+ ----- DESIGNER -----
+ --------------------
  
  --AddCloth
  public addCloth: Cloth ==> ()
