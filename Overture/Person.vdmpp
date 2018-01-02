@@ -31,6 +31,39 @@ instance variables
  	return self)
  	pre len name_ > 0;
  	
+ 	--Get Next Attendance
+ 	public getNextAttendance: Utils`Date ==> Event
+ 	getNextAttendance(currentDate) == (
+ 		dcl event : Event;
+ 		dcl notNull : bool := false;
+ 		
+ 		for all e in set dunion rng attendance do (	--All events attending
+ 			--If it's after the current date
+			if(Utils`getDatePosition(e.startTime,currentDate) = <After>) then(	
+				--Has to compare with other already found
+				if(notNull) then (
+					--Compare
+					if(Utils`getDatePosition(e.startTime, event.startTime) = <After>) then
+						event := e;
+				)
+				else (
+					event := e;
+					notNull := true;
+				)
+			)
+ 		);
+ 		
+ 		return event
+ 	);
+ 	
+ 	--Get Attendance
+ 	public getAttendance: FashionShow ==> set of Event
+ 	getAttendance(show) == (
+ 		return attendance(show);
+ 	)
+ 	pre show in set dom attendance
+ 	post forall e in set attendance(show) & e in set RESULT;
+ 	
  --Get Notifications
  public getJobNotifications: Notification`Type ==> set of Notification
  getJobNotifications(type) == (
