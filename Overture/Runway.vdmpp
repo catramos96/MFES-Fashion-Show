@@ -13,10 +13,15 @@ operations
 	--Constructor
 	public Runway: Utils`String * Stage * Utils`Date * Utils`Date ==> Runway
 	Runway(name_, stage_, startTime_, endTime_) == (
-		name := name_;
-		stage := stage_;
-		startTime := startTime_;
-		endTime := endTime_;
+		atomic(
+			name := name_;
+			stage := stage_;
+			startTime := startTime_;
+			endTime := endTime_;
+			models := [];
+			workers := {};
+			news := {};
+		);
 		return self
 	);
 	
@@ -36,7 +41,7 @@ operations
 	dcl models_ : seq of Model := [];
 	
 		for all i in set inds models do(
-			if(equalModels(models(i),model) = false) then models_ := models ^ [models(i)];
+			if(equalModels(models(i),model) = false) then models_ := models_ ^ [models(i)];
 		);
 		
 		models := models_;
@@ -49,7 +54,7 @@ operations
 		dcl models_ : seq of Model := [];
 	
 		for all i in set inds models do(
-			if(models(i).worker <> worker) then models_ := models ^ [models(i)];
+			if(models(i).worker <> worker) then models_ := models_ ^ [models(i)];
 		);
 		
 		models := models_;
@@ -59,10 +64,10 @@ operations
 	--Dismiss Worker (Override)
 		public dismissWorker: Person ==> ()
 		dismissWorker(worker) == (
-			workers := workers \ {worker};
-			worker.removeJob(self);
 			if(exists i in set inds models & models(i).worker = worker)
 			then removeWorkerModel(worker);
+			workers := workers \ {worker};
+			worker.removeJob(self);
 		)
 		pre worker in set workers				--PRE: Has worker
 		post worker not in set workers and not exists i in set inds models & models(i).worker = worker;	--POS: Worker was dismissed
@@ -87,7 +92,7 @@ operations
 		);
 		return designers
 	)
-	post forall i in set inds models & models(i).worker in set RESULT;
+	post forall des in set RESULT & card des.designed > 0 and exists e in set des.jobs & e = self;
 	
 	
 functions

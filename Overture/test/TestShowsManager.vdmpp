@@ -43,14 +43,40 @@ operations
 	--manager.removeShow("a");	--Doesn't exist -> BREAK
  );
  
+ private testGetSpaces: () ==> ()
+ testGetSpaces() == (
+ 	dcl s1 : FashionShow, s2 : FashionShow,
+ 			theme : Utils`String := "theme",
+ 			d1: Utils`Date, d2: Utils`Date, d3: Utils`Date,
+ 			space1: Space, space2: Space;
+ 	
+ 	d1 := mk_Utils`Date(2017,02,24,10,30);
+ 	d2 := mk_Utils`Date(2017,03,5,18,00);
+ 	d3 := mk_Utils`Date(2017,03,10,20,00);
+ 	 
+ 	space1 := new Space("name1","addr1");
+ 	space2 := new Space("name2","addr2");
+ 	
+ 	s1 := new FashionShow(theme, space1, d1, d2, 50, 10, 10);
+ 	s2 := new FashionShow(theme, space2, d2, d3, 50, 10, 10);
+ 	
+ 	manager.addShow(s1);
+ 	manager.addShow(s2);
+ 	
+ 	expecting(manager.getSpaces(), {space1, space2});
+ );
+ 
  public static main: () ==> ()
  main() == (
  	dcl t : TestShowsManager := new TestShowsManager();
   t.testAddShows();
   t.manager.reset();
   
- t.testRemoveShows();
- t.manager.reset();
+  t.testRemoveShows();
+  t.manager.reset();
+ 
+  t.testGetSpaces();
+  t.manager.reset();
  );
  
 end TestShowsManager

@@ -16,6 +16,8 @@ operations
  		
  		cloth.setName("Fedora");
  		expecting(cloth.name, "Fedora");
+ 		
+ 		-- cloth.setName(""); --> BREAKS (name len = 0)					
  	);
  	
  	public static main: () ==> ()

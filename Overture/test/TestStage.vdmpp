@@ -8,10 +8,28 @@ operations
  		expecting(stage.name, "B002");
  	);
  	
+ 	private testSetSeats: () ==> ()
+ 	testSetSeats() == (
+	  dcl stage: Stage := new Stage("B001", 200);
+ 		stage.setSeats(300);
+ 		
+ 		expecting(stage.seats, 300);
+ 	);
+ 	
+ 	private testEqual: () ==> ()
+ 	testEqual() == (
+	  dcl stage1: Stage := new Stage("B001", 200);
+	  dcl stage2: Stage := new Stage("B001", 200);
+ 		
+ 		expecting(Stage`equal(stage1, stage2), true);
+ 	);
+ 	
  	public static main: () ==> ()
 	main() == (
 	  dcl t: TestStage := new TestStage();
 	  t.testSetName();
+	  t.testSetSeats();
+	  t.testEqual();
  	);
 
 end TestStage

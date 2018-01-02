@@ -8,9 +8,28 @@ operations
  	 dcl event: Event := new Event("Keynote", stage, startTime, endTime);
  	
  	 dcl worker: Person := new Person("Person1", 111111111);
+ 	 
  	 event.addWorker(worker);
+ 	 -- event.addWorker(worker); --> BREAKS (can't add same worker twice)
  	 
  	 expecting(event.workers, {worker});
+ 	);
+ 	
+	private testDismissWorker: () ==> ()
+ 	testDismissWorker() == (
+	 dcl startTime: Utils`Date := mk_Utils`Date(1997,02,14,20,55);
+ 	 dcl endTime: Utils`Date := mk_Utils`Date(1997,02,14,21,55);
+ 	 dcl stage: Stage := new Stage("B001", 200);
+ 	 dcl event: Event := new Event("Keynote", stage, startTime, endTime);
+ 	
+ 	 dcl worker: Person := new Person("Person1", 111111111);
+ 	 
+ 	 event.addWorker(worker);
+ 	 event.dismissWorker(worker);
+ 	 
+ 	 expecting(event.workers, {});
+ 	 
+ 	 -- event.dismissWorker(worker); --> BREAKS (can't dismiss a person that is not working)
  	);
  	
  	private testGetNotifications: () ==> ()
@@ -51,6 +70,8 @@ operations
  	 
  	 event.addNotification(notification2);
  	 expecting(event.news, {notification1, notification2});
+ 	 
+ 	 -- event.addNotification(notification2); --> BREAKS (can't add same notification twice)
  	);
  	
  	private testRemoveNotification: () ==> ()
@@ -66,6 +87,8 @@ operations
  	 event.addNotification(notification);
  	 event.removeNotification(notification);
  	 expectingNotIn(notification, event.news);
+ 	 
+ 	 -- event.removeNotification(notification); --> BREAKS (can't remove a notification that doesn't exist)
  	);
  	
  	private testUpdateWorkers: () ==> ()
@@ -82,6 +105,32 @@ operations
  	 event.updateWorkers(workerSet);
  	 
  	 expecting(event.workers, workerSet);
+ 	);
+ 	
+	private testReserveSeat: () ==> ()
+ 	testReserveSeat() == (
+	 dcl startTime: Utils`Date := mk_Utils`Date(1997,02,14,20,55);
+ 	 dcl endTime: Utils`Date := mk_Utils`Date(1997,02,14,21,55);
+ 	 dcl stage: Stage := new Stage("B001", 1);
+ 	 dcl event: Event := new Event("Keynote", stage, startTime, endTime);
+ 	
+ 	 event.reserveSeat();
+ 	 -- event.reserveSeat(); --> BREAKS (can't reserve seat in a full stage);
+ 	 
+ 	 expecting(event.reserved, 1);
+ 	);
+ 		
+	private testFreeSeat: () ==> ()
+ 	testFreeSeat() == (
+	 dcl startTime: Utils`Date := mk_Utils`Date(1997,02,14,20,55);
+ 	 dcl endTime: Utils`Date := mk_Utils`Date(1997,02,14,21,55);
+ 	 dcl stage: Stage := new Stage("B001", 1);
+ 	 dcl event: Event := new Event("Keynote", stage, startTime, endTime);
+ 	
+ 	 event.reserveSeat();
+ 	 event.freeSeat();
+ 	 expecting(event.reserved, 0);
+ 	 -- event.freeSeat(); --> BREAKS (can't free seat in an empty stage);
  	);
  	
  	private testEventsOverlap: () ==> ()
@@ -107,10 +156,13 @@ operations
 	main() == (
 	  dcl t: TestEvent := new TestEvent();
 	  t.testAddWorker();
+	  t.testDismissWorker();
 	  t.testGetNotifications();
 	  t.testAddNotification();
 	  t.testRemoveNotification();
 	  t.testUpdateWorkers();
+	  t.testReserveSeat();
+	  t.testFreeSeat();
 	  t.testEventsOverlap();
  	);
  	

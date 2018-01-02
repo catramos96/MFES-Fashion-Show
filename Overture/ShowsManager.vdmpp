@@ -34,7 +34,7 @@ operations
 		return spaces
 	)
 	post forall s in set RESULT & 
-		forall show in set shows & show in set s.reservations;	--POS: Spaces used by one more shows
+		exists show in set shows & show in set s.reservations;	--POS: Spaces used by one more shows
 	
 	--Reset
 	public reset: () ==> ()

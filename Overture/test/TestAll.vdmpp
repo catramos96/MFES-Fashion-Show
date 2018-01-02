@@ -8,6 +8,7 @@ main() == (
  new TestNotification().main();
  new TestPerson().main();
  new TestPresentation().main();
+ new TestRunway().main();
  new TestShowsManager().main();
  new TestSpace().main();
  new TestStage().main();

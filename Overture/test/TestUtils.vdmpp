@@ -45,11 +45,37 @@ class TestUtils is subclass of TestClass
  	Utils`expecting(b7,true);
  );
  
+ private testDaysOfMonth: () ==> ()
+ testDaysOfMonth() == (
+ 	dcl daysJan2000: nat1 := Utils`DaysOfMonth(1, 2000);
+ 	dcl daysApr2000: nat1 := Utils`DaysOfMonth(4, 2000);
+ 	dcl daysFeb2000: nat1 := Utils`DaysOfMonth(2, 2000);
+ 	dcl daysFeb1996: nat1 := Utils`DaysOfMonth(2, 1996);
+ 	dcl daysFeb1997: nat1 := Utils`DaysOfMonth(2, 1997);
+ 	
+ 	expecting(daysJan2000, 31);
+ 	expecting(daysApr2000, 30);
+ 	expecting(daysFeb2000, 29);
+ 	expecting(daysFeb1996, 29);
+ 	expecting(daysFeb1997, 28);
+ );
+ 
+ private testNoDuplicatesSeq: () ==> ()
+ testNoDuplicatesSeq() == (
+ 	dcl seqWithoutDuplicates: seq of nat := [1, 2, 3, 4, 5];
+ 	dcl seqWithDuplicates: seq of nat := [1, 2, 2, 3, 4];
+ 	
+ 	expecting(Utils`noDuplicatesSeq(seqWithoutDuplicates), true);
+ 	expecting(Utils`noDuplicatesSeq(seqWithDuplicates), false);
+ );
+ 
  public static main: () ==> ()
  main() == (
   dcl t: TestUtils := new TestUtils();
   t.testDatePosition();
 	t.testDatesOverlap();
+	t.testDaysOfMonth();
+	t.testNoDuplicatesSeq();
  );
  
 end TestUtils
