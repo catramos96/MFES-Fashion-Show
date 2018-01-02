@@ -35,13 +35,13 @@ operations
 		space.addStage(stage);
 		
 		show1.addEvent(event1);
-		show1.buyTicket(person, <Normal>);
+		person.buyTicket(show1, <Normal>);
 		person.attend(event1);
  	  event1.addNotification(notification1);
  	  event1.addNotification(notification2);
  	  
 		show2.addEvent(event2);
-		show2.buyTicket(person, <Normal>);
+		person.buyTicket(show2,<Normal>);
 		person.attend(event2);
  	  event2.addNotification(notification3);
  	  event2.addNotification(notification4);
@@ -105,7 +105,7 @@ operations
 		
 		space.addStage(stage);
 		show.addEvent(event);
-		show.buyTicket(person, <Normal>);
+		person.buyTicket(show,<Normal>);
 		person.attend(event);
 		
 		expectingIn(event, person.attendance(show));
@@ -126,7 +126,7 @@ operations
 		
 		space.addStage(stage);
 		show.addEvent(event);
-		show.buyTicket(person, <Normal>);
+		person.buyTicket(show, <Normal>);
 		person.attend(event);
 		person.cancelAttendment(event);
 		

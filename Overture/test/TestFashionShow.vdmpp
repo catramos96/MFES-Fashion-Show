@@ -86,8 +86,8 @@ testEventsManager() == (
 	p3 := new Person("name3",3);
 	p4 := new Person("name4",4);
 	
-	show.buyTicket(p1,<Normal>);
-	show.buyTicket(p2,<Normal>);
+	p1.buyTicket(show,<Normal>);
+	p2.buyTicket(show,<Normal>);
 	p1.attend(e1);
 	p2.attend(e2);
 	e1.addWorker(p3);

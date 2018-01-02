@@ -64,6 +64,13 @@ instance variables
  pre show in set dom attendance
  post forall n in set RESULT & n.type = <Attendees>;
  
+ --Buy Ticket
+ public buyTicket: FashionShow * Ticket`TicketType ==> ()
+ buyTicket(show,type) == (
+ 	if(show.canSellTicket(type)) 
+ 		then addTicket(show.sellTicket(self,type))
+ );
+ 
  --Add Ticket
  public addTicket: Ticket ==> ()
  addTicket(t) == (

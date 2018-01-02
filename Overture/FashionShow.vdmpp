@@ -50,15 +50,21 @@ class FashionShow
   pre exists e in set events & e.name = name					--Exist event
   post (not exists e in set events & e.name = name);	--Event was removed
     
-  --BuyTicket
-  public buyTicket: Person * Ticket`TicketType ==> ()
-  buyTicket(attendee, type) == (
+  --SellTicket
+  public sellTicket: Person * Ticket`TicketType ==> Ticket
+  sellTicket(attendee, type) == (
   	dcl t :Ticket := new Ticket(type,attendee, self);
   	ticketsSold := ticketsSold ++ {type |-> (ticketsSold(type) union {t})};
-  	attendee.addTicket(t);
+  	return t
   )
   pre nEntries(type) > card ticketsSold(type)										--PRE: Has entries for ticket type
   post (card ticketsSold~(type) + 1 = card ticketsSold(type)); 	--POS: Ticket was sold
+  
+  --Can sell ticket
+  public canSellTicket: Ticket`TicketType ==> bool
+  canSellTicket(type) == (
+  	return nEntries(type) > card ticketsSold(type)
+  );
   
   --Get Attending Designers
   public getAttendingDesigners: () ==> set of Person
@@ -103,6 +109,7 @@ class FashionShow
   	exists event in set p.jobs & event in set events and--POS: have a job in an event that is a runway
   	is_Runway(event);
   	
+  --Get Workers
   public getWorkers: () ==> set of Person
   getWorkers() == (
   	dcl workers : set of Person := {};
