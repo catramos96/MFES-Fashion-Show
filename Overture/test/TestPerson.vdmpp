@@ -230,10 +230,6 @@ operations
 		
  		person1.addCloth(cloth1);
  		person2.addCloth(cloth2);
-
- 		person1.buyTicket(show, <Normal>);
- 		person2.buyTicket(show, <Normal>);
- 		person3.buyTicket(show, <Normal>);
  		
  		show.addEvent(runwayEvent);
 		
@@ -245,6 +241,33 @@ operations
 		runwayEvent.addToSequence(cloth2, person3);
  		
  		expecting(person1.isParticipantDesigner(), {runwayEvent});
+ 	);
+ 	
+ 	private testCancelPresentation: () ==> ()
+ 	testCancelPresentation() == (
+ 	dcl space: Space := new Space("name", "address");
+ 		dcl startTimeShow: Util`Date := mk_Util`Date(1997,02,13,20,55);
+ 		dcl endTimeShow: Util`Date := mk_Util`Date(1997,02,15,22,00);
+ 		dcl startTime: Util`Date := mk_Util`Date(1997,02,14,21,00);
+ 		dcl endTime: Util`Date := mk_Util`Date(1997,02,14,21,55);
+	  dcl stage: Stage := new Stage("B001", 200);
+ 		dcl show: FashionShow := new FashionShow("theme", space, startTimeShow, endTimeShow, 10, 10, 1);
+	 	 	
+	 	 	dcl pres: Presentation := new Presentation("WinterRunway", stage, startTime, endTime,"subtheme");
+	 	 	 		dcl person1: Person := new Person("name1", 1);
+	 	 	 		dcl person2 : Person := new Person("n2",2);
+	 	 	space.addStage(stage);
+ 	 	show.addEvent(pres);
+ 		pres.addSpeaker(person1);
+ 		pres.addSpeaker(person2);
+
+ 		expecting(pres in set person1.speaks,true);
+ 		expecting(pres in set person2.speaks,true);
+ 		
+ 		person1.cancelPresentation(pres);
+ 		person2.cancelPresentation(pres);
+ 		expecting(pres not in set person1.speaks,true);
+ 		expecting(pres not in set person2.speaks,true);
  	);
  	
  	private testIsWorking: () ==> ()
@@ -278,6 +301,7 @@ operations
 	  t.testIsDesigner();
 	  t.testIsParticipantDesigner();
 	  t.testIsWorking();
+	  t.testCancelPresentation();
  	);
 
 end TestPerson

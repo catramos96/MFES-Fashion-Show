@@ -31,9 +31,11 @@ PRE:speaker doesn't exist
 POS: speaker was added
 */
 public addSpeaker: Person ==> ()
-addSpeaker(s) == (
+addSpeaker(s) == 
+(
+	if(s not in set workers) then addWorker(s);
 	speakers := speakers union {s};
-	addWorker(s);
+	s.addSpeaking(self);
 )
 pre s not in set speakers
 post s in set speakers;

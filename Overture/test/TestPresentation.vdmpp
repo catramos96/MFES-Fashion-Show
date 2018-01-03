@@ -30,6 +30,27 @@ operations
  	 expecting(presentation.subTheme, "Closing");
  	);
  	
+ 	private testDismissWorker: () ==> ()
+ 	testDismissWorker() == (
+ 	 dcl startTime: Util`Date := mk_Util`Date(1997,02,14,20,55);
+ 	 dcl endTime: Util`Date := mk_Util`Date(1997,02,14,21,55);
+ 	 dcl stage: Stage := new Stage("B001", 200);
+ 	 dcl presentation: Presentation := new Presentation("Keynote", stage, startTime, endTime, "Opening");
+ 	 dcl p1 : Person := new Person("n",1);
+ 	 dcl p2 : Person := new Person("n1",2);
+ 	 presentation.addWorker(p1);
+ 	 presentation.addWorker(p2);
+ 	 
+ 	 presentation.addSpeaker(p1);
+ 	 presentation.addWorker(p2);
+ 	 
+ 	 presentation.dismissWorker(p1);
+ 	 presentation.dismissWorker(p2);
+ 	 
+ 	 expecting(p1 not in set presentation.workers,true);
+ 	 expecting(p2 not in set presentation.workers and p2 not in set presentation.speakers,true);
+ 	);
+ 	
  	public static main: () ==> ()
 	main() == (
 	  dcl t: TestPresentation := new TestPresentation();

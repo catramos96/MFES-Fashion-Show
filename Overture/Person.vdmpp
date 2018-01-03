@@ -23,7 +23,8 @@ instance variables
 --INV: each presentation (speaks) are being attended in attendance and has guest ticket to the show
 	inv forall s in set speaks & (																											
 		exists x in set dom attendance & s in set x.events and 													
-		(exists t in set tickets & t.show = x and t.type = <Guest> or t.type = <VIP>));
+		(exists t in set tickets & t.show = x and t.type = <Guest> or t.type = <VIP>))
+		or s in set jobs;
 
 	--INV: All clothes designed are marked as designed by the person		
 	inv forall c in set designed & c.designer.id = id;	
@@ -112,7 +113,8 @@ public addSpeaking: Presentation ==> ()
 addSpeaking(presentation) == (
 	speaks := speaks union {presentation};
 )
-pre isWorking(presentation.startTime,presentation.endTime,jobs,speaks)
+pre (isWorking(presentation.startTime,presentation.endTime,jobs,speaks)) = false or
+		presentation in set jobs
 post presentation in set speaks;
 
 /*
@@ -311,11 +313,12 @@ public isParticipantDesigner: () ==> set of Runway
 isParticipantDesigner() ==  (
   dcl participant: set of Runway := {};
   
- 	for all show in set dom attendance do (
-	 	for all event in set attendance(show) do (
- 			if (is_Runway(event))
- 			  then participant := participant union {event};
-	 	);
+ 	for all event in set jobs do (
+		if (is_Runway(event)) then(
+			for all i in set inds event.models do(
+				if(event.models(i).cloth.designer.id = id) then participant := participant union {event};
+			);
+		)
  	);
  	
  	return participant;
