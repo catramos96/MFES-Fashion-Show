@@ -60,22 +60,12 @@ class TestUtils is subclass of TestClass
  	expecting(daysFeb1997, 28);
  );
  
- private testNoDuplicatesSeq: () ==> ()
- testNoDuplicatesSeq() == (
- 	dcl seqWithoutDuplicates: seq of nat := [1, 2, 3, 4, 5];
- 	dcl seqWithDuplicates: seq of nat := [1, 2, 2, 3, 4];
- 	
- 	expecting(Utils`noDuplicatesSeq(seqWithoutDuplicates), true);
- 	expecting(Utils`noDuplicatesSeq(seqWithDuplicates), false);
- );
- 
  public static main: () ==> ()
  main() == (
   dcl t: TestUtils := new TestUtils();
   t.testDatePosition();
 	t.testDatesOverlap();
 	t.testDaysOfMonth();
-	t.testNoDuplicatesSeq();
  );
  
 end TestUtils
