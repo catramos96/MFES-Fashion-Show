@@ -51,8 +51,8 @@ instance variables
 	 	attendance := attendance ++ {t.show |-> {}}
 	 	)
 	 	)
-	 pre t.owner = self and t not in set tickets							--PRE: Person is owner of ticket
-	 post (t in set tickets and t.show in set dom attendance);--POS: New Ticket in tickets and show in attendance schedule (per show)
+	 pre t.owner = self and not exists t2 in set tickets & t.show = t2.show		--PRE: Person is owner of ticket
+	 post (t in set tickets and t.show in set dom attendance);									--POS: New Ticket in tickets and show in attendance schedule (per show)
 	 
 	 --Remove Ticket
 	 public removeTicket: Ticket ==> ()
