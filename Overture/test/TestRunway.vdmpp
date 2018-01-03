@@ -1,5 +1,6 @@
 class TestRunway is subclass of TestClass
 operations
+  -- tests requirement R22
 	private testAddToSequence: () ==> ()
  	testAddToSequence() == (
  		dcl space: Space := new Space("name", "address");
@@ -35,6 +36,7 @@ operations
 	  expecting(runwayEvent.models(1).worker, person2);
  	);
  	
+  -- tests requirement R22
  	private testRemoveFromSequence: () ==> ()
  	testRemoveFromSequence() == (
  		dcl space: Space := new Space("name", "address");
@@ -76,6 +78,7 @@ operations
 	  expecting(len runwayEvent.models, 1);
  	);
  	
+  -- tests requirement R19
 	private testDismissWorker: () ==> ()
  	testDismissWorker() == (
  		dcl space: Space := new Space("name", "address");
@@ -257,9 +260,9 @@ operations
  	public static main: () ==> ()
 	main() == (
 	  dcl t: TestRunway := new TestRunway();
-	  t.testAddToSequence();
-	  t.testRemoveFromSequence();
-	  t.testDismissWorker();
+	  t.testAddToSequence(); -- R22
+	  t.testRemoveFromSequence(); -- R22
+	  t.testDismissWorker(); -- R19
 	  t.testRemoveWorkerModel();
 	  t.testGetClothes();
 	  t.testGetDesigners();

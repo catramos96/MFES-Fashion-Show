@@ -1,5 +1,6 @@
 class TestEvent is subclass of TestClass
 operations
+  -- tests requirement R19
 	private testAddWorker: () ==> ()
  	testAddWorker() == (
 	 dcl startTime: Utils`Date := mk_Utils`Date(1997,02,14,20,55);
@@ -15,6 +16,7 @@ operations
  	 expecting(event.workers, {worker});
  	);
  	
+  -- tests requirement R19
 	private testDismissWorker: () ==> ()
  	testDismissWorker() == (
 	 dcl startTime: Utils`Date := mk_Utils`Date(1997,02,14,20,55);
@@ -54,6 +56,7 @@ operations
 	 expecting(attendeeNotifications, {notification2});
  	);
  	
+ 	-- tests requirement 25
  	private testAddNotification: () ==> ()
  	testAddNotification() == (
 	 dcl startTime: Utils`Date := mk_Utils`Date(1997,02,14,20,55);
@@ -155,10 +158,10 @@ operations
  	public static main: () ==> ()
 	main() == (
 	  dcl t: TestEvent := new TestEvent();
-	  t.testAddWorker();
-	  t.testDismissWorker();
+	  t.testAddWorker(); -- R19 and R5
+	  t.testDismissWorker(); -- R19 and R6
 	  t.testGetNotifications();
-	  t.testAddNotification();
+	  t.testAddNotification(); -- R25
 	  t.testRemoveNotification();
 	  t.testUpdateWorkers();
 	  t.testReserveSeat();

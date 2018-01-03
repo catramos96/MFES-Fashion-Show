@@ -100,6 +100,7 @@ operations
  		expectingIn(ticket, person.tickets); 		
  	);
  	
+ 	-- tests requirement R5
  	private testAddJob: () ==> ()
  	testAddJob() == (
  		dcl space: Space := new Space("name", "address");
@@ -108,9 +109,12 @@ operations
  		dcl startTime: Utils`Date := mk_Utils`Date(1997,02,14,20,55);
  		dcl endTime: Utils`Date := mk_Utils`Date(1997,02,14,21,55);
 	  dcl stage: Stage := new Stage("B001", 200);
+	  dcl stage2: Stage := new Stage("B002", 200);
 	  dcl event: Event := new Event("Keynote", stage, startTime, endTime);
+	  dcl event2: Event := new Event("Keynote", stage2, startTime, endTime);
 	  
  		person.addJob(event);
+ 		-- person.addJob(event2); --> BREAKS (can't add two jobs at the same time)
  		expectingIn(event, person.jobs); 		
  	);
  	
@@ -227,7 +231,7 @@ operations
 	  t.testGetJobNotifications();
 	  t.testGetAttendanceNotifications();
 	  t.testAddTicket();
-	  t.testAddJob();
+	  t.testAddJob(); -- R5
 	  t.testRemoveJob();
 	  t.testAttend();
 	  t.testCancelAttendment();

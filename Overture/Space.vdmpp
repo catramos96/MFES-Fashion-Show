@@ -27,7 +27,7 @@ post name = name_ and address = address_; --POS: name and address were set
 --Add Reservation
 public addReservation: FashionShow ==> ()
 addReservation(show) == (reservations := reservations union {show})
-pre forall s in set reservations & FashionShow`showsOverlap(s,show)=false	--PRE: Reservations can't overlap
+pre forall s in set reservations & (FashionShow`showsOverlap(s,show) = false)	--PRE: Reservations can't overlap
 post show in set reservations;																						--POS: Reservation with success
 
 --Remove Reservation

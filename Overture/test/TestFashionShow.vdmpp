@@ -107,6 +107,7 @@ operations
 		return
 	);
 	
+ 	-- tests requirement R18
 	private testAddEvent: () ==> ()
 	testAddEvent() == (
  		dcl space: Space := new Space("name", "address");
@@ -131,6 +132,7 @@ operations
 		expecting(show.events, {event1});
 	);
 	
+ 	-- tests requirement R18
 	private testCancelEvent: () ==> ()
 	testCancelEvent() == (
  		dcl space: Space := new Space("name", "address");
@@ -152,6 +154,7 @@ operations
 		expecting(show.events, {});
 	);
 	
+ 	-- tests requirement R17
 	private testBuyTicket: () ==> ()
 	testBuyTicket() == (
  		dcl space: Space := new Space("name", "address");
@@ -178,6 +181,7 @@ operations
  		expecting(FashionShow`equals(show1, show2), false);
 	);
 	
+ 	-- tests Requirement R14
 	private testGetAttendingDesigners: () ==> ()
 	testGetAttendingDesigners() == (
  		dcl space: Space := new Space("name", "address");
@@ -194,6 +198,7 @@ operations
 		expecting(show.getAttendingDesigners(), {person1});
 	);
 	
+ 	-- tests Requirement R14
 	private testGetAttendingDesignersToEvent: () ==> ()
 	testGetAttendingDesignersToEvent() == (
  		dcl space: Space := new Space("name", "address");
@@ -226,7 +231,8 @@ operations
  		
 		expecting(show.getAttendingDesignersToEvent(event), {person1});
 	);
-
+  
+ 	-- tests Requirement R14
 	private testGetParticipatingDesigners: () ==> ()
 	testGetParticipatingDesigners() == (
  		dcl space: Space := new Space("name", "address");
@@ -289,6 +295,7 @@ operations
 		expecting(show.getWorkers(), {person1, person2});
 	);
 	
+ 	-- tests requirement R21
 	private testInviteGuest: () ==> ()
 	testInviteGuest() == (
  		dcl space: Space := new Space("name", "address");
@@ -315,6 +322,7 @@ operations
  	 	expecting(presentation.speakers, {person1});
 	);
 	
+ 	-- tests requirement R17
   private testSetNEntries: () ==> ()
   testSetNEntries() == (
  		dcl space: Space := new Space("name", "address");
@@ -332,6 +340,7 @@ operations
 		expecting(show.nEntries(<Guest>), 40);
   );
   
+ 	-- tests requirement R20
   private testSetTheme: () ==> ()
   testSetTheme() == (
  		dcl space: Space := new Space("name", "address");
@@ -359,6 +368,7 @@ operations
 	  expecting(show.space, space2);
   );
   
+ 	-- tests requirement R20
   private testSetTime: () ==> ()
   testSetTime() == (
  		dcl space: Space := new Space("name", "address");
@@ -400,18 +410,18 @@ operations
 	main() == (
 		testConstructor();
 		testEventsManager();
-		testAddEvent();
-		testCancelEvent();
-		testBuyTicket();
+		testAddEvent(); -- R18
+		testCancelEvent(); -- R18
+		testBuyTicket(); -- R17
 		testEquals();
-		testGetAttendingDesigners();
-		testGetAttendingDesignersToEvent();
-		testGetParticipatingDesigners();
+		testGetAttendingDesigners(); -- R14
+		testGetAttendingDesignersToEvent(); -- R14
+		testGetParticipatingDesigners(); -- R14
 		testGetWorkers();
-		testInviteGuest();
-		testSetNEntries();
-		testSetTheme();
+		testInviteGuest(); -- R21
+		testSetNEntries(); -- R17
+		testSetTheme(); -- R20
 		testSetSpace();
-		testSetTime();
+		testSetTime(); -- R20
 	);
 end TestFashionShow

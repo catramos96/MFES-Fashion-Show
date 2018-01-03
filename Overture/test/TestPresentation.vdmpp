@@ -1,5 +1,6 @@
 class TestPresentation is subclass of TestClass
 operations
+ -- tests requirement R23
 	private testAddSpeaker: () ==> ()
  	testAddSpeaker() == (
 	 dcl startTime: Utils`Date := mk_Utils`Date(1997,02,14,20,55);
@@ -17,6 +18,7 @@ operations
  	 expectingIn(speaker, presentation.speakers);
  	);
  	
+ 	-- tests requirement R20
  	private testUpdateSubTheme: () ==> ()
  	testUpdateSubTheme() == (
 	 dcl startTime: Utils`Date := mk_Utils`Date(1997,02,14,20,55);
@@ -31,7 +33,7 @@ operations
  	public static main: () ==> ()
 	main() == (
 	  dcl t: TestPresentation := new TestPresentation();
-	  t.testAddSpeaker();
-	  t.testUpdateSubTheme();
+	  t.testAddSpeaker(); -- R23
+	  t.testUpdateSubTheme(); -- R20
  	);
 end TestPresentation

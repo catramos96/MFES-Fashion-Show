@@ -25,12 +25,42 @@ operations
 		expecting(space.reservations, {});
  	);
  	
+ 	 -- tests Requirement R27
+ 	 private testManageStages: () ==> ()
+	 testManageStages() == (
+ 		dcl space: Space := new Space("name", "address");
+	  dcl stage1: Stage := new Stage("B001", 200);
+	  dcl stage2: Stage := new Stage("B002", 180);
+	  
+	  -- add stages
+	  space.addStage(stage1);
+	  space.addStage(stage2);
+	  -- space.addStage(stage2); --> BREAKS (can't add a stage that is already part of the space)
+	  expecting(space.stages, {stage1, stage2});
+	  
+	  -- edit stage name
+	  stage1.setName("Queijo 1");
+ 		-- stage1.setName(""); --> BREAKS (name len = 0)			
+	  expecting(stage1.name, "Queijo 1");
+	  
+	  -- edit stage seats
+	  stage2.setSeats(200);
+ 		-- stage2.setSeats(0); --> BREAKS (seats is nat1)
+	  expecting(stage2.seats, 200);
+	  
+	  -- remove stages
+	  space.removeStage(stage1);
+	  -- space.removeStage(stage1); --> BREAKS (can't remove a stage that is not part of the space)
+	  expecting(space.stages, {stage2});
+	 );
+ 	
  	public static main: () ==> ()
 	main() == (
 	  dcl t: TestSpace := new TestSpace();
 	  t.testSetAddress();
 	  t.testSetName();
 	  t.testReset();
+	  t.testManageStages(); -- R27
  	);
 
 end TestSpace

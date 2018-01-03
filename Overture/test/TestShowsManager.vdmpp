@@ -4,7 +4,8 @@ instance variables
 public manager: ShowsManager := new ShowsManager();
 
 operations
-
+ 
+ -- tests requirement R15
  public testAddShows: () ==> ()
  testAddShows() == (
  	dcl s1 : FashionShow, s2 : FashionShow, s3 : FashionShow, s4: FashionShow,
@@ -30,6 +31,7 @@ operations
  	return
  );
  
+ -- tests requirement R16
  public testRemoveShows: () ==> ()
  testRemoveShows() == (
  	dcl s1: FashionShow := new FashionShow("t1",new Space("name1","addr1"),mk_Utils`Date(2017,02,20,10,00), mk_Utils`Date(2017,02,26,11,00),50,10,10),
@@ -69,10 +71,10 @@ operations
  public static main: () ==> ()
  main() == (
  	dcl t : TestShowsManager := new TestShowsManager();
-  t.testAddShows();
+  t.testAddShows(); -- R15
   t.manager.reset();
   
-  t.testRemoveShows();
+  t.testRemoveShows(); -- R16
   t.manager.reset();
  
   t.testGetSpaces();
