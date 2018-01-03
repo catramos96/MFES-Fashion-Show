@@ -303,6 +303,23 @@ isDesigner() ==  (
 		then return false
 	else
 		return true);
+
+/*
+Is Participant Designer
+*/
+public isParticipantDesigner: () ==> set of Runway
+isParticipantDesigner() ==  (
+  dcl participant: set of Runway := {};
+  
+ 	for all show in set dom attendance do (
+	 	for all event in set attendance(show) do (
+ 			if (is_Runway(event))
+ 			  then participant := participant union {event};
+	 	);
+ 	);
+ 	
+ 	return participant;
+);
  			
 functions 
 
