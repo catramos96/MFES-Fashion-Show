@@ -289,6 +289,32 @@ operations
 		expecting(show.getWorkers(), {person1, person2});
 	);
 	
+	private testInviteGuest: () ==> ()
+	testInviteGuest() == (
+ 		dcl space: Space := new Space("name", "address");
+ 		dcl startTimeShow: Utils`Date := mk_Utils`Date(1997,02,13,20,55);
+ 		dcl endTimeShow: Utils`Date := mk_Utils`Date(1997,02,15,22,00);
+ 		dcl startTime: Utils`Date := mk_Utils`Date(1997,02,14,21,00);
+ 		dcl endTime: Utils`Date := mk_Utils`Date(1997,02,14,21,55);
+	  dcl stage: Stage := new Stage("B001", 200);
+ 	 	dcl presentation: Presentation := new Presentation("Keynote", stage, startTime, endTime, "Opening");
+ 		dcl show: FashionShow := new FashionShow("theme", space, startTimeShow, endTimeShow, 10, 10, 10);
+ 		dcl person1: Person := new Person("name1", 1);
+ 	 	dcl person2: Person := new Person("name2", 2);
+ 	 	
+		space.addStage(stage);
+		
+		show.addEvent(presentation);
+		
+		show.inviteGuest(person1, presentation);
+		show.inviteGuest(person2, nil);
+ 	 	
+ 	 	expecting(card show.ticketsSold(<Guest>), 2);
+ 	 	expecting(card person1.tickets, 1);
+ 	 	expecting(card person2.tickets, 1);
+ 	 	expecting(presentation.speakers, {person1});
+	);
+	
   private testSetNEntries: () ==> ()
   testSetNEntries() == (
  		dcl space: Space := new Space("name", "address");
@@ -382,6 +408,7 @@ operations
 		testGetAttendingDesignersToEvent();
 		testGetParticipatingDesigners();
 		testGetWorkers();
+		testInviteGuest();
 		testSetNEntries();
 		testSetTheme();
 		testSetSpace();

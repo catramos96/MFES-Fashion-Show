@@ -156,7 +156,7 @@ operations
 		person.attend(event1);
  	  
 		show2.addEvent(event2);
-		person.buyTicket(show2,<Normal>);
+		person.addTicket(new Ticket(<Guest>, person, show2));
 		person.attend(event2);
 		
 		expecting({event1}, person.attendance(show1));
