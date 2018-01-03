@@ -21,7 +21,7 @@ operations
 /*
 Constructor
 */
-public Runway: seq of char * Stage * Utils`Date * Utils`Date ==> Runway
+public Runway: seq of char * Stage * Util`Date * Util`Date ==> Runway
 Runway(name_, stage_, startTime_, endTime_) == (
 	atomic(
 		name := name_;

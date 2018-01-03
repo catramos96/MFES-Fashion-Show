@@ -8,7 +8,7 @@ instance variables
 	
 	--INV: Can't have the same shows with the same theme with overapping dates
 	inv not exists s1,s2 in set shows & s1<>s2 and FashionShow`equals(s1,s2) and 																			
-	Utils`datesOverlap(s1.startTime,s1.endTime,s2.startTime,s2.endTime);
+	Util`datesOverlap(s1.startTime,s1.endTime,s2.startTime,s2.endTime);
 	
 operations
 /*

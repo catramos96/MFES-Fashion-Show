@@ -10,12 +10,12 @@ operations
  testAddShows() == (
  	dcl s1 : FashionShow, s2 : FashionShow, s3 : FashionShow, s4: FashionShow,
  			theme : seq of char := "theme",
- 			d1: Utils`Date, d2: Utils`Date, d3: Utils`Date, d4: Utils`Date;
+ 			d1: Util`Date, d2: Util`Date, d3: Util`Date, d4: Util`Date;
  	
- 	d1 := mk_Utils`Date(2017,02,24,10,30);
- 	d2 := mk_Utils`Date(2017,03,1,18,00);
- 	d3 := mk_Utils`Date(2017,03,5,18,00);
- 	d4 := mk_Utils`Date(2017,03,10,20,00);
+ 	d1 := mk_Util`Date(2017,02,24,10,30);
+ 	d2 := mk_Util`Date(2017,03,1,18,00);
+ 	d3 := mk_Util`Date(2017,03,5,18,00);
+ 	d4 := mk_Util`Date(2017,03,10,20,00);
  	 	
  	s1 := new FashionShow(theme, new Space("name1","addr1"), d1, d3, 50, 10, 10);
  	s2 := new FashionShow(theme, new Space("name1","addr1"), d2, d3, 50, 10, 10);		--time/address overlap (with s1) -> BREAK
@@ -34,8 +34,8 @@ operations
  -- tests requirement R16
  public testRemoveShows: () ==> ()
  testRemoveShows() == (
- 	dcl s1: FashionShow := new FashionShow("t1",new Space("name1","addr1"),mk_Utils`Date(2017,02,20,10,00), mk_Utils`Date(2017,02,26,11,00),50,10,10),
- 			s2: FashionShow := new FashionShow("t2",new Space("name2","addr2"),mk_Utils`Date(2017,02,20,10,00), mk_Utils`Date(2017,02,26,11,00),50,10,10);
+ 	dcl s1: FashionShow := new FashionShow("t1",new Space("name1","addr1"),mk_Util`Date(2017,02,20,10,00), mk_Util`Date(2017,02,26,11,00),50,10,10),
+ 			s2: FashionShow := new FashionShow("t2",new Space("name2","addr2"),mk_Util`Date(2017,02,20,10,00), mk_Util`Date(2017,02,26,11,00),50,10,10);
  			
 	manager.addShow(s1);
 	manager.addShow(s2);
@@ -49,12 +49,12 @@ operations
  testGetSpaces() == (
  	dcl s1 : FashionShow, s2 : FashionShow,
  			theme : seq of char := "theme",
- 			d1: Utils`Date, d2: Utils`Date, d3: Utils`Date,
+ 			d1: Util`Date, d2: Util`Date, d3: Util`Date,
  			space1: Space, space2: Space;
  	
- 	d1 := mk_Utils`Date(2017,02,24,10,30);
- 	d2 := mk_Utils`Date(2017,03,5,18,00);
- 	d3 := mk_Utils`Date(2017,03,10,20,00);
+ 	d1 := mk_Util`Date(2017,02,24,10,30);
+ 	d2 := mk_Util`Date(2017,03,5,18,00);
+ 	d3 := mk_Util`Date(2017,03,10,20,00);
  	 
  	space1 := new Space("name1","addr1");
  	space2 := new Space("name2","addr2");

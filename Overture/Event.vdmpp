@@ -4,8 +4,8 @@ to manipulate its variables.
 */
 class Event
 	instance variables
-	  public startTime : Utils`Date;
-	  public endTime : Utils`Date;
+	  public startTime : Util`Date;
+	  public endTime : Util`Date;
 	  public name : seq of char;
 	  public stage: Stage;
 	  public reserved: nat := 0;
@@ -13,7 +13,7 @@ class Event
 	  public news: set of Notification;
 	  
 	  --INV: start time before the end time
-	inv Utils`getDatePosition(startTime,endTime) = <Before>;
+	inv Util`getDatePosition(startTime,endTime) = <Before>;
 	--INV: workers have this job
 	inv forall w in set workers & exists e in set w.jobs & 
 		e.name = name and e.stage = stage and e.startTime = startTime and e.endTime = endTime;
@@ -24,7 +24,7 @@ operations
   /*
 Constructor
 */
-public Event: seq of char * Stage * Utils`Date * Utils`Date ==> Event
+public Event: seq of char * Stage * Util`Date * Util`Date ==> Event
 Event(name_, stage_, startDate_, endDate_) == (
 	atomic(
 	name := name_; 
@@ -139,7 +139,7 @@ dates in the same space
 public static eventsOverlap: Event * Event -> bool
 eventsOverlap(e1,e2) == (
 	if(e1.stage = e2.stage)
-		then Utils`datesOverlap(e1.startTime,e1.endTime,e2.startTime,e2.endTime)
+		then Util`datesOverlap(e1.startTime,e1.endTime,e2.startTime,e2.endTime)
 	else e1.name = e2.name
 );
 

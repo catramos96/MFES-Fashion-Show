@@ -7,14 +7,14 @@ types
 instance variables
 	public title : seq of char;
   public description : seq of char;
-  public date : Utils`Date;
+  public date : Util`Date;
   public type : Type;
   
 operations
 	/*
 Constructor
 */
-public Notification: seq of char * seq of char * Utils`Date * Type ==> Notification
+public Notification: seq of char * seq of char * Util`Date * Type ==> Notification
 Notification(title_,description_,date_,type_) == (
 	title := title_;
 	description := description_; 
@@ -43,7 +43,7 @@ post description = description_;
 Set Date
 POS: date was set
 */
-public setDate: Utils`Date ==> ()
+public setDate: Util`Date ==> ()
 setDate(date_) == (date := date_)
 post date = date_;
 	

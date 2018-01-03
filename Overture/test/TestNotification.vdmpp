@@ -2,7 +2,7 @@ class TestNotification is subclass of TestClass
 operations
  	private testEquals: () ==> ()
  	testEquals() == (
-		dcl date: Utils`Date := mk_Utils`Date(1997,02,14,20,55);
+		dcl date: Util`Date := mk_Util`Date(1997,02,14,20,55);
  		dcl n1: Notification := new Notification("title1", "description1", date, <Workers>);
 	 	dcl n2: Notification := new Notification("title1", "description1", date, <Workers>);
 	 	dcl n3: Notification := new Notification("title2", "description1", date, <Workers>);
@@ -17,7 +17,7 @@ operations
  	
  	private testSetTitle: () ==> ()
  	testSetTitle() == (
-		dcl date: Utils`Date := mk_Utils`Date(1997,02,14,20,55);
+		dcl date: Util`Date := mk_Util`Date(1997,02,14,20,55);
  		dcl n: Notification := new Notification("title", "description", date, <Workers>);
  		
  		n.setTitle("different title");
@@ -26,7 +26,7 @@ operations
  	
  	private testSetDescription: () ==> ()
  	testSetDescription() == (
-		dcl date: Utils`Date := mk_Utils`Date(1997,02,14,20,55);
+		dcl date: Util`Date := mk_Util`Date(1997,02,14,20,55);
  		dcl n: Notification := new Notification("title", "description", date, <Workers>);
  		
  		n.setDescription("different description");
@@ -35,8 +35,8 @@ operations
  	
  	private testSetDate: () ==> ()
  	testSetDate() == (
-		dcl date: Utils`Date := mk_Utils`Date(1997,02,14,20,55);
-		dcl newDate: Utils`Date := mk_Utils`Date(1997,02,14,21,55);
+		dcl date: Util`Date := mk_Util`Date(1997,02,14,20,55);
+		dcl newDate: Util`Date := mk_Util`Date(1997,02,14,21,55);
  		dcl n: Notification := new Notification("title", "description", date, <Workers>);
  		
  		n.setDate(newDate);

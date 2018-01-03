@@ -3,8 +3,8 @@ operations
  -- tests requirement R23
 	private testAddSpeaker: () ==> ()
  	testAddSpeaker() == (
-	 dcl startTime: Utils`Date := mk_Utils`Date(1997,02,14,20,55);
- 	 dcl endTime: Utils`Date := mk_Utils`Date(1997,02,14,21,55);
+	 dcl startTime: Util`Date := mk_Util`Date(1997,02,14,20,55);
+ 	 dcl endTime: Util`Date := mk_Util`Date(1997,02,14,21,55);
  	 dcl stage: Stage := new Stage("B001", 200);
  	 dcl presentation: Presentation := new Presentation("Keynote", stage, startTime, endTime, "Opening");
  	 dcl speaker: Person := new Person("Person", 1);
@@ -21,8 +21,8 @@ operations
  	-- tests requirement R20
  	private testUpdateSubTheme: () ==> ()
  	testUpdateSubTheme() == (
-	 dcl startTime: Utils`Date := mk_Utils`Date(1997,02,14,20,55);
- 	 dcl endTime: Utils`Date := mk_Utils`Date(1997,02,14,21,55);
+	 dcl startTime: Util`Date := mk_Util`Date(1997,02,14,20,55);
+ 	 dcl endTime: Util`Date := mk_Util`Date(1997,02,14,21,55);
  	 dcl stage: Stage := new Stage("B001", 200);
  	 dcl presentation: Presentation := new Presentation("Keynote", stage, startTime, endTime, "Opening");
  	 

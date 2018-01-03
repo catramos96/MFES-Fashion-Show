@@ -10,7 +10,7 @@ operations
 	/*
 Constructor
 */
-public Presentation: seq of char * Stage * Utils`Date * Utils`Date * seq of char ==> Presentation
+public Presentation: seq of char * Stage * Util`Date * Util`Date * seq of char ==> Presentation
 Presentation(name_, stage_, startDate_, endDate_, subTheme_) == (
 	atomic(
 		name := name_;

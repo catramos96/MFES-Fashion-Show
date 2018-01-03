@@ -4,10 +4,10 @@ operations
 	private testAddToSequence: () ==> ()
  	testAddToSequence() == (
  		dcl space: Space := new Space("name", "address");
- 		dcl startTimeShow: Utils`Date := mk_Utils`Date(1997,02,13,20,55);
- 		dcl endTimeShow: Utils`Date := mk_Utils`Date(1997,02,15,22,00);
- 		dcl startTime: Utils`Date := mk_Utils`Date(1997,02,14,21,00);
- 		dcl endTime: Utils`Date := mk_Utils`Date(1997,02,14,21,55);
+ 		dcl startTimeShow: Util`Date := mk_Util`Date(1997,02,13,20,55);
+ 		dcl endTimeShow: Util`Date := mk_Util`Date(1997,02,15,22,00);
+ 		dcl startTime: Util`Date := mk_Util`Date(1997,02,14,21,00);
+ 		dcl endTime: Util`Date := mk_Util`Date(1997,02,14,21,55);
 	  dcl stage: Stage := new Stage("B001", 200);
  		dcl show: FashionShow := new FashionShow("theme", space, startTimeShow, endTimeShow, 10, 10, 1);
  	 	
@@ -40,10 +40,10 @@ operations
  	private testRemoveFromSequence: () ==> ()
  	testRemoveFromSequence() == (
  		dcl space: Space := new Space("name", "address");
- 		dcl startTimeShow: Utils`Date := mk_Utils`Date(1997,02,13,20,55);
- 		dcl endTimeShow: Utils`Date := mk_Utils`Date(1997,02,15,22,00);
- 		dcl startTime: Utils`Date := mk_Utils`Date(1997,02,14,21,00);
- 		dcl endTime: Utils`Date := mk_Utils`Date(1997,02,14,21,55);
+ 		dcl startTimeShow: Util`Date := mk_Util`Date(1997,02,13,20,55);
+ 		dcl endTimeShow: Util`Date := mk_Util`Date(1997,02,15,22,00);
+ 		dcl startTime: Util`Date := mk_Util`Date(1997,02,14,21,00);
+ 		dcl endTime: Util`Date := mk_Util`Date(1997,02,14,21,55);
 	  dcl stage: Stage := new Stage("B001", 200);
  		dcl show: FashionShow := new FashionShow("theme", space, startTimeShow, endTimeShow, 10, 10, 1);
  	 	
@@ -82,10 +82,10 @@ operations
 	private testDismissWorker: () ==> ()
  	testDismissWorker() == (
  		dcl space: Space := new Space("name", "address");
- 		dcl startTimeShow: Utils`Date := mk_Utils`Date(1997,02,13,20,55);
- 		dcl endTimeShow: Utils`Date := mk_Utils`Date(1997,02,15,22,00);
- 		dcl startTime: Utils`Date := mk_Utils`Date(1997,02,14,21,00);
- 		dcl endTime: Utils`Date := mk_Utils`Date(1997,02,14,21,55);
+ 		dcl startTimeShow: Util`Date := mk_Util`Date(1997,02,13,20,55);
+ 		dcl endTimeShow: Util`Date := mk_Util`Date(1997,02,15,22,00);
+ 		dcl startTime: Util`Date := mk_Util`Date(1997,02,14,21,00);
+ 		dcl endTime: Util`Date := mk_Util`Date(1997,02,14,21,55);
 	  dcl stage: Stage := new Stage("B001", 200);
  		dcl show: FashionShow := new FashionShow("theme", space, startTimeShow, endTimeShow, 10, 10, 1);
  	 	
@@ -119,10 +119,10 @@ operations
 	private testRemoveWorkerModel: () ==> ()
  	testRemoveWorkerModel() == (
  		dcl space: Space := new Space("name", "address");
- 		dcl startTimeShow: Utils`Date := mk_Utils`Date(1997,02,13,20,55);
- 		dcl endTimeShow: Utils`Date := mk_Utils`Date(1997,02,15,22,00);
- 		dcl startTime: Utils`Date := mk_Utils`Date(1997,02,14,21,00);
- 		dcl endTime: Utils`Date := mk_Utils`Date(1997,02,14,21,55);
+ 		dcl startTimeShow: Util`Date := mk_Util`Date(1997,02,13,20,55);
+ 		dcl endTimeShow: Util`Date := mk_Util`Date(1997,02,15,22,00);
+ 		dcl startTime: Util`Date := mk_Util`Date(1997,02,14,21,00);
+ 		dcl endTime: Util`Date := mk_Util`Date(1997,02,14,21,55);
 	  dcl stage: Stage := new Stage("B001", 200);
  		dcl show: FashionShow := new FashionShow("theme", space, startTimeShow, endTimeShow, 10, 10, 1);
  	 	
@@ -162,10 +162,10 @@ operations
  	testGetClothes() == (
  	
  		dcl space: Space := new Space("name", "address");
- 		dcl startTimeShow: Utils`Date := mk_Utils`Date(1997,02,13,20,55);
- 		dcl endTimeShow: Utils`Date := mk_Utils`Date(1997,02,15,22,00);
- 		dcl startTime: Utils`Date := mk_Utils`Date(1997,02,14,21,00);
- 		dcl endTime: Utils`Date := mk_Utils`Date(1997,02,14,21,55);
+ 		dcl startTimeShow: Util`Date := mk_Util`Date(1997,02,13,20,55);
+ 		dcl endTimeShow: Util`Date := mk_Util`Date(1997,02,15,22,00);
+ 		dcl startTime: Util`Date := mk_Util`Date(1997,02,14,21,00);
+ 		dcl endTime: Util`Date := mk_Util`Date(1997,02,14,21,55);
 	  dcl stage: Stage := new Stage("B001", 200);
  		dcl show: FashionShow := new FashionShow("theme", space, startTimeShow, endTimeShow, 10, 10, 1);
  	 	
@@ -202,10 +202,10 @@ operations
  	private testGetDesigners: () ==> ()
  	testGetDesigners() == (
  		dcl space: Space := new Space("name", "address");
- 		dcl startTimeShow: Utils`Date := mk_Utils`Date(1997,02,13,20,55);
- 		dcl endTimeShow: Utils`Date := mk_Utils`Date(1997,02,15,22,00);
- 		dcl startTime: Utils`Date := mk_Utils`Date(1997,02,14,21,00);
- 		dcl endTime: Utils`Date := mk_Utils`Date(1997,02,14,21,55);
+ 		dcl startTimeShow: Util`Date := mk_Util`Date(1997,02,13,20,55);
+ 		dcl endTimeShow: Util`Date := mk_Util`Date(1997,02,15,22,00);
+ 		dcl startTime: Util`Date := mk_Util`Date(1997,02,14,21,00);
+ 		dcl endTime: Util`Date := mk_Util`Date(1997,02,14,21,55);
 	  dcl stage: Stage := new Stage("B001", 200);
  		dcl show: FashionShow := new FashionShow("theme", space, startTimeShow, endTimeShow, 10, 10, 1);
  	 	

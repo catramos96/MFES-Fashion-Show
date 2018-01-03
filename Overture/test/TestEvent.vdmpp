@@ -3,8 +3,8 @@ operations
   -- tests requirement R19
 	private testAddWorker: () ==> ()
  	testAddWorker() == (
-	 dcl startTime: Utils`Date := mk_Utils`Date(1997,02,14,20,55);
- 	 dcl endTime: Utils`Date := mk_Utils`Date(1997,02,14,21,55);
+	 dcl startTime: Util`Date := mk_Util`Date(1997,02,14,20,55);
+ 	 dcl endTime: Util`Date := mk_Util`Date(1997,02,14,21,55);
  	 dcl stage: Stage := new Stage("B001", 200);
  	 dcl event: Event := new Event("Keynote", stage, startTime, endTime);
  	
@@ -19,8 +19,8 @@ operations
   -- tests requirement R19
 	private testDismissWorker: () ==> ()
  	testDismissWorker() == (
-	 dcl startTime: Utils`Date := mk_Utils`Date(1997,02,14,20,55);
- 	 dcl endTime: Utils`Date := mk_Utils`Date(1997,02,14,21,55);
+	 dcl startTime: Util`Date := mk_Util`Date(1997,02,14,20,55);
+ 	 dcl endTime: Util`Date := mk_Util`Date(1997,02,14,21,55);
  	 dcl stage: Stage := new Stage("B001", 200);
  	 dcl event: Event := new Event("Keynote", stage, startTime, endTime);
  	
@@ -36,12 +36,12 @@ operations
  	
  	private testGetNotifications: () ==> ()
  	testGetNotifications() == (
-	 dcl startTime: Utils`Date := mk_Utils`Date(1997,02,14,20,55);
- 	 dcl endTime: Utils`Date := mk_Utils`Date(1997,02,14,21,55);
+	 dcl startTime: Util`Date := mk_Util`Date(1997,02,14,20,55);
+ 	 dcl endTime: Util`Date := mk_Util`Date(1997,02,14,21,55);
  	 dcl stage: Stage := new Stage("B001", 200);
  	 dcl event: Event := new Event("Keynote", stage, startTime, endTime);
  	 
- 	 dcl notificationTime: Utils`Date := mk_Utils`Date(1997,02,14,21,00);
+ 	 dcl notificationTime: Util`Date := mk_Util`Date(1997,02,14,21,00);
  	 dcl notification1: Notification := new Notification("title", "Keynote to start", notificationTime, <Workers>);
  	 dcl notification2: Notification := new Notification("title", "Keynote ended", notificationTime, <Attendees>);
  	
@@ -59,12 +59,12 @@ operations
  	-- tests requirement 25
  	private testAddNotification: () ==> ()
  	testAddNotification() == (
-	 dcl startTime: Utils`Date := mk_Utils`Date(1997,02,14,20,55);
- 	 dcl endTime: Utils`Date := mk_Utils`Date(1997,02,14,21,55);
+	 dcl startTime: Util`Date := mk_Util`Date(1997,02,14,20,55);
+ 	 dcl endTime: Util`Date := mk_Util`Date(1997,02,14,21,55);
  	 dcl stage: Stage := new Stage("B001", 200);
  	 dcl event: Event := new Event("Keynote", stage, startTime, endTime);
  	 
- 	 dcl notificationTime: Utils`Date := mk_Utils`Date(1997,02,14,21,00);
+ 	 dcl notificationTime: Util`Date := mk_Util`Date(1997,02,14,21,00);
  	 dcl notification1: Notification := new Notification("title", "Keynote started", notificationTime, <Attendees>);
  	 dcl notification2: Notification := new Notification("title", "Keynote ended", notificationTime, <Attendees>);
  	 
@@ -79,12 +79,12 @@ operations
  	
  	private testRemoveNotification: () ==> ()
  	testRemoveNotification() == (
-	 dcl startTime: Utils`Date := mk_Utils`Date(1997,02,14,20,55);
- 	 dcl endTime: Utils`Date := mk_Utils`Date(1997,02,14,21,55);
+	 dcl startTime: Util`Date := mk_Util`Date(1997,02,14,20,55);
+ 	 dcl endTime: Util`Date := mk_Util`Date(1997,02,14,21,55);
  	 dcl stage: Stage := new Stage("B001", 200);
  	 dcl event: Event := new Event("Keynote", stage, startTime, endTime);
  	 
- 	 dcl notificationTime: Utils`Date := mk_Utils`Date(1997,02,14,21,00);
+ 	 dcl notificationTime: Util`Date := mk_Util`Date(1997,02,14,21,00);
  	 dcl notification: Notification := new Notification("title", "Keynote started", notificationTime, <Attendees>);
  	 
  	 event.addNotification(notification);
@@ -96,8 +96,8 @@ operations
  	
  	private testUpdateWorkers: () ==> ()
  	testUpdateWorkers() == (
-	 dcl startTime: Utils`Date := mk_Utils`Date(1997,02,14,20,55);
- 	 dcl endTime: Utils`Date := mk_Utils`Date(1997,02,14,21,55);
+	 dcl startTime: Util`Date := mk_Util`Date(1997,02,14,20,55);
+ 	 dcl endTime: Util`Date := mk_Util`Date(1997,02,14,21,55);
  	 dcl stage: Stage := new Stage("B001", 200);
  	 dcl event: Event := new Event("Keynote", stage, startTime, endTime);
  	 
@@ -112,8 +112,8 @@ operations
  	
 	private testReserveSeat: () ==> ()
  	testReserveSeat() == (
-	 dcl startTime: Utils`Date := mk_Utils`Date(1997,02,14,20,55);
- 	 dcl endTime: Utils`Date := mk_Utils`Date(1997,02,14,21,55);
+	 dcl startTime: Util`Date := mk_Util`Date(1997,02,14,20,55);
+ 	 dcl endTime: Util`Date := mk_Util`Date(1997,02,14,21,55);
  	 dcl stage: Stage := new Stage("B001", 1);
  	 dcl event: Event := new Event("Keynote", stage, startTime, endTime);
  	
@@ -125,8 +125,8 @@ operations
  		
 	private testFreeSeat: () ==> ()
  	testFreeSeat() == (
-	 dcl startTime: Utils`Date := mk_Utils`Date(1997,02,14,20,55);
- 	 dcl endTime: Utils`Date := mk_Utils`Date(1997,02,14,21,55);
+	 dcl startTime: Util`Date := mk_Util`Date(1997,02,14,20,55);
+ 	 dcl endTime: Util`Date := mk_Util`Date(1997,02,14,21,55);
  	 dcl stage: Stage := new Stage("B001", 1);
  	 dcl event: Event := new Event("Keynote", stage, startTime, endTime);
  	
@@ -138,10 +138,10 @@ operations
  	
  	private testEventsOverlap: () ==> ()
  	testEventsOverlap() == (
-	 dcl startTime1: Utils`Date := mk_Utils`Date(1997,02,14,20,55);
- 	 dcl endTime1: Utils`Date := mk_Utils`Date(1997,02,14,21,55);
-	 dcl startTime2: Utils`Date := mk_Utils`Date(1997,02,14,21,25);
- 	 dcl endTime2: Utils`Date := mk_Utils`Date(1997,02,14,22,25);
+	 dcl startTime1: Util`Date := mk_Util`Date(1997,02,14,20,55);
+ 	 dcl endTime1: Util`Date := mk_Util`Date(1997,02,14,21,55);
+	 dcl startTime2: Util`Date := mk_Util`Date(1997,02,14,21,25);
+ 	 dcl endTime2: Util`Date := mk_Util`Date(1997,02,14,22,25);
  	 dcl stage1: Stage := new Stage("B001", 200);
  	 dcl stage2: Stage := new Stage("B002", 200);
  	 dcl event1: Event := new Event("Keynote", stage1, startTime1, endTime1);

@@ -19,7 +19,7 @@ operations
  	private testReset: () ==> ()
  	testReset() == (
  		dcl space: Space := new Space("name", "address");
- 		dcl show: FashionShow := new FashionShow("theme", space, mk_Utils`Date(1,1,1,1,1), mk_Utils`Date(1,1,1,1,2), 10, 10, 10);
+ 		dcl show: FashionShow := new FashionShow("theme", space, mk_Util`Date(1,1,1,1,1), mk_Util`Date(1,1,1,1,2), 10, 10, 10);
 		
 		space.reset();
 		expecting(space.reservations, {});

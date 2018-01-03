@@ -119,18 +119,18 @@ post presentation in set speaks;
 Get Next Attendance
 INFO: Get the next attendance reserved after the current date
 */
-public getNextAttendance: Utils`Date ==> [Event]
+public getNextAttendance: Util`Date ==> [Event]
 getNextAttendance(currentDate) == (
 	dcl event : Event;
 	dcl notNull : bool := false;
 	
 	for all e in set dunion rng attendance do (	--All events attending
 --If it's after the current date
-if(Utils`getDatePosition(e.startTime,currentDate) = <After>) then(	
+if(Util`getDatePosition(e.startTime,currentDate) = <After>) then(	
 	--Has to compare with other already found
 	if(notNull) then (
 		--Compare
-				if(Utils`getDatePosition(e.startTime, event.startTime) = <After>) then
+				if(Util`getDatePosition(e.startTime, event.startTime) = <After>) then
 					event := e;
 			)
 			else (
@@ -333,10 +333,10 @@ Has Ticket To Show
 IS Working
 INFO: True is is occupied and false otherwise
 */
-public static isWorking: Utils`Date * Utils`Date * set of Event * set of Presentation-> bool
+public static isWorking: Util`Date * Util`Date * set of Event * set of Presentation-> bool
 isWorking(startD,endD,jobs,speaks) == (
-(exists event in set jobs & Utils`datesOverlap(event.startTime,event.endTime,startD,endD)) or			-- Has work ?
-(exists speak in set speaks & Utils`datesOverlap(speak.startTime,speak.endTime,startD,endD))			-- Has presentation ?
+(exists event in set jobs & Util`datesOverlap(event.startTime,event.endTime,startD,endD)) or			-- Has work ?
+(exists speak in set speaks & Util`datesOverlap(speak.startTime,speak.endTime,startD,endD))			-- Has presentation ?
 )
-pre Utils`getDatePosition(startD,endD) = <Before>;	--PRE: start time < end time
+pre Util`getDatePosition(startD,endD) = <Before>;	--PRE: start time < end time
 end Person
