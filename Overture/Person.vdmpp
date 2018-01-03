@@ -57,10 +57,17 @@ instance variables
 	 --Remove Ticket
 	 public removeTicket: Ticket ==> ()
 	 removeTicket(t) == (
-	 	tickets := tickets \ {t}
+	 for all e in set t.show.events do(
+	 	if(e in set attendance(t.show)) then cancelAttendment(e);
+	 );
+	 atomic(
+	 	tickets := tickets \ {t};
+	 	attendance := {t.show} <-: attendance;
+	 	)
 	 )
-	 pre t in set tickets				--PRE: Has ticket
-	 post t not in set tickets;	--POS: Ticket was removed
+	 pre t in set tickets									--PRE: Has ticket
+	 post t not in set tickets 						--POS: Ticket was removed
+	 and t.show not in set dom attendance;--POS: Not in attendance
  	
  	--------------------
  	----- ATTENDEE -----

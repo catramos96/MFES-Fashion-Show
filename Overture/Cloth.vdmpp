@@ -12,7 +12,8 @@ operations
 	--Constructor
 	public Cloth: Person * seq of char * Season ==> Cloth
 	Cloth(designer_,name_, season_) == 
-	(designer := designer_; name := name_; season := season_; return self);
+	(designer := designer_; name := name_; season := season_; return self)
+	pre len name_ > 0;
 	
 	--Set Season
 	public setSeason: Season ==> ()
