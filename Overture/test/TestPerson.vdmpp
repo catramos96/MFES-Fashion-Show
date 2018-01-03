@@ -208,6 +208,45 @@ operations
  		expecting(person.isDesigner(), true);
  	);
  	
+ 	private testIsParticipantDesigner: () ==> ()
+ 	testIsParticipantDesigner() == (
+ 		dcl space: Space := new Space("name", "address");
+ 		dcl startTimeShow: Util`Date := mk_Util`Date(1997,02,13,20,55);
+ 		dcl endTimeShow: Util`Date := mk_Util`Date(1997,02,15,22,00);
+ 		dcl startTime: Util`Date := mk_Util`Date(1997,02,14,21,00);
+ 		dcl endTime: Util`Date := mk_Util`Date(1997,02,14,21,55);
+	  dcl stage: Stage := new Stage("B001", 200);
+ 		dcl show: FashionShow := new FashionShow("theme", space, startTimeShow, endTimeShow, 10, 10, 1);
+	 	 	
+	 	 	dcl runwayEvent: Runway := new Runway("WinterRunway", stage, startTime, endTime);
+ 	 	
+ 		dcl person1: Person := new Person("name1", 1);
+ 	 	dcl person2: Person := new Person("name2", 2);	
+ 	 	dcl person3: Person := new Person("name3", 2);
+ 		dcl cloth1: Cloth := new Cloth(person1, "Coat", <Winter>);
+ 		dcl cloth2: Cloth := new Cloth(person2, "Coat", <Winter>);
+ 		
+		space.addStage(stage);
+		
+ 		person1.addCloth(cloth1);
+ 		person2.addCloth(cloth2);
+
+ 		person1.buyTicket(show, <Normal>);
+ 		person2.buyTicket(show, <Normal>);
+ 		person3.buyTicket(show, <Normal>);
+ 		
+ 		show.addEvent(runwayEvent);
+		
+		runwayEvent.addWorker(person1);
+		runwayEvent.addWorker(person2);
+		runwayEvent.addWorker(person3);
+		
+		runwayEvent.addToSequence(cloth1, person3);
+		runwayEvent.addToSequence(cloth2, person3);
+ 		
+ 		expecting(person1.isParticipantDesigner(), {runwayEvent});
+ 	);
+ 	
  	private testIsWorking: () ==> ()
  	testIsWorking() == (
  		dcl startTime1: Util`Date := mk_Util`Date(1997,02,14,21,00);
@@ -237,6 +276,7 @@ operations
 	  t.testCancelAttendment();
 	  t.testAddCloth();
 	  t.testIsDesigner();
+	  t.testIsParticipantDesigner();
 	  t.testIsWorking();
  	);
 

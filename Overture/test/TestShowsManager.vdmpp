@@ -36,9 +36,18 @@ operations
  testRemoveShows() == (
  	dcl s1: FashionShow := new FashionShow("t1",new Space("name1","addr1"),mk_Util`Date(2017,02,20,10,00), mk_Util`Date(2017,02,26,11,00),50,10,10),
  			s2: FashionShow := new FashionShow("t2",new Space("name2","addr2"),mk_Util`Date(2017,02,20,10,00), mk_Util`Date(2017,02,26,11,00),50,10,10);
- 			
+ 	
+	dcl stage: Stage := new Stage("B001", 200);
+	dcl event1: Event := new Event("Keynote", stage, mk_Util`Date(2017,02,20,10,00), mk_Util`Date(2017,02,26,11,00));
+	dcl person1: Person := new Person("name1", 1);
+	
+	s1.space.addStage(stage);
+	s1.addEvent(event1);
+	person1.buyTicket(s1, <Normal>);
+	
 	manager.addShow(s1);
 	manager.addShow(s2);
+	
 	manager.removeShow(s1);
 	manager.removeShow(s2);
 	--manager.removeShow("t1");	--Already removed -> Doesn't Exits -> BREAK
