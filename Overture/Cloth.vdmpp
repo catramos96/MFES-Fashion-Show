@@ -1,6 +1,10 @@
+/*
+Class to represent a cloth.
+*/
 class Cloth
 types
 	public Season = <Winter> | <Fall> | <Summer> | <Spring>;
+	
 instance variables
 	public designer : Person;
 	public name : seq of char;
@@ -9,20 +13,33 @@ instance variables
 	inv len name > 0;
 	
 operations
-	--Constructor
-	public Cloth: Person * seq of char * Season ==> Cloth
-	Cloth(designer_,name_, season_) == 
-	(designer := designer_; name := name_; season := season_; return self)
-	pre len name_ > 0;
-	
-	--Set Season
-	public setSeason: Season ==> ()
-	setSeason(season_) == (season := season_);
-	
-	--Set Name
-	public setName: seq of char ==> ()
-	setName(name_) == (name := name_)
-	pre len name_ > 0
-	post name = name_;
+	/*
+Constructor
+PRE: name has to be > 0
+*/
+public Cloth: Person * seq of char * Season ==> Cloth
+Cloth(designer_,name_, season_) == 
+(designer := designer_; name := name_; season := season_; return self)
+pre len name_ > 0;
+
+/*
+Set Season
+INFO: Sets the season of the cloth
+POS: season was set
+*/
+public setSeason: Season ==> ()
+setSeason(season_) == (season := season_)
+post season = season_;
+
+/*
+Set Name
+INFO: Sets the name
+PRE: New name > 0
+POS: Name was set
+*/
+public setName: seq of char ==> ()
+setName(name_) == (name := name_)
+pre len name_ > 0
+post name = name_;
 	
 end Cloth

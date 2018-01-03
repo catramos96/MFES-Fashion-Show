@@ -1,21 +1,41 @@
+/*
+Class that represents a stage
+*/
 class Stage
  ---------------------------------------------------------------------------
 instance variables
 	public name : seq of char;
 	public seats : int;
-	inv seats > 0;
+	
+	--INV
+	inv seats > 0 and len name > 0;
  ---------------------------------------------------------------------------
 operations
---Constructor
+/*
+Constructor
+PRE: name > 0
+POS: basic infomation was set
+*/
 public Stage: seq of char * nat1 ==> Stage
-Stage(name_,seats_) == (name := name_; seats := seats_; return self);
+Stage(name_,seats_) == (name := name_; seats := seats_; return self)
+pre len name_ > 0
+post name = name_ and seats = seats_;
 
---Set Name
+/*
+Set Name
+PRE: name > 0
+POS: name was set
+*/
 public setName: seq of char ==> ()
 setName(name_) == (name := name_)
-post name = name_;													--POS: Name was changed
+pre len name_ > 0
+post name = name_;										
 
---SetSeats
+/*
+Set Seats
+PRE: can only add seats
+POS: seats was added
+*/
 public setSeats: nat1 ==> ()
 setSeats(seats_) == (seats := seats_)
 pre seats < seats_
@@ -23,7 +43,9 @@ post seats = seats_;
  ---------------------------------------------------------------------------
 functions
 
---Equal
+/*
+Equal
+*/
 public static equal: Stage * Stage -> bool
 equal(s1,s2) == (s1.name = s2.name);
 

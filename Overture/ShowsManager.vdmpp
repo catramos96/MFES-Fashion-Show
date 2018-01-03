@@ -1,52 +1,71 @@
+/*
+Class that allows to manage multiple shows
+*/
 class ShowsManager
 
 instance variables
 	public shows: set of (FashionShow) := {};
-	inv not exists s1,s2 in set shows & s1<>s2 and 
-	FashionShow`equals(s1,s2) and 																			--INV: Can't have the same show (same theme)
-	Utils`datesOverlap(s1.startTime,s1.endTime,s2.startTime,s2.endTime);-- with overlapping dates
+	
+	--INV: Can't have the same shows with the same theme with overapping dates
+	inv not exists s1,s2 in set shows & s1<>s2 and FashionShow`equals(s1,s2) and 																			
+	Utils`datesOverlap(s1.startTime,s1.endTime,s2.startTime,s2.endTime);
 	
 operations
-	--Constructor
-	public ShowsManager: () ==> ShowsManager
-	ShowsManager() == (return self);
-	
-	--Add Show
-	public addShow: FashionShow ==> ()
-	addShow(fs) == (shows := shows union {fs})
-	pre fs not in set shows and not exists s in set shows &
-	FashionShow`equals(s,fs) and Utils`datesOverlap(s.startTime,s.endTime,fs.startTime,fs.endTime)
-	post fs in set shows;										--POS: New show successfully added
-	
-	--Remove Show
-	public removeShow: FashionShow ==> ()
-	removeShow(show) == (
-	dcl space: Space := show.space;
-		for all e in set show.events do(
-			show.cancelEvent(e.name)
-		);
-		for all t in set dunion rng show.ticketsSold do(
-			t.owner.removeTicket(t);
-		);
-		shows := shows \ {show}
-	)
-	pre show in set shows 						--PRE: Show in the seq of shows
-	post show not in set shows;	--POS: Show was removed
-	
-	--Get Spaces
-	public getSpaces: () ==> set of Space
-	getSpaces() == (
-		dcl spaces : set of Space := {};
-		for all s in set shows do(
-			if(s.space not in set spaces) then spaces := spaces union {s.space}
-		);
-		return spaces
-	)
-	post forall s in set RESULT & 
-		exists show in set shows & show in set s.reservations;	--POS: Spaces used by one more shows
-	
-	--Reset
-	public reset: () ==> ()
-	reset() == shows := {};
+/*
+Constructor
+*/
+public ShowsManager: () ==> ShowsManager
+ShowsManager() == (return self);
+
+/*
+Add a Show
+PRE: show is not being managed and doesn't overlap
+POS. show was added
+*/
+public addShow: FashionShow ==> ()
+addShow(fs) == (shows := shows union {fs})
+pre fs not in set shows
+post fs in set shows;								
+
+/*
+Remove Show
+PRE: show is being manages
+POS: show was removed
+*/
+public removeShow: FashionShow ==> ()
+removeShow(show) == (
+dcl space: Space := show.space;
+	for all e in set show.events do(
+		show.cancelEvent(e.name)
+	);
+	for all t in set dunion rng show.ticketsSold do(
+		t.owner.removeTicket(t);
+	);
+	shows := shows \ {show}
+)
+pre show in set shows 						
+post show not in set shows;	
+
+/*
+Get Spaces
+INFO: Get all the spaces used by all the shows that are being managed
+POS: All in RESULT are used by one or more show
+*/
+public getSpaces: () ==> set of Space
+getSpaces() == (
+	dcl spaces : set of Space := {};
+	for all s in set shows do(
+		if(s.space not in set spaces) then spaces := spaces union {s.space}
+	);
+	return spaces
+)
+post forall s in set RESULT & 
+exists show in set shows & show in set s.reservations;	
+
+/*
+Reset
+*/
+public reset: () ==> ()
+reset() == shows := {};
 	
 end ShowsManager

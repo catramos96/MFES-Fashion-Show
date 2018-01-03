@@ -1,60 +1,83 @@
+/*
+Class that represents a presentation (Event)
+*/
 class Presentation is subclass of Event
 instance variables
   public speakers: set of (Person);
   public subTheme: seq of char;
   
 operations
-	-- Constructor
-	public Presentation: seq of char * Stage * Utils`Date * Utils`Date * seq of char ==> Presentation
-	Presentation(name_, stage_, startDate_, endDate_, subTheme_) == (
-		atomic(
-			name := name_;
-			stage := stage_;
-			startTime := startDate_;
-			endTime := endDate_;
-			subTheme := subTheme_;
-			speakers := {};
-			workers := {};
-			news := {};
-		);	
-		return self;
-	);
-	
-  -- Add speaker
-	public addSpeaker: Person ==> ()
-	addSpeaker(s) == (
-		speakers := speakers union {s};
-		addWorker(s);
-	)
-	pre s not in set speakers
-	post s in set speakers;
-	
-	--Remove speaker
-	public removeSpeaker: Person ==> ()
-	removeSpeaker(s) == (
-		speakers := speakers \ {s};
-		if(s not in set workers) then		--If it's a guest
-			s.cancelPresentation(self);
-	)
-	pre self in set s.speaks or s in set workers
-	post s not in set speakers;
-	
-	--Dismiss Worker (Override)
-	public dismissWorker: Person ==> ()
-		dismissWorker(worker) == (
-			workers := workers \ {worker};
-			worker.removeJob(self);
-			if(worker in set speakers) then (
-				removeSpeaker(worker);
-			)
+	/*
+Constructor
+*/
+public Presentation: seq of char * Stage * Utils`Date * Utils`Date * seq of char ==> Presentation
+Presentation(name_, stage_, startDate_, endDate_, subTheme_) == (
+	atomic(
+		name := name_;
+		stage := stage_;
+		startTime := startDate_;
+		endTime := endDate_;
+		subTheme := subTheme_;
+		speakers := {};
+		workers := {};
+		news := {};
+	);	
+	return self;
+);
+
+/*
+Add Speaker
+PRE:speaker doesn't exist
+POS: speaker was added
+*/
+public addSpeaker: Person ==> ()
+addSpeaker(s) == (
+	speakers := speakers union {s};
+	addWorker(s);
+)
+pre s not in set speakers
+post s in set speakers;
+
+/*
+Remove Speaker
+PRE: event not in the speaks of the speaker
+PRE: speaker exists
+POS: speaker was removed
+*/
+public removeSpeaker: Person ==> ()
+removeSpeaker(s) == (
+	speakers := speakers \ {s};
+	if(s not in set workers) then		--If it's a guest
+		s.cancelPresentation(self);
+)
+pre self in set s.speaks or s in set workers
+post s not in set speakers;
+
+/*
+Dismiss Worker
+INFO: Override
+PRE: Has worker
+POS: Worker was dismissed
+*/
+public dismissWorker: Person ==> ()
+	dismissWorker(worker) == (
+		workers := workers \ {worker};
+		worker.removeJob(self);
+		if(worker in set speakers) then (
+			removeSpeaker(worker);
 		)
-		pre worker in set workers				--PRE: Has worker
-		post worker not in set workers;	--POS: Worker was dismissed
-	
-	-- Update Sub Theme
-	public updateSubTheme: seq of char ==> ()
-	updateSubTheme(newSubTheme) == (
-		subTheme := newSubTheme;
-	);
+	)
+	pre worker in set workers				
+	post worker not in set workers;	
+
+/*
+Update subtheme
+POS: SubTheme was set
+*/
+public updateSubTheme: seq of char ==> ()
+updateSubTheme(newSubTheme) == (
+	subTheme := newSubTheme;
+)
+post subTheme = newSubTheme;
 
 end Presentation

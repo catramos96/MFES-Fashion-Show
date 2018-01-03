@@ -40,8 +40,8 @@ operations
  	  event2.addNotification(notification3);
  	  event2.addNotification(notification4);
 		
-		expecting(person.getJobNotifications(<Workers>), {notification1, notification2});
-		expecting(person.getJobNotifications(<Attendees>), {notification3, notification4});
+		expecting(person.getJobNotifications(), {notification1, notification2});
+		expecting(person.getAttendeeNotifications(), {notification3, notification4});
  	);
  	
  	private testGetAttendanceNotifications: () ==> ()

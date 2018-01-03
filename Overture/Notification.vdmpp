@@ -1,3 +1,6 @@
+/*
+Class that represents a notification
+*/
 class Notification
 types
 	public Type = <Workers> | <Attendees>
@@ -8,33 +11,47 @@ instance variables
   public type : Type;
   
 operations
-	--Construtor
-	public Notification: seq of char * seq of char * Utils`Date * Type ==> Notification
-	Notification(title_,description_,date_,type_) == (
-		title := title_;
-		description := description_; 
-		date := date_;
-		type := type_;
-		return self
-	);
-	
-	--Set Title
-	public setTitle: seq of char ==> ()
-	setTitle(title_) == (title := title_)
-	post title = title_;									--POS:Title was changed
-	
-	--Set Description
-	public setDescription: seq of char ==> ()
-	setDescription(description_) == (description := description_)
-	post description = description_;			--POS: Description was changed
-	
-	--Set Date
-	public setDate: Utils`Date ==> ()
-	setDate(date_) == (date := date_)
-	post date = date_;
+	/*
+Constructor
+*/
+public Notification: seq of char * seq of char * Utils`Date * Type ==> Notification
+Notification(title_,description_,date_,type_) == (
+	title := title_;
+	description := description_; 
+	date := date_;
+	type := type_;
+	return self
+);
+
+/*
+Set Title
+POS: title was set
+*/
+public setTitle: seq of char ==> ()
+setTitle(title_) == (title := title_)
+post title = title_;							
+
+/*
+Set Description
+POS: Description was set
+*/
+public setDescription: seq of char ==> ()
+setDescription(description_) == (description := description_)
+post description = description_;		
+
+/*
+Set Date
+POS: date was set
+*/
+public setDate: Utils`Date ==> ()
+setDate(date_) == (date := date_)
+post date = date_;
 	
 functions
-	--Equals
-	public static equals: Notification * Notification -> bool
-	equals(n1,n2) == (n1.title = n2.title and n1.description = n2.description and n1.type = n2.type);
+	/*
+Equals
+INFO: Two notifications are equal if the content is the same (title, description,type)
+*/
+public static equals: Notification * Notification -> bool
+equals(n1,n2) == (n1.title = n2.title and n1.description = n2.description and n1.type = n2.type);
 end Notification

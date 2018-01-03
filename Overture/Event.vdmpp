@@ -1,3 +1,7 @@
+/*
+Class that represents an event and has methods
+to manipulate its variables.
+*/
 class Event
 	instance variables
 	  public startTime : Utils`Date;
@@ -8,96 +12,135 @@ class Event
 	  public workers : set of Person;
 	  public news: set of Notification;
 	  
-	  inv Utils`getDatePosition(startTime,endTime) = <Before>;
-	  inv forall w in set workers & exists e in set w.jobs & 
-	  	e.name = name and e.stage = stage and e.startTime = startTime and e.endTime = endTime;
-	  inv not exists n1,n2 in set news & n1<> n2 and Notification`equals(n1,n2);
-	  
-	operations
-	 --Constructor
-	 	public Event: seq of char * Stage * Utils`Date * Utils`Date ==> Event
-		Event(name_, stage_, startDate_, endDate_) == (
-			atomic(
-			name := name_; 
-			stage := stage_; 
-			startTime := startDate_; 
-			endTime := endDate_; 
-			workers := {};
-			news := {});
-			return self;
-		);
-		
-		--Get  Notifications
-		public getNotifications: Notification`Type ==> set of Notification
-		getNotifications(type) == (
-			dcl notifications : set of Notification := {};
-			
-			for all n in set news do (
-				if (n.type = type) then notifications := notifications union {n}
-			);
-			
-			return notifications
-		)
-		post forall n in set RESULT & n.type = type;	--POS: Notifications are of a specific type
-		
-		--Add Notification
-		public addNotification: Notification ==> ()
-		addNotification(n) == (
-			news := news union {n};
-		)
-		pre not exists n2 in set news & Notification`equals(n,n2)
-		post n in set news;
-		
-		--Remove Notification
-		public removeNotification: Notification ==> ()
-		removeNotification(n) == (news := news \ {n})
-		pre n in set news
-		post n not in set news; 
-		
-		--Add Worker
-		public addWorker: Person ==> ()
-		addWorker(w) == (
-		w.addJob(self);
-		workers:= workers union {w}
-		)
-		pre w not in set workers			--PRE: Worker not in workers already
-		post w in set workers;				--POS: New worker was added
-		
-		--Dismiss Worker
-		public dismissWorker: Person ==> ()
-		dismissWorker(worker) == (
-			workers := workers \ {worker};
-			worker.removeJob(self);
-		)
-		pre worker in set workers				--PRE: Has worker
-		post worker not in set workers;	--POS: Worker was dismissed
-				
-		--Update Workers
-		public updateWorkers: set of Person ==> ()
-		updateWorkers(workers_) == (
-			for all w in set workers_ do w.addJob(self);
-			workers := workers_;
-		);
-		
-		--Reserve Seat
-		public reserveSeat: () ==> ()
-		reserveSeat() == (reserved := reserved + 1)
-		pre reserved < stage.seats	--PRE: must have free seats
-		post reserved = reserved~ + 1;		--POS: reserved seats was inc
-		
-		--Free Seat
-		public freeSeat: () ==> ()
-		freeSeat() == (reserved := reserved - 1)
-		pre reserved > 0								--PRE: must have reserved seats
-		post reserved + 1 = reserved~;	--POS: reserved seats was dec
+	  --INV: start time before the end time
+	inv Utils`getDatePosition(startTime,endTime) = <Before>;
+	--INV: workers have this job
+	inv forall w in set workers & exists e in set w.jobs & 
+		e.name = name and e.stage = stage and e.startTime = startTime and e.endTime = endTime;
+	--INV: can't exist news with the same content
+  inv not exists n1,n2 in set news & n1<> n2 and Notification`equals(n1,n2);
+  
+operations
+  /*
+Constructor
+*/
+public Event: seq of char * Stage * Utils`Date * Utils`Date ==> Event
+Event(name_, stage_, startDate_, endDate_) == (
+	atomic(
+	name := name_; 
+	stage := stage_; 
+	startTime := startDate_; 
+	endTime := endDate_; 
+	workers := {};
+	news := {});
+	return self;
+);
+
+/*
+Get Notifications
+INFO: Gets the notifications targetting a certain type
+POS: RESULT has all the notifications for the target type
+*/
+public getNotifications: Notification`Type ==> set of Notification
+getNotifications(type) == (
+	dcl notifications : set of Notification := {};
 	
-	functions
-		--Overlap
-		public static eventsOverlap: Event * Event -> bool
-		eventsOverlap(e1,e2) == (
-			if(e1.stage = e2.stage)
-				then Utils`datesOverlap(e1.startTime,e1.endTime,e2.startTime,e2.endTime)
-			else e1.name = e2.name
-		);
+	for all n in set news do (
+		if (n.type = type) then notifications := notifications union {n}
+	);
+	
+	return notifications
+)
+post forall n in set RESULT & n.type = type;
+
+/*
+Add Notification
+PRE: Doesn't exists a notification with the same content
+POS: New notification was added
+*/
+public addNotification: Notification ==> ()
+addNotification(n) == (
+	news := news union {n};
+)
+pre not exists n2 in set news & Notification`equals(n,n2)
+post n in set news;
+
+/*
+Remove Notification
+PRE: Notification exists
+POS: Notification was removed
+*/
+public removeNotification: Notification ==> ()
+removeNotification(n) == (news := news \ {n})
+pre n in set news
+post n not in set news; 
+
+/*
+Add Worker
+PRE:New worker can't be part of the workers
+POS: New worker was added
+*/
+public addWorker: Person ==> ()
+addWorker(w) == (
+w.addJob(self);
+workers:= workers union {w}
+)
+pre w not in set workers			
+post w in set workers;				
+
+/*
+Dismiss Worker
+PRE: worker exist
+POS: worker was dismissed
+*/
+public dismissWorker: Person ==> ()
+dismissWorker(worker) == (
+	workers := workers \ {worker};
+	worker.removeJob(self);
+)
+pre worker in set workers	
+post worker not in set workers;
+		
+/*
+Update Workers
+*/
+public updateWorkers: set of Person ==> ()
+updateWorkers(workers_) == (
+	for all w in set workers_ do w.addJob(self);
+	workers := workers_;
+);
+
+/*
+Reserve a Seat
+PRE: Must have free seats
+POS: Seat was reserved
+*/
+public reserveSeat: () ==> ()
+reserveSeat() == (reserved := reserved + 1)
+pre reserved < stage.seats	
+post reserved = reserved~ + 1;		
+
+/*
+Free a Seat
+PRE: Mush have reserved seats
+POS: 1 Seat was free
+*/
+public freeSeat: () ==> ()
+freeSeat() == (reserved := reserved - 1)
+pre reserved > 0								
+post reserved + 1 = reserved~;
+
+functions
+	/*
+Events Overlap
+INFO: Function that returns true if two events have overlapping
+dates in the same space
+*/
+public static eventsOverlap: Event * Event -> bool
+eventsOverlap(e1,e2) == (
+	if(e1.stage = e2.stage)
+		then Utils`datesOverlap(e1.startTime,e1.endTime,e2.startTime,e2.endTime)
+	else e1.name = e2.name
+);
 
 end Event
