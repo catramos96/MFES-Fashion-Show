@@ -7,12 +7,14 @@ class FashionShow
   public space : Space;
   
   public events : set of (Event);
-	public nEntries : map Ticket`TicketType to nat1; 								--Max capacity for each ticket type
-	public ticketsSold : map Ticket`TicketType to set of (Ticket);	--Sold
+	public nEntries : map Ticket`TicketType to nat1 := {<VIP> |-> 100, <Normal> |-> 100, <Guest> |-> 100};
+	public ticketsSold : map Ticket`TicketType to set of (Ticket) := {<VIP> |-> {}, <Normal> |-> {}, <Guest> |-> {}};
   
   inv othersINV(theme,startTime,endTime);
  	inv ticketsINV(ticketsSold,nEntries,theme);
   inv eventsINV(events,space,startTime,endTime);
+  inv <Guest> in set dom ticketsSold and <VIP> in set dom ticketsSold and <Normal> in set dom ticketsSold;
+  inv <Guest> in set dom nEntries and <VIP> in set dom nEntries and <Normal> in set dom nEntries;
   
  ---------------------------------------------------------------------------
  operations
@@ -23,8 +25,7 @@ class FashionShow
   space := space_; 
   startTime := startTime_; 
   endTime := endTime_; 
-  nEntries := {<VIP> |-> maxVip_, <Normal> |-> maxNormal_, <Guest> |-> maxGuest_};
-  ticketsSold := {<VIP> |-> {}, <Normal> |-> {}, <Guest> |-> {}};
+  nEntries := nEntries ++ {<VIP> |-> maxVip_, <Normal> |-> maxNormal_, <Guest> |-> maxGuest_};
   events := {};
   space.addReservation(self);
   return self )
@@ -193,7 +194,7 @@ class FashionShow
   ticketsINV(tickets,entries,theme) == (
   	(forall t in set dunion rng tickets & t.show.theme=theme) and										--INV: tickets sold must be regarding the show						
     (not exists t1,t2 in set dunion rng tickets & t1<>t2 and t1.owner=t2.owner)and 	--INV: tickets can only be sold once to the same person
-    (forall type in set dom entries & card tickets(type) <= entries(type))					--INV: nº of tickets sold must be equal or less than the nº entries
+    (forall type in set dom entries & card tickets(type) <= entries(type))				--INV: nº of tickets sold must be equal or less than the nº entries
   );
   
   --Events

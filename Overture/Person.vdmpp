@@ -16,7 +16,7 @@ instance variables
   		(exists t in set tickets & t.show = x and t.type = <Guest> or t.type = <VIP>));	--INV: has ticket of type guest to the show
   inv forall c in set designed & c.designer.id = id;	--INV: All clothes designed are marked as designed by the person
   inv forall s in set dom attendance & exists t in set tickets & t.show = s;	--INV: Attendances only in events belonging to a show with a ticket
-  
+  inv forall t in set tickets & t.show in set dom attendance;	--INV all tickets shows are in attendance
  operations
  
  --Constructor
@@ -46,8 +46,10 @@ instance variables
 	 --Add Ticket
 	 public addTicket: Ticket ==> ()
 	 addTicket(t) == (
+	 atomic(
 	 	tickets := tickets union {t};
 	 	attendance := attendance ++ {t.show |-> {}}
+	 	)
 	 	)
 	 pre t.owner = self and t not in set tickets							--PRE: Person is owner of ticket
 	 post (t in set tickets and t.show in set dom attendance);--POS: New Ticket in tickets and show in attendance schedule (per show)
