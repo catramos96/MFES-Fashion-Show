@@ -1,3 +1,6 @@
+/*
+Class that represents a ticket
+*/
 class Ticket
 types
 	public static TicketType = <Normal> | <VIP> | <Guest>;
@@ -7,7 +10,9 @@ instance variables
   public show : FashionShow;
 
 operations
-	--Constructor
+	/*
+	Constructor
+	*/
 	public Ticket: TicketType * Person * FashionShow ==> Ticket
 	Ticket(t,p,f) == (atomic(type := t; owner := p; show := f); return self);
 end Ticket

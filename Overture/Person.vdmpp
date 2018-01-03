@@ -1,3 +1,9 @@
+/*
+A Class that represents a person and his
+interactivity with the fashion show.
+It can play simultanious rolers such as:
+a designer, worker and an attendee.
+*/
 class Person
 	
 instance variables
@@ -10,16 +16,29 @@ instance variables
   public attendance : inmap FashionShow to (set of (Event));
   
   inv len name > 0;
-  inv forall t in set tickets & t.owner.id = id;	--INV: All tickets addressed to the person
-  inv forall s in set speaks & (																											--INV: each presentation (speaks)
-  		exists x in set dom attendance & s in set x.events and 													--INV are being attended
-  		(exists t in set tickets & t.show = x and t.type = <Guest> or t.type = <VIP>));	--INV: has ticket of type guest to the show
-  inv forall c in set designed & c.designer.id = id;	--INV: All clothes designed are marked as designed by the person
-  inv forall s in set dom attendance & exists t in set tickets & t.show = s;	--INV: Attendances only in events belonging to a show with a ticket
-  inv forall t in set tickets & t.show in set dom attendance;	--INV all tickets shows are in attendance
+  
+  --INV: All tickets addressed to the person
+	inv forall t in set tickets & t.owner.id = id;	
+
+--INV: each presentation (speaks) are being attended in attendance and has guest ticket to the show
+	inv forall s in set speaks & (																											
+		exists x in set dom attendance & s in set x.events and 													
+		(exists t in set tickets & t.show = x and t.type = <Guest> or t.type = <VIP>));
+
+	--INV: All clothes designed are marked as designed by the person		
+	inv forall c in set designed & c.designer.id = id;	
+
+	--INV: Attendances only in events belonging to a show with a ticket
+  inv forall s in set dom attendance & exists t in set tickets & t.show = s;	
+  
+ --INV all tickets shows are in attendance
+  inv forall t in set tickets & t.show in set dom attendance;
  operations
  
- --Constructor
+ /*
+ Constructor
+ PRE: name > 0
+ */
  public Person: seq of char * nat ==> Person
  Person(name_,id_) == (
  	name := name_; 
@@ -33,88 +52,116 @@ instance variables
  	pre len name_ > 0;
  	
  	
-	 	--Buy Ticket
-	 public buyTicket: FashionShow * Ticket`TicketType ==> ()
-	 buyTicket(show,type) == (
-	 	if(show.canSellTicket(type))
-	 		then (
-	 		addTicket(show.sellTicket(self,type))
-	 		)
-	 )
-	 pre not exists t in set tickets & t.show = show;	--PRE: Can only have 1 ticket per show
-	 
-	 --Add Ticket
-	 public addTicket: Ticket ==> ()
-	 addTicket(t) == (
-	 atomic(
-	 	tickets := tickets union {t};
-	 	attendance := attendance ++ {t.show |-> {}}
-	 	)
-	 	)
-	 pre t.owner = self and not exists t2 in set tickets & t.show = t2.show		--PRE: Person is owner of ticket
-	 post (t in set tickets and t.show in set dom attendance);									--POS: New Ticket in tickets and show in attendance schedule (per show)
-	 
-	 --Remove Ticket
-	 public removeTicket: Ticket ==> ()
-	 removeTicket(t) == (
-	 for all e in set t.show.events do(
-	 	if(e in set attendance(t.show)) then cancelAttendment(e);
-	 );
-	 atomic(
-	 	tickets := tickets \ {t};
-	 	attendance := {t.show} <-: attendance;
-	 	)
-	 )
-	 pre t in set tickets									--PRE: Has ticket
-	 post t not in set tickets 						--POS: Ticket was removed
-	 and t.show not in set dom attendance;--POS: Not in attendance
- 	
- 	--------------------
- 	----- ATTENDEE -----
- 	--------------------
- 	
- 	--Add guest speaking
- 	public addSpeaking: Presentation ==> ()
- 	addSpeaking(presentation) == (
- 		speaks := speaks union {presentation};
+/*
+Buy Ticket
+PRE: Don't have ticket for the show
+*/
+ public buyTicket: FashionShow * Ticket`TicketType ==> ()
+ buyTicket(show,type) == (
+ 	if(show.canSellTicket(type))
+ 		then (
+ 		addTicket(show.sellTicket(self,type))
+ 		)
+ )
+ pre not exists t in set tickets & t.show = show;
+ 
+ /*
+ Add Ticket
+ PRE: Person is owner of ticket and don't have ticket to the show
+ POS: New Ticket in tickets and show in attendance schedule (per show)
+ */
+ public addTicket: Ticket ==> ()
+ addTicket(t) == (
+ atomic(
+ 	tickets := tickets union {t};
+ 	attendance := attendance ++ {t.show |-> {}}
  	)
- 	pre isWorking(presentation.startTime,presentation.endTime,jobs,speaks)
- 	post presentation in set speaks;
+ 	)
+ pre t.owner = self and not exists t2 in set tickets & t.show = t2.show	
+ post (t in set tickets and t.show in set dom attendance);				
+ 
+/*
+REmove Ticket
+PRE: Has ticket
+POS: Ticket was removed
+POS: Is not attendind the show
+*/
+ public removeTicket: Ticket ==> ()
+ removeTicket(t) == (
+ for all e in set t.show.events do(
+ 	if(e in set attendance(t.show)) then cancelAttendment(e);
+ );
+ atomic(
+ 	tickets := tickets \ {t};
+ 	attendance := {t.show} <-: attendance;
+ 	)
+ )
+ pre t in set tickets						
+ post t not in set tickets and t.show not in set dom attendance;
  	
- 	--Get Next Attendance
- 	public getNextAttendance: Utils`Date ==> [Event]
- 	getNextAttendance(currentDate) == (
- 		dcl event : Event;
- 		dcl notNull : bool := false;
- 		
- 		for all e in set dunion rng attendance do (	--All events attending
- 			--If it's after the current date
-			if(Utils`getDatePosition(e.startTime,currentDate) = <After>) then(	
-				--Has to compare with other already found
-				if(notNull) then (
-					--Compare
-					if(Utils`getDatePosition(e.startTime, event.startTime) = <After>) then
-						event := e;
-				)
-				else (
+ 	--------------------
+----- ATTENDEE -----
+--------------------
+
+/*
+Add speaking
+PRE: Has free time
+POS: Speaking was added
+*/
+public addSpeaking: Presentation ==> ()
+addSpeaking(presentation) == (
+	speaks := speaks union {presentation};
+)
+pre isWorking(presentation.startTime,presentation.endTime,jobs,speaks)
+post presentation in set speaks;
+
+/*
+Get Next Attendance
+INFO: Get the next attendance reserved after the current date
+*/
+public getNextAttendance: Utils`Date ==> [Event]
+getNextAttendance(currentDate) == (
+	dcl event : Event;
+	dcl notNull : bool := false;
+	
+	for all e in set dunion rng attendance do (	--All events attending
+--If it's after the current date
+if(Utils`getDatePosition(e.startTime,currentDate) = <After>) then(	
+	--Has to compare with other already found
+	if(notNull) then (
+		--Compare
+				if(Utils`getDatePosition(e.startTime, event.startTime) = <After>) then
 					event := e;
-					notNull := true;
-				)
 			)
- 		);
- 		
- 		return event
- 	);
- 	
- 	--Get Attendance
- 	public getAttendance: FashionShow ==> set of Event
- 	getAttendance(show) == (
- 		return attendance(show);
- 	)
- 	pre show in set dom attendance
- 	post forall e in set attendance(show) & e in set RESULT;
- 	
- 	--Get Attendance Notifications
+			else (
+				event := e;
+				notNull := true;
+			)
+		)
+	);
+	
+	return event
+);
+
+/*
+Get Attendance
+INFO: Get the events that have the attendance reserved of a show
+PRE: Is attending show
+POS: All events attending are in RESULT
+*/
+public getAttendance: FashionShow ==> set of Event
+getAttendance(show) == (
+	return attendance(show);
+)
+pre show in set dom attendance
+post forall e in set attendance(show) & e in set RESULT;
+
+/*
+Get Attendance Notification
+INFO: Get events notifications that have attendance reserved for a show
+PRE: show is being attended
+POS: notifications in RESULT are for the attendees
+*/
  public getAttendanceNotifications: FashionShow ==> set of Notification
  getAttendanceNotifications(show) == (
  	dcl notifications : set of Notification := {};
@@ -128,8 +175,31 @@ instance variables
  pre show in set dom attendance
  post forall n in set RESULT & n.type = <Attendees>;
  
+ /*
+Get Attendee Notification
+INFO: Notifications from all events that have atendace reserved
+POS: notifications in RESULT are for the attendees
+*/
+ public getAttendeeNotifications: () ==> set of Notification
+ getAttendeeNotifications() == (
+ 	dcl notifications : set of Notification := {};
+ 	
+ 	for all show in set dom attendance do(
+	 	for all event in set attendance(show) do (
+	 		notifications := notifications union event.getNotifications(<Attendees>)
+	 	);
+ 	);
+ 	
+ 	return notifications
+ )
+ post forall n in set RESULT & n.type = <Attendees>;
+ 
   
- --Attend
+/*
+Attend
+PRE: Event belongs to a ticket show and is not reserved 
+POS: Reservation to event with success
+*/
  public attend: Event ==> ()
  attend(event) == (
  	dcl show: FashionShow := iota x in set dom attendance & event in set x.events,
@@ -137,11 +207,13 @@ instance variables
  	attendance := attendance ++ {show |-> (attendance(show) union {event})};
  	if(ticket.type = <Normal> or ticket.type = <Guest>) then event.reserveSeat()
  )
- pre exists t in set tickets & event in set t.show.events and 	--PRE: Event belongs to a ticket show
- 	event not in set attendance(t.show)														--PRE: Event is not reserved 
- post event in set dunion rng attendance;														--POS: Reservation to event with success
+ pre exists t in set tickets & event in set t.show.events and event not in set attendance(t.show)														
+ post event in set dunion rng attendance;														
   
- --Cancel Attendment
+/*
+Cancel Attendment
+POS: Attendace was reserved
+*/
  public cancelAttendment: Event ==> ()
  cancelAttendment(event) == (
 	 	if(event in set dunion rng attendance) then (
@@ -152,82 +224,102 @@ instance variables
 	 if(is_Presentation(event)) then
 	 	cancelPresentation(event);
  )
- post event not in set dunion rng attendance;	--POS: Event not in the attendance
+ post event not in set dunion rng attendance;
  
- --Cancel Presentation
+/*
+Cancel Presentation (Speach)
+PRE: Is Speaker at the presentation
+POS: Is no longer the speaker
+*/
  public cancelPresentation: Presentation ==> ()
  cancelPresentation(presentation) == (
  	speaks := speaks \ {presentation};
  	if(self in set presentation.speakers) then
  		presentation.removeSpeaker(self);
  )
- pre presentation in set speaks				--PRE: Is Speaker at the presentation
- post presentation not in set speaks;	--POS: Is no longer the speaker
+ pre presentation in set speaks				
+ post presentation not in set speaks;
  
  ------------------
  ----- Worker -----
  ------------------
  
- --Get Job Notifications
- public getJobNotifications: Notification`Type ==> set of Notification
- getJobNotifications(type) == (
+/*
+Get Job Notifications
+INFO: Get notifications for all the jobs
+POS: Notifications in Result must be 
+*/
+ public getJobNotifications: () ==> set of Notification
+ getJobNotifications() == (
  	dcl notifications : set of Notification := {};
  	
- 	if(type = <Workers>) then (
-	 	for all event in set jobs do(
-	 		notifications := notifications union event.getNotifications(<Workers>)
-	 	);
- 	)
- 	else (
- 		for all event in set dunion rng attendance do (
- 			notifications := notifications union event.getNotifications(<Attendees>);
- 		);
+ 	for all event in set jobs do(
+ 		notifications := notifications union event.getNotifications(<Workers>)
  	);
  	return notifications
  )
- post forall n in set RESULT & n.type = type;
+ post forall n in set RESULT & n.type = <Workers>;
   
- --Add Job
+/*
+Add Job
+PRE: Job does not overlap another
+POS: New Job was added to workSchedule
+*/
  public addJob: Event ==> ()
  addJob(e) == (jobs := jobs union {e})
- pre isWorking(e.startTime,e.endTime,jobs,speaks) = false	--PRE: Job does not overlap another
- post e in set jobs;																			--POS: New Job was added to workSchedule
+ pre isWorking(e.startTime,e.endTime,jobs,speaks) = false	
+ post e in set jobs;																			
  
- --RemoveJob
+/*
+Remove Job
+PRE: Has job
+POS: Job was removed
+*/
  public removeJob: Event ==> ()
  removeJob(j) ==(jobs := jobs \ {j})
- pre j in set jobs					--PRE: Person has job
- post j not in set jobs;		--POS: Person dismissed from job
+ pre j in set jobs					
+ post j not in set jobs;		
  
  --------------------
  ----- DESIGNER -----
  --------------------
  
- --AddCloth
+/*
+Add Cloth
+PRE: cloth was designed by person and is not in the designed
+POS: cloth was added to the designed
+*/
  public addCloth: Cloth ==> ()
  addCloth(cloth) == (designed := designed union {cloth})
  pre cloth.designer.id = id and cloth not in set designed
  post cloth in set designed;
- 
- --Is Designer
- 	public isDesigner: () ==> bool
- 	isDesigner() ==  (
- 		if(card designed = 0) 
- 			then return false
- 		else
- 			return true);
+
+/*
+Is Designer
+*/
+public isDesigner: () ==> bool
+isDesigner() ==  (
+	if(card designed = 0) 
+		then return false
+	else
+		return true);
  			
- 	functions 
+functions 
+
+/*
+Has Ticket To Show
+*/
+ public hasTicketToShow : FashionShow * set of Ticket -> bool
+ hasTicketToShow(show,tickets) == (exists t in set tickets & t.show = show);
  	
- 	--Has Ticket to show
-	 public hasTicketToShow : FashionShow * set of Ticket -> bool
-	 hasTicketToShow(show,tickets) == (exists t in set tickets & t.show = show);
-	 	
- 	--Is Working (Function)
- 	public static isWorking: Utils`Date * Utils`Date * set of Event * set of Presentation-> bool
-  isWorking(startD,endD,jobs,speaks) == (
- 	(exists event in set jobs & Utils`datesOverlap(event.startTime,event.endTime,startD,endD)) or			-- Has work ?
- 	(exists speak in set speaks & Utils`datesOverlap(speak.startTime,speak.endTime,startD,endD))			-- Has presentation ?
- 	)
- 	pre Utils`getDatePosition(startD,endD) = <Before>;	--PRE: start time < end time
+/*
+IS Working
+INFO: True is is occupied and false otherwise
+*/
+public static isWorking: Utils`Date * Utils`Date * set of Event * set of Presentation-> bool
+isWorking(startD,endD,jobs,speaks) == (
+(exists event in set jobs & Utils`datesOverlap(event.startTime,event.endTime,startD,endD)) or			-- Has work ?
+(exists speak in set speaks & Utils`datesOverlap(speak.startTime,speak.endTime,startD,endD))			-- Has presentation ?
+)
+pre Utils`getDatePosition(startD,endD) = <Before>;	--PRE: start time < end time
 end Person

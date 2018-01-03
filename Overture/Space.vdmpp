@@ -1,3 +1,6 @@
+/*
+Class that represents a space
+*/
 class Space
  ---------------------------------------------------------------------------
 instance variables
@@ -6,14 +9,20 @@ instance variables
 	 public stages : set of Stage;
 	 public reservations : set of FashionShow;
 	 
-	 inv len address > 0 and len name > 0 and		--INV: address and name > 0
-	 not exists s1,s2 in set stages & 					--INV: different stages
+	 --INV: address and name > 0 and stages are different
+	 inv len address > 0 and len name > 0 and	not exists s1,s2 in set stages & 			
 	 s1<>s2 and Stage`equal(s1,s2);
-	 inv not exists s1,s2 in set reservations & --INV: reservations can't overlap
+	 
+	 --INV: reservations can't overlap
+	 inv not exists s1,s2 in set reservations & 
 	 s1<>s2 and FashionShow`showsOverlap(s1,s2);
  ---------------------------------------------------------------------------
 operations
---Constructor
+/*
+Constructor
+PRE: name and address are > 0
+POS: name and address were set
+*/
 public Space: seq of char * seq of char ==> Space
 Space(name_,address_) == (
 	name := name_ ; 
@@ -21,29 +30,45 @@ Space(name_,address_) == (
 	stages := {};
 	reservations := {};
 	return self)
-pre len name_ > 0 and len address_ > 0			--PRE: name and address are > 0
-post name = name_ and address = address_; --POS: name and address were set
+pre len name_ > 0 and len address_ > 0			
+post name = name_ and address = address_; 
 
---Add Reservation
+/*
+Add Reservation
+PRE: Reservations can't overlap
+POS: Reservation with success
+*/
 public addReservation: FashionShow ==> ()
 addReservation(show) == (reservations := reservations union {show})
-pre forall s in set reservations & FashionShow`showsOverlap(s,show)=false	--PRE: Reservations can't overlap
-post show in set reservations;																						--POS: Reservation with success
+pre forall s in set reservations & FashionShow`showsOverlap(s,show)=false	
+post show in set reservations;																						
 
---Remove Reservation
+/*
+Remove Reservation
+PRE: Show has reservation
+POS: Reservation cancelled
+*/
 public removeReservation: FashionShow ==> ()
 removeReservation(show) == (reservations := reservations \ {show})
-pre show in set reservations			--PRE: Show has reservation
-post show not in set reservations;--POS: Reservation cancelled
+pre show in set reservations			
+post show not in set reservations;
 
---Add Stage
+/*
+Add Stage
+PRE: Stage not in stages
+PRE: Doesn't exist a stage with the same name
+POS: Stage was added
+*/
 public addStage: Stage ==> ()
 addStage(stage) == (stages := stages union {stage})
-pre stage not in set stages and 									--PRE: Stage not in stages
-not exists s in set stages & Stage`equal(s,stage)	--PRE: Doesn't exist a stage with the same name
-post stage in set stages;													--POS: Stage was added
+pre stage not in set stages and not exists s in set stages & Stage`equal(s,stage)	
+post stage in set stages;													
 
---Remove Stage
+/*
+Remove Stage
+PRE: Has Stage
+POS: stage was removed
+*/
 public removeStage: Stage ==> ()
 removeStage(stage) == (
 	for all s in set reservations do (
@@ -53,29 +78,41 @@ removeStage(stage) == (
 	);
 	stages := stages \ {stage};
 )
-pre stage in set stages					--PRE: Stage in stages
-post stage not in set stages;		--POS: Stage was removed
+pre stage in set stages				
+post stage not in set stages;		
 
---Set Name
+/*
+Set name
+PRE: name > 0
+POS: name changed
+*/
 public setName: seq of char ==> ()
 setName(name_) == (name := name_)
-pre len name_ > 0				--PRE: name > 0
-post name = name_;			--POS: name changed
+pre len name_ > 0				
+post name = name_;			
 
---Set Address
+/*
+Set Address
+PRE: address > 0
+POS:address changed
+*/
 public setAddress: seq of char ==> ()
 setAddress(address_) == (address := address_)
-pre len address_ > 0			--PRE: address > 0
-post address = address_;	--POS: address changed
+pre len address_ > 0			
+post address = address_;	
 
---Reset
+/*
+Reset
+*/
 public reset: () ==> ()
 reset() == (reservations := {})
 post reservations = {};
  ---------------------------------------------------------------------------
  functions
  
---Equal
+/*
+Equal
+*/
 public static equal: Space * Space -> bool
 equal(s1,s2) == (s1.address = s2.address);
 end Space

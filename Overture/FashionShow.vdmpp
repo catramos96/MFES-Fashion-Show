@@ -1,3 +1,6 @@
+/*
+Class that allows to manage a show
+*/
 class FashionShow
  ---------------------------------------------------------------------------
  instance variables
@@ -7,7 +10,9 @@ class FashionShow
   public space : Space;
   
   public events : set of (Event);
-	public nEntries : map Ticket`TicketType to nat1 := {<VIP> |-> 100, <Normal> |-> 100, <Guest> |-> 100};
+  --NEntries: number of entries per ticket type
+public nEntries : map Ticket`TicketType to nat1 := {<VIP> |-> 100, <Normal> |-> 100, <Guest> |-> 100};
+--ticketsSold: tickets sold per ticket type
 	public ticketsSold : map Ticket`TicketType to set of (Ticket) := {<VIP> |-> {}, <Normal> |-> {}, <Guest> |-> {}};
   
   inv othersINV(theme,startTime,endTime);
@@ -18,202 +23,277 @@ class FashionShow
   
  ---------------------------------------------------------------------------
  operations
- 	--Constructor
- 	public FashionShow: seq of char * Space * Utils`Date * Utils`Date * nat * nat * nat ==> FashionShow
-  FashionShow(theme_, space_, startTime_, endTime_, maxVip_, maxNormal_, maxGuest_) == (
-  theme := theme_; 
-  space := space_; 
-  startTime := startTime_; 
-  endTime := endTime_; 
-  nEntries := nEntries ++ {<VIP> |-> maxVip_, <Normal> |-> maxNormal_, <Guest> |-> maxGuest_};
-  events := {};
-  space.addReservation(self);
-  return self )
-  pre othersINV(theme_,startTime_,endTime_)
-  post self in set space.reservations and theme = theme_
-  and startTime = startTime_ and endTime = endTime_ and space = space_;
+ 	/*
+Constructor
+POS: Basic information was set
+*/
+public FashionShow: seq of char * Space * Utils`Date * Utils`Date * nat * nat * nat ==> FashionShow
+FashionShow(theme_, space_, startTime_, endTime_, maxVip_, maxNormal_, maxGuest_) == (
+theme := theme_; 
+space := space_; 
+startTime := startTime_; 
+endTime := endTime_; 
+nEntries := nEntries ++ {<VIP> |-> maxVip_, <Normal> |-> maxNormal_, <Guest> |-> maxGuest_};
+events := {};
+space.addReservation(self);
+return self )
+pre othersINV(theme_,startTime_,endTime_)
+post self in set space.reservations and theme = theme_
+and startTime = startTime_ and endTime = endTime_ and space = space_;
+
+/*
+Add an Event
+PRE: Event is between the show dates
+PRE: Envet is taking place in a stage belonging to the show's space stages
+PRE: Event don't overlap with another
+POS: Event was added
+*/
+public addEvent: Event ==> ()
+addEvent(e) == (events := events union {e})
+pre Utils`datesContainsDates(startTime,endTime,e.startTime,e.endTime) and
+		e.stage in set space.stages and not exists e2 in set events & Event`eventsOverlap(e,e2)
+post e in set events;													
+
+/*
+Cancel an Event
+INFO: dismisses all the workers of the event and removes the attendance of the reserved attendants
+PRE: event exists
+POS: event was removed
+*/
+public cancelEvent: seq of char ==> ()
+cancelEvent(name) == (
+	dcl event: Event := iota x in set events & x.name = name;
+	for all w in set event.workers do ( event.dismissWorker(w) );
+	for all t in set dunion rng ticketsSold do (t.owner.cancelAttendment(event));
+	events := events \ {event};
+)
+pre exists e in set events & e.name = name					
+post (not exists e in set events & e.name = name);	
   
-  --Add Event
-  public addEvent: Event ==> ()
-  addEvent(e) == (events := events union {e})
-  pre Utils`datesContainsDates(startTime,endTime,e.startTime,e.endTime) and
-  		e.stage in set space.stages and not exists e2 in set events & Event`eventsOverlap(e,e2)
-  post e in set events;														--POS: New event in events
-  
-  --CancelEvent
-  public cancelEvent: seq of char ==> ()
-  cancelEvent(name) == (
-  	dcl event: Event := iota x in set events & x.name = name;
-  	for all w in set event.workers do ( event.dismissWorker(w) );
-  	for all t in set dunion rng ticketsSold do (t.owner.cancelAttendment(event));
-  	events := events \ {event};
-  )
-  pre exists e in set events & e.name = name					--Exist event
-  post (not exists e in set events & e.name = name);	--Event was removed
-    
-  --SellTicket
-  public sellTicket: Person * Ticket`TicketType ==> Ticket
-  sellTicket(attendee, type) == (
-  	dcl t :Ticket := new Ticket(type,attendee, self);
-  	ticketsSold := ticketsSold ++ {type |-> (ticketsSold(type) union {t})};
-  	return t
-  )
-  pre nEntries(type) > card ticketsSold(type) and								--PRE: Has entries for ticket type
-  		type <> <Guest>																						--PRE: Canno't buy guest tickets
-  post (card ticketsSold~(type) + 1 = card ticketsSold(type)); 	--POS: Ticket was sold
-  
-  --InviteGuest
-  public inviteGuest: Person * [Presentation] ==> ()
-  inviteGuest(guest,presentation) == (
-  	dcl t : Ticket := new Ticket(<Guest>,guest,self);
-  	ticketsSold := ticketsSold ++ { <Guest> |-> ticketsSold(<Guest>) union {t}};
-  	
-  	if(presentation <> nil) then 
-  		presentation.addSpeaker(guest);
-  		
-  	guest.addTicket(t);								--Is given a ticket
-  	
-  	if(presentation <> nil) then(
-	  	guest.addSpeaking(presentation);	--Is speaking
-	  	guest.attend(presentation);				--Is attending
-  	)
-  )
-  pre (presentation = nil or Person`isWorking(presentation.startTime,presentation.endTime,guest.jobs,guest.speaks) = false)	--PRE: guest has free time
-  and not guest.hasTicketToShow(self,guest.tickets)																											--PRE: can't have ticket to show
-  post exists t in set ticketsSold(<Guest>) & t.owner = guest;	--POS: guest was added
-  
-  --Can sell ticket
-  public canSellTicket: Ticket`TicketType ==> bool
-  canSellTicket(type) == (
-  	return nEntries(type) > card ticketsSold(type)
-  );
-  
-  --Get Attending Designers
-  public getAttendingDesigners: () ==> set of Person
-  getAttendingDesigners() == (
-  	dcl designers : set of Person := {};
+/*
+Sell Ticket
+INFO: Sells a ticket of a type to a person
+PRE: Has tickets to sold
+PRE: Type of ticket is not Guest
+POS: Ticket was sold
+*/
+public sellTicket: Person * Ticket`TicketType ==> Ticket
+sellTicket(attendee, type) == (
+	dcl t :Ticket := new Ticket(type,attendee, self);
+	ticketsSold := ticketsSold ++ {type |-> (ticketsSold(type) union {t})};
+	return t
+)
+pre nEntries(type) > card ticketsSold(type) and	type <> <Guest>																					
+post (card ticketsSold~(type) + 1 = card ticketsSold(type)); 
+
+/*
+Invite a Guest
+INFO: Gives a Guest Ticket to a person and invites it (or not) to be the speecher at a presentation
+PRE: Guest has free time
+PRE: Guest doesn't already have a ticket to this show
+POST: Ticket was given
+*/
+public inviteGuest: Person * [Presentation] ==> ()
+inviteGuest(guest,presentation) == (
+	dcl t : Ticket := new Ticket(<Guest>,guest,self);
+	ticketsSold := ticketsSold ++ { <Guest> |-> ticketsSold(<Guest>) union {t}};
+	
+	if(presentation <> nil) then 
+		presentation.addSpeaker(guest);
+		
+	guest.addTicket(t);								--Is given a ticket
+	
+	if(presentation <> nil) then(
+  	guest.addSpeaking(presentation);	--Is speaking
+  	guest.attend(presentation);				--Is attending
+	)
+)
+pre (presentation = nil or Person`isWorking(presentation.startTime,presentation.endTime,guest.jobs,guest.speaks) = false)
+and not guest.hasTicketToShow(self,guest.tickets)																										
+post exists t in set ticketsSold(<Guest>) & t.owner = guest;
+
+/*
+Can Sell a Ticket
+*/
+public canSellTicket: Ticket`TicketType ==> bool
+canSellTicket(type) == (
+	return nEntries(type) > card ticketsSold(type)
+);
+
+/*
+Get Attendind Designers
+POS: All the persons in the RESULT are designers and are attending the show
+*/
+public getAttendingDesigners: () ==> set of Person
+getAttendingDesigners() == (
+	dcl designers : set of Person := {};
+	for all t in set dunion rng ticketsSold do(
+		if(card t.owner.designed > 0) then designers := designers union {t.owner}
+	);
+	
+	return designers;
+)
+post forall p in set RESULT & card p.designed > 0 and 
+	exists t in set p.tickets & t.show = self;					
+	
+/*
+Get Attending Designers To Event
+INFO: Only of a specific event
+POS: All persons in RESULT are designers and are attending the event(arg)
+*/
+public getAttendingDesignersToEvent: Event ==> set of Person
+getAttendingDesignersToEvent(event) == (
+  dcl designers : set of Person := {};
   	for all t in set dunion rng ticketsSold do(
-  		if(card t.owner.designed > 0) then designers := designers union {t.owner}
+  		if(card t.owner.designed > 0 and event in set t.owner.attendance(self)) 
+  		then designers := designers union {t.owner}
   	);
-  	
-  	return designers;
-  )
-  post forall p in set RESULT & card p.designed > 0 and 	--POS: designers have clothes designed
-  	exists t in set p.tickets & t.show = self;						--POS: are attending this show
-  	
-  --Get Attending Designers to Event
-  public getAttendingDesignersToEvent: Event ==> set of Person
-  getAttendingDesignersToEvent(event) == (
-	  dcl designers : set of Person := {};
-	  	for all t in set dunion rng ticketsSold do(
-	  		if(card t.owner.designed > 0 and event in set t.owner.attendance(self)) 
-	  		then designers := designers union {t.owner}
-	  	);
-  	
-  	return designers;
-  )
-   post forall p in set RESULT & card p.designed > 0 and 	--POS: designers have clothes designed
-  	exists t in set p.tickets & t.show = self and					--POS: have ticket to the show
-  	event in set p.attendance(self);											--POS: attending the event
-  	
-  --Get Participating Designers
-  public getParticipatingDesigners: () ==> set of Person
-  getParticipatingDesigners() == (
-  	dcl designers : set of Person := {};
-  	
-  	for all e in set events do(
-  		if(is_Runway(e)) then designers := designers union e.getDesigners()
-  	);
-  	
-  	return designers
-  )
-  post forall p in set RESULT & card p.designed > 0 and	--POS: designers have clothes designed
-  	exists event in set p.jobs & event in set events and--POS: have a job in an event that is a runway
-  	is_Runway(event);
-  	
-  --Get Workers
-  public getWorkers: () ==> set of Person
-  getWorkers() == (
-  	dcl workers : set of Person := {};
-  	for all e in set events do (
-  		workers := workers union e.workers;
-  	);
-  	return workers;
-  )
-  post forall w in set RESULT & 						--POST Worker has a job in an event of the show
-  exists e in set events & e in set w.jobs;
-  
-  
-  --SETS--
-  
-  
-  --Set number of entries
-  public setNEntries: Ticket`TicketType * nat ==> ()
-  setNEntries(type,n) == (nEntries := nEntries ++ {type|->n})
-  pre n >= card ticketsSold(type)																--PRE: Can only set to a number equal or above the number sold
-  post nEntries(type) = n;																			--POS: Number of tickets was set
-  
-  --Set Theme
-  public setTheme: seq of char ==> ()
-  setTheme(theme_) == (theme := theme_)
-  pre len theme_ > 0		--PRE: Theme must be > 0
-  post theme = theme_;	--POS: Theme was changes
-  
-  --Set Space
-  public setSpace: Space ==> ()
-  setSpace(newSpace) == (
-  	dcl old : Space := space;
-	  newSpace.addReservation(self);
-	  space := newSpace;
-	  old.removeReservation(self)
-  )
-  post space = newSpace;
-  
-  --Set Time
-  public setTime: Utils`Date * Utils`Date ==> ()
-  setTime(start_,end_) == (atomic(startTime := start_; endTime := end_))
-  pre Utils`getDatePosition(start_,end_) = <Before> and 								--PRE: Start date must be before the end date
-  not exists e in set events & 																					--PRE: All events must be inside the new time limits
-  Utils`datesContainsDates(start_,end_,e.startTime,e.endTime) = false
-  post startTime = start_ and endTime = end_;
-  
-  ---------------------------------------------------------------------------
-  functions
-  
-  --INVARIANTS--
-  
-  --Others
-  public static othersINV: seq of char * Utils`Date * Utils`Date -> bool
-  othersINV(theme,startTime,endTime) == (
-  	 Utils`getDatePosition(startTime,endTime) = <Before> and 	--INV: start time < end time
-  		len theme > 0																						--INV: theme must have a name
-  );
-  
-  --Tickets
-  public static ticketsINV: map Ticket`TicketType to (set of (Ticket)) * map Ticket`TicketType to nat1 * seq of char -> bool
-  ticketsINV(tickets,entries,theme) == (
-  	(forall t in set dunion rng tickets & t.show.theme=theme) and										--INV: tickets sold must be regarding the show						
-    (not exists t1,t2 in set dunion rng tickets & t1<>t2 and t1.owner=t2.owner)and 	--INV: tickets can only be sold once to the same person
-    (forall type in set dom entries & card tickets(type) <= entries(type))				--INV: nº of tickets sold must be equal or less than the nº entries
-  );
-  
-  --Events
-  public static eventsINV: set of Event * Space * Utils`Date * Utils`Date -> bool
-  eventsINV(events,space,startTime,endTime) == (
-  	(forall e in set events & e.stage in set space.stages and 									--INV: events in stages belonging to the show		
-  		Utils`datesContainsDates(startTime,endTime,e.startTime,e.endTime)) and		--INV: events between the show dates							
-    (not exists e1,e2 in set events & e1 <> e2 and Event`eventsOverlap(e1,e2))	--INV: events don't overlap							
-  );
-  
-  --OTHERS--
-  
-  --Two shows are overlaping if the dates overlap in the same space
-  public static showsOverlap: FashionShow * FashionShow -> bool
-  showsOverlap(s1,s2) == (Space`equal(s1.space,s2.space) and 
-  Utils`datesOverlap(s1.startTime,s1.endTime,s2.startTime,s2.endTime)
-  );
-  
-  --Two shows are equal if they have the same theme name
+	
+	return designers;
+)
+ post forall p in set RESULT & card p.designed > 0 and 
+	exists t in set p.tickets & t.show = self and				
+	event in set p.attendance(self);										
+	
+/*
+Get Participating Designers
+INFO: from all events
+POS: All in RESULT are designers and are working in a runway of the show
+*/
+public getParticipatingDesigners: () ==> set of Person
+getParticipatingDesigners() == (
+	dcl designers : set of Person := {};
+	
+	for all e in set events do(
+		if(is_Runway(e)) then designers := designers union e.getDesigners()
+	);
+	
+	return designers
+)
+post (forall p in set RESULT & card p.designed > 0 and 
+(exists event in set p.jobs & event in set events and is_Runway(event)));
+	
+/*
+Get Workers
+POS: All workers in RESULT work at an (at least) one event of the show
+*/
+public getWorkers: () ==> set of Person
+getWorkers() == (
+	dcl workers : set of Person := {};
+	for all e in set events do (
+		workers := workers union e.workers;
+	);
+	return workers;
+)
+post forall w in set RESULT & exists e in set events & e in set w.jobs;
+
+
+--SETS--
+
+
+/*
+Sets the Number of Entries
+PRE: number of entries for each type cannot be bellow the number of tickets sold
+POS: number of entries was set
+*/
+public setNEntries: Ticket`TicketType * nat ==> ()
+setNEntries(type,n) == (nEntries := nEntries ++ {type|->n})
+pre n >= card ticketsSold(type)													
+post nEntries(type) = n;														
+
+/*
+Set Theme
+PRE: New theme > 0
+POS: Theme was set
+*/
+public setTheme: seq of char ==> ()
+setTheme(theme_) == (theme := theme_)
+pre len theme_ > 0
+post theme = theme_;	
+
+/*
+Set Space
+POS: space was set
+*/
+public setSpace: Space ==> ()
+setSpace(newSpace) == (
+	dcl old : Space := space;
+  newSpace.addReservation(self);
+  space := newSpace;
+  old.removeReservation(self)
+)
+post space = newSpace;
+
+/*
+Set Time
+PRE: start date is before the end date
+PRE: all the events must be between the time limits
+POS: times were set
+*/
+public setTime: Utils`Date * Utils`Date ==> ()
+setTime(start_,end_) == (atomic(startTime := start_; endTime := end_))
+pre Utils`getDatePosition(start_,end_) = <Before> and 							
+not exists e in set events & 																			
+Utils`datesContainsDates(start_,end_,e.startTime,e.endTime) = false
+post startTime = start_ and endTime = end_;
+
+---------------------------------------------------------------------------
+functions
+
+--INVARIANTS--
+
+/*
+Others Invariant
+--INV: start time < end time
+--INV: theme must have a name
+*/
+public static othersINV: seq of char * Utils`Date * Utils`Date -> bool
+othersINV(theme,startTime,endTime) == (
+	 Utils`getDatePosition(startTime,endTime) = <Before> and 	
+		len theme > 0																						
+);
+
+/*
+Tickets Invariant
+--INV: tickets sold must be regarding the show
+--INV: tickets can only be sold once to the same person		
+--INV: nº of tickets sold must be equal or less than the nº entries
+*/
+public static ticketsINV: map Ticket`TicketType to (set of (Ticket)) * map Ticket`TicketType to nat1 * seq of char -> bool
+ticketsINV(tickets,entries,theme) == (
+	(forall t in set dunion rng tickets & t.show.theme=theme) and														
+  (not exists t1,t2 in set dunion rng tickets & t1<>t2 and t1.owner=t2.owner)and 	
+  (forall type in set dom entries & card tickets(type) <= entries(type))					
+);
+
+/*
+Events Invariant
+--INV: events in stages belonging to the show	
+--INV: events between the show dates
+--INV: events don't overlap	
+*/
+public static eventsINV: set of Event * Space * Utils`Date * Utils`Date -> bool
+eventsINV(events,space,startTime,endTime) == (
+	(forall e in set events & e.stage in set space.stages and 										
+		Utils`datesContainsDates(startTime,endTime,e.startTime,e.endTime)) and								
+  (not exists e1,e2 in set events & e1 <> e2 and Event`eventsOverlap(e1,e2))							
+);
+
+--OTHERS--
+
+/*
+Overlapping shows
+INFO: Two shows are overlaping if the dates overlap in the same space
+*/
+public static showsOverlap: FashionShow * FashionShow -> bool
+showsOverlap(s1,s2) == (Space`equal(s1.space,s2.space) and 
+Utils`datesOverlap(s1.startTime,s1.endTime,s2.startTime,s2.endTime)
+);
+
+/*
+Equal
+INFO: Two shows are equal if they have the same theme name
+*/
   public static equals: FashionShow * FashionShow -> bool
   equals(s1,s2) == s1.theme = s2.theme;
  
